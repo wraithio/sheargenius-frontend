@@ -83,7 +83,7 @@ const Login = () => {
             </p>
             <p className="font-[NeueMontreal-Medium] text-sm">
               {" "}
-              Welcome Back!{" "}
+              Welcome!{" "}
             </p>
           </div>
 

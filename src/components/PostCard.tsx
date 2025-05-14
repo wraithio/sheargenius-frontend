@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import FocusPostComponent from "./FocusPostComponent";
 import { fetchInfo, getCommentsbyId } from "@/utils/DataServices";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 const PostCard = (data: IPostItems) => {
   const router = useRouter();
@@ -27,13 +28,13 @@ const PostCard = (data: IPostItems) => {
   return (
     <div>
       {focus && (
-        <div className="fixed top-0 left-0 h-screen w-screen bg-[#f5f5f596] flex justify-center place-items-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
           <div className="w-[50%] bg-white p-2 rounded-sm relative">
             <h3
-              className="text-slate-600 hover:text-black cursor-pointer absolute top-2 left-3 text-2xl"
+              className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors"
               onClick={() => setFocus(false)}
             >
-              X
+              <X />
             </h3>
             <FocusPostComponent {...data} />
           </div>
