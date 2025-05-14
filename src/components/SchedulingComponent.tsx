@@ -4,13 +4,14 @@ import {
   deleteRequest,
   getRequestsbyBarberName,
   getScheduleByUsername,
+  setSchedule,
 } from "@/lib/api";
 import { fetchInfo } from "@/utils/DataServices";
 import { IRequest, ISchedule } from "@/utils/Interfaces";
 import React, { useEffect, useState } from "react";
 
 const SchedulingComponent = () => {
-  const [schedule, setSchedule] = useState<ISchedule>();
+  const [schedule, setUserSchedule] = useState<ISchedule>();
   const [requests, setRequests] = useState<IRequest[]>();
   const [appointments, setAppointments] = useState<IRequest[]>();
   const [edit, setEdit] = useState<boolean>(false);
@@ -33,7 +34,7 @@ const SchedulingComponent = () => {
   useEffect(() => {
     const fetchSchedule = async () => {
       const data = await getScheduleByUsername(username);
-      setSchedule(data||null);
+      setUserSchedule(data||null);
       const data2 = await getRequestsbyBarberName(username);
       setRequests(
         data2.filter(
@@ -116,7 +117,7 @@ const SchedulingComponent = () => {
     };
 
     await setSchedule(payload);
-    setSchedule(payload);
+    setUserSchedule(payload);
     setEdit(false);
   };
 

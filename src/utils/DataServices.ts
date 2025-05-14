@@ -109,7 +109,6 @@ export const getCommentsbyId = async (id: number) => {
     return null;
   }
   const data = await res.json();
-  console.log(data)
   return data;
 };
 
@@ -244,7 +243,7 @@ export const getAllPosts = async () => {
     return [];
   }
   const data = await res.json();
-  console.log(data)
+  // console.log(data)
   return data;
 };
 
