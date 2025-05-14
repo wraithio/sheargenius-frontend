@@ -29,7 +29,7 @@ const Login = () => {
       if (typeof window !== "undefined") {
         setError(false);
         localStorage.setItem("Token", token.token);
-        console.log(token.token);
+        // console.log(token.token);
         try {
           await getLoggedInUserData(username);
           const accountInfo = loggedInData();

@@ -2,6 +2,7 @@ import {
   acceptRequest,
   declineRequest,
   deleteRequest,
+  editSchedule,
   getRequestsbyBarberName,
   getScheduleByUsername,
   setSchedule,
@@ -34,7 +35,7 @@ const SchedulingComponent = () => {
   useEffect(() => {
     const fetchSchedule = async () => {
       const data = await getScheduleByUsername(username);
-      setUserSchedule(data||null);
+      setUserSchedule(data);
       const data2 = await getRequestsbyBarberName(username);
       setRequests(
         data2.filter(
@@ -50,8 +51,7 @@ const SchedulingComponent = () => {
       );
     };
     fetchSchedule();
-    console.log("test")
-  }, [schedule]);
+  }, []);
 
   const accept = async (id: number) => {
     await acceptRequest(id);
@@ -105,7 +105,7 @@ const SchedulingComponent = () => {
 
   const saveSchedule = async () => {
     const payload: ISchedule = {
-      id: schedule?.id || 0,
+      id: 0,
       username: username,
       mondayTimes: newMondayTimes,
       tuesdayTimes: newTuesdayTimes,
@@ -115,15 +115,13 @@ const SchedulingComponent = () => {
       saturdayTimes: newSaturdayTimes,
       sundayTimes: newSundayTimes,
     };
-
-    await setSchedule(payload);
-    setUserSchedule(payload);
     setEdit(false);
+    setUserSchedule(payload);
+    await editSchedule(payload);
   };
 
   const complete = async (id: number) => {
     await deleteRequest(id);
-    
   };
 
   return (
@@ -135,97 +133,111 @@ const SchedulingComponent = () => {
           {!edit ? (
             <div className="flex flex-col gap-2">
               <p className="font-bold">My Schedule</p>
-              <div>
-                <p>Monday</p>
-                <div className="flex gap-2">
-                  {schedule.mondayTimes.map((time, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 py-1 px-2 rounded text-sm"
-                    >
-                      {time}
-                    </div>
-                  ))}
+              {schedule.mondayTimes.length > 0 && (
+                <div>
+                  <p>Monday</p>
+                  <div className="flex gap-2">
+                    {schedule.mondayTimes.map((time, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-200 py-1 px-2 rounded text-sm"
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p>Tuesday</p>
-                <div className="flex gap-2">
-                  {schedule.tuesdayTimes.map((time, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 py-1 px-2 rounded text-sm"
-                    >
-                      {time}
-                    </div>
-                  ))}
+              )}
+              {schedule.tuesdayTimes.length > 0 && (
+                <div>
+                  <p>Tuesday</p>
+                  <div className="flex gap-2">
+                    {schedule.tuesdayTimes.map((time, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-200 py-1 px-2 rounded text-sm"
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p>Wednesday</p>
-                <div className="flex gap-2">
-                  {schedule.wednesdayTimes.map((time, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 py-1 px-2 rounded text-sm"
-                    >
-                      {time}
-                    </div>
-                  ))}
+              )}
+              {schedule.wednesdayTimes.length > 0 && (
+                <div>
+                  <p>Wednesday</p>
+                  <div className="flex gap-2">
+                    {schedule.wednesdayTimes.map((time, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-200 py-1 px-2 rounded text-sm"
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p>Thursday</p>
-                <div className="flex gap-2">
-                  {schedule.thursdayTimes.map((time, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 py-1 px-2 rounded text-sm"
-                    >
-                      {time}
-                    </div>
-                  ))}
+              )}
+              {schedule.thursdayTimes.length > 0 && (
+                <div>
+                  <p>Thursday</p>
+                  <div className="flex gap-2">
+                    {schedule.thursdayTimes.map((time, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-200 py-1 px-2 rounded text-sm"
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p>Friday</p>
-                <div className="flex gap-2">
-                  {schedule.fridayTimes.map((time, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 py-1 px-2 rounded text-sm"
-                    >
-                      {time}
-                    </div>
-                  ))}
+              )}
+              {schedule.fridayTimes.length > 0 && (
+                <div>
+                  <p>Friday</p>
+                  <div className="flex gap-2">
+                    {schedule.fridayTimes.map((time, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-200 py-1 px-2 rounded text-sm"
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p>Saturday</p>
-                <div className="flex gap-2">
-                  {schedule.saturdayTimes.map((time, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 py-1 px-2 rounded text-sm"
-                    >
-                      {time}
-                    </div>
-                  ))}
+              )}
+              {schedule.saturdayTimes.length > 0 && (
+                <div>
+                  <p>Saturday</p>
+                  <div className="flex gap-2">
+                    {schedule.saturdayTimes.map((time, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-200 py-1 px-2 rounded text-sm"
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p>Sunday</p>
-                <div className="flex gap-2">
-                  {schedule.sundayTimes.map((time, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 py-1 px-2 rounded text-sm"
-                    >
-                      {time}
-                    </div>
-                  ))}
+              )}
+              {schedule.sundayTimes.length > 0 && (
+                <div>
+                  <p>Sunday</p>
+                  <div className="flex gap-2">
+                    {schedule.sundayTimes.map((time, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-200 py-1 px-2 rounded text-sm"
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
               <button
                 className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
                 onClick={() => setEdit(true)}
@@ -385,13 +397,13 @@ const SchedulingComponent = () => {
         </div>
       )}
 
-      {!requests ? (
+      {requests?.length !== undefined && requests.length == 0 ? (
         <p>No requests yet...</p>
       ) : (
         <div className="flex flex-col gap-2">
           <p className="font-bold">My Requests</p>
           <div className="flex flex-col gap 1">
-            {requests.map((request, index) => (
+            {requests?.map((request, index) => (
               <div
                 key={index}
                 className="bg-gray-200 py-1 px-2 rounded text-sm"
@@ -419,13 +431,13 @@ const SchedulingComponent = () => {
         </div>
       )}
 
-      {!appointments ? (
+      {appointments?.length !== undefined && appointments.length == 0 ? (
         <p>No appointments yet...</p>
       ) : (
         <div className="flex flex-col gap-2">
           <p className="font-bold">My Appointments</p>
           <div className="flex flex-col gap 1">
-            {appointments.map((request, index) => (
+            {appointments?.map((request, index) => (
               <div
                 key={index}
                 className="bg-gray-200 py-1 px-2 rounded text-sm"

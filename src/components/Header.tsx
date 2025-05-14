@@ -46,7 +46,11 @@ const Header = ({
         }).toString();
         router.push(`/user-profile?${queryParams}`);
       } else {
-        setError(true);
+        // setError(true);
+            const queryParams = new URLSearchParams({
+      s: query,
+    }).toString();
+    router.push(`/search?${queryParams}`);
       }
     }
   };

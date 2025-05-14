@@ -134,7 +134,11 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
         setPopUp(false);
         router.push(`/user-profile?${queryParams}`);
       } else {
-        setError(true);
+        // setError(true);
+        const queryParams = new URLSearchParams({
+          s: q,
+        }).toString();
+        router.push(`/search?${queryParams}`);
       }
     }
   };
@@ -636,7 +640,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                 {/* <h3 className="font-[NeueMontreal-Medium] text-xl text-center text-gray-500 mt-10">
                   Schedule Content Goes Here
                 </h3> */}
-                <SchedulingComponent/>
+                <SchedulingComponent />
               </div>
             )}
           </div>

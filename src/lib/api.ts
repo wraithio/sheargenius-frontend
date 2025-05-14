@@ -20,6 +20,23 @@ export const setSchedule = async (schedule: ISchedule) => {
   const data = await res.json();
   return data;
 };
+export const editSchedule = async (schedule: ISchedule) => {
+  console.log(schedule);
+  const res = await fetch(`${BASE_URL}Schedule/EditSchedule`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(schedule),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    const message = data.message;
+    console.log(message);
+    return data.success;
+  }
+
+  const data = await res.json();
+  return data.success;
+};
 
 export const getScheduleByUsername = async (username: string) => {
   const res = await fetch(

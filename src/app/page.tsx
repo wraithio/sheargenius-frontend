@@ -76,7 +76,7 @@ export default function Home() {
 
   const goToSearch = () => {
     const queryParams = new URLSearchParams({
-      s: "allposts",
+      s: "all posts",
     }).toString();
     router.push(`/search?${queryParams}`);
   };

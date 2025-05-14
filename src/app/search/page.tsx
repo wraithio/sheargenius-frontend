@@ -75,8 +75,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     setHeading(searchParams.get("s") || "");
-    console.log(heading)
-    if(searchParams.get("s") == "allposts")
+    if(searchParams.get("s") == "all posts")
     {
       handleSearch("")
     }
@@ -108,7 +107,7 @@ const SearchResults = () => {
         </div>
         <header className="flex justify-between my-2">
           <h2 className="text-2xl">
-            Search Results for: <b>{heading == "" ? "All Posts" : heading}</b>
+            Search Results for: <b>{heading == "" ? "all posts" : heading}</b>
           </h2>
           <div className="flex flex-col">
             <div className="relative">
