@@ -54,7 +54,7 @@ const FocusPostComponent = (data: IPostItems) => {
 
   useEffect(() => {
     const fetchProfileData = async (username: string, id: number) => {
-      //retrieves posters name and picture
+      //retrieves posters picture
       setUserData(await getUserData(username));
       //retireves comment by userID
       setComments(await getCommentsbyId(id));

@@ -104,8 +104,22 @@ export interface IHaircutInterface {
   export interface ISchedule {
     id: number,
     username: string,
-    days: string[],
-    times: string[],
+    mondayTimes: string[],
+    tuesdayTimes: string[],
+    wednesdayTimes: string[],
+    thursdayTimes: string[],
+    fridayTimes: string[],
+    saturdayTimes: string[],
+    sundayTimes: string[],
+  }
+  
+  export interface IRequest {
+    id: number,
+    username:string,
+    barberName:string,
+    day:string,
+    time:string,
+    isAccepted:boolean
   }
   
   export interface IRatingInterface {

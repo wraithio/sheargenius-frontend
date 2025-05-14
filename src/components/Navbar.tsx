@@ -10,6 +10,7 @@ import {
 } from "@/utils/DataServices";
 import AddPostComponent from "./AddPostComponent";
 import { CircleUserRound, Plus, Search, X } from "lucide-react";
+import SchedulingComponent from "./SchedulingComponent";
 
 interface NavbarProps {
   setSearchActive: (active: boolean) => void;
@@ -632,9 +633,10 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
 
             {activeTab === "schedule" && (
               <div>
-                <h3 className="font-[NeueMontreal-Medium] text-xl text-center text-gray-500 mt-10">
+                {/* <h3 className="font-[NeueMontreal-Medium] text-xl text-center text-gray-500 mt-10">
                   Schedule Content Goes Here
-                </h3>
+                </h3> */}
+                <SchedulingComponent/>
               </div>
             )}
           </div>
