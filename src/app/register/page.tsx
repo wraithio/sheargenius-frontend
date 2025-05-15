@@ -262,7 +262,7 @@ const Register = () => {
 
       <div
         className="w-full lg:w-4/10 flex flex-col flex-grow lg:overflow-y-auto
-                     bg-cover bg-center bg-[url('/loginregister-img.jpg')] lg:bg-none
+                     bg-cover bg-center bg-[url('/loginregister-img.webp')] lg:bg-none
                      lg:justify-center lg:p-8 lg:pt-24"
       >
         <div

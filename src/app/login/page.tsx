@@ -69,7 +69,7 @@ const Login = () => {
 
       <div
         className="w-full lg:w-4/10 flex flex-col flex-grow
-                     bg-cover bg-center bg-[url('/loginregister-img.jpg')] lg:bg-none
+                     bg-cover bg-center bg-[url('/loginregister-img.webp')] lg:bg-none
                      lg:justify-center lg:p-8 lg:pt-24"
       >
         <div
@@ -156,7 +156,7 @@ const Login = () => {
       <div className="hidden lg:block lg:w-6/10 lg:h-screen">
         <img
           className="w-full h-full object-cover"
-          src="/loginregister-img.jpg"
+          src="/loginregister-img.webp"
           alt="Decorative background image showing barber tools or shop interior"
         />
       </div>
