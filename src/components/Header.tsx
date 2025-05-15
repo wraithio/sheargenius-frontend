@@ -21,7 +21,7 @@ const Header = ({
 }: HeaderProps) => {
   const [query, setQuery] = useState("");
   const [searchHovered, setSearchHovered] = useState(false);
-  const [error, setError] = useState(false);
+  const [error] = useState(false);
   const router = useRouter();
 
   useEffect(() => {

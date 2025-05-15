@@ -20,7 +20,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [addPost, setAddPost] = useState(false);
   const [popUp, setPopUp] = useState(false);
-  const [error, setError] = useState(false);
+  const [error] = useState(false);
   const [activeTab, setActiveTab] = useState<"explore" | "schedule" | null>(
     null
   );
@@ -114,7 +114,8 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
     if (isSidebarOpen) {
       closeSidebar();
     }
-  }, [path]);
+    console.log(1)
+  });
 
   const handleSearch = async (q: string) => {
     console.log("Search..", query);

@@ -18,7 +18,7 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
       setSchedule(await FilterScheduleByRequest(barberName));
     };
     getFilteredSchedule();
-  }, []);
+  }, [barberName]);
 
   const daysOfWeek = [
     "Monday",

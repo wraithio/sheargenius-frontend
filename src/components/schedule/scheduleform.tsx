@@ -1,8 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 
-import { ISchedule } from "@/utils/Interfaces";
-import { setSchedule } from "@/lib/api";
 import { fetchInfo } from '@/utils/DataServices';
 import { useRouter } from 'next/navigation';
 

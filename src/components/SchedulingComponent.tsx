@@ -5,7 +5,6 @@ import {
   editSchedule,
   getRequestsbyBarberName,
   getScheduleByUsername,
-  setSchedule,
 } from "@/lib/api";
 import { fetchInfo } from "@/utils/DataServices";
 import { IRequest, ISchedule } from "@/utils/Interfaces";
@@ -51,7 +50,7 @@ const SchedulingComponent = () => {
       );
     };
     fetchSchedule();
-  }, []);
+  }, [username]);
 
   const accept = async (id: number) => {
     await acceptRequest(id);
