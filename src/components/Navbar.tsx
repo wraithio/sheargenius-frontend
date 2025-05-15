@@ -43,6 +43,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   };
 
   const handleTabClick = (tab: "explore" | "schedule") => {
+    if(!checkToken() && tab === "schedule") redirect("/login");
     openSidebar(tab);
   };
 
@@ -114,8 +115,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
     if (isSidebarOpen) {
       closeSidebar();
     }
-    console.log(1)
-  });
+  },[path]);
 
   const handleSearch = async (q: string) => {
     console.log("Search..", query);
