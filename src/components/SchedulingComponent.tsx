@@ -237,12 +237,6 @@ const SchedulingComponent = () => {
                   </div>
                 </div>
               )}
-              <button
-                className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-                onClick={() => setEdit(true)}
-              >
-                {!schedule ? "Set Schedule" : "Edit Schedule"}
-              </button>
             </div>
           ) : (
             <div className="flex  flex-col gap-2">
@@ -393,6 +387,15 @@ const SchedulingComponent = () => {
               </button>
             </div>
           )}
+          {fetchInfo().accountType == "Barber" && (
+
+            <button
+            className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
+            onClick={() => setEdit(true)}
+            >
+                {!schedule ? "Set Schedule" : "Edit Schedule"}
+              </button>
+              )}
         </div>
       )}
 
