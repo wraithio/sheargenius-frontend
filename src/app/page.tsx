@@ -89,6 +89,40 @@ export default function Home() {
         <Header searchActive={searchActive} setSearchActive={setSearchActive} />
       </header>
       <main className="px-4 sm:px-6 lg:px-8">
+        <section
+          id="create-account"
+          className="mt-16 sm:mt-20 lg:mt-24 xl:mt-44"
+        >
+          <RegisterForm />
+        </section>
+        <section id="local-barbers" className="mt-16 sm:mt-20 lg:mt-24">
+          <div className="text-center mb-6 sm:mb-8 lg:mb-10">
+            <h2 className="font-[NeueMontreal-Medium] text-xl sm:text-2xl lg:text-3xl">
+              {" "}
+              Top Barbers{" "}
+            </h2>
+            <p className="font-[NeueMontreal-Regular] text-sm sm:text-base text-gray-600 mt-1">
+              Curated by the community, for the community
+            </p>
+          </div>
+          <div className="mt-10">
+            {/* <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-cols-2 md:grid-rows-2 sm:grid-cols-1 sm:grid-rows-3 gap-3">
+              <ProfileCard />
+              <ProfileCard />
+              <div className="lg:col-span-1 md:col-span-full">
+                <ProfileCard />
+              </div>
+            </div> */}
+            <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-cols-2 md:grid-rows-2 sm:grid-cols-1 sm:grid-rows-3 gap-3">
+              {barbers.map((barber, idx) => (
+                <div key={idx}>
+                  <ProfileCard {...barber} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="top-posts" className="mt-12 sm:mt-16 lg:mt-20">
           <div className="text-center mb-6 sm:mb-8 lg:mb-10">
             <h2 className="font-[NeueMontreal-Medium] text-xl sm:text-2xl lg:text-3xl">
@@ -112,39 +146,11 @@ export default function Home() {
             </button>
           </div>
         </section>
-
-        <section id="local-barbers" className="mt-16 sm:mt-20 lg:mt-24">
-          <div className="text-center mb-6 sm:mb-8 lg:mb-10">
-            <h2 className="font-[NeueMontreal-Medium] text-xl sm:text-2xl lg:text-3xl">
-              {" "}
-              Local Barbers{" "}
-            </h2>
-            <p className="font-[NeueMontreal-Regular] text-sm sm:text-base text-gray-600 mt-1">
-              Curated by the community, for the community
-            </p>
-          </div>
-          <div className="mt-10">
-            {/* <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-cols-2 md:grid-rows-2 sm:grid-cols-1 sm:grid-rows-3 gap-3">
-              <ProfileCard />
-              <ProfileCard />
-              <div className="lg:col-span-1 md:col-span-full">
-                <ProfileCard />
-              </div>
-            </div> */}
-            <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-cols-2 md:grid-rows-2 sm:grid-cols-1 sm:grid-rows-3 gap-3">
-              {barbers.map((barber, idx) => (
-                <div key={idx}>
-                  <ProfileCard {...barber} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
 
-      <section id="create-account" className="mt-16 sm:mt-20 lg:mt-24 xl:mt-44">
+      {/* <section id="create-account" className="mt-16 sm:mt-20 lg:mt-24 xl:mt-44">
         <RegisterForm />
-      </section>
+      </section> */}
 
       <section className="mt-16 sm:mt-20 lg:mt-24 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-5">
