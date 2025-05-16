@@ -12,6 +12,7 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
   const [times, setTimes] = useState<string[]>([]);
   const [desiredTime, setDesiredTime] = useState<string>("");
   const [desiredDay, setDesiredDay] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     const getFilteredSchedule = async () => {
@@ -41,25 +42,59 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
     switch (day) {
       case "Monday":
         setTimes(schedule.mondayTimes);
-        console.log(times);
+        if (schedule?.mondayTimes.length == 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
         break;
       case "Tuesday":
         setTimes(schedule.tuesdayTimes);
+        if (schedule?.tuesdayTimes.length == 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
         break;
       case "Wednesday":
         setTimes(schedule.wednesdayTimes);
+        if (schedule?.wednesdayTimes.length == 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
         break;
       case "Thursday":
         setTimes(schedule.thursdayTimes);
+        if (schedule?.thursdayTimes.length == 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
         break;
       case "Friday":
         setTimes(schedule.fridayTimes);
+        if (schedule?.fridayTimes.length == 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
         break;
       case "Saturday":
         setTimes(schedule.saturdayTimes);
+        if (schedule?.saturdayTimes.length == 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
         break;
       case "Sunday":
         setTimes(schedule.sundayTimes);
+        if (schedule?.sundayTimes.length == 0) {
+          setError(true);
+        } else {
+          setError(false);
+        }
         break;
     }
   };
@@ -74,7 +109,8 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
       isAccepted: false,
     };
     await sendRequest(payload);
-    alert("✅ Your request has been successfully sent!");
+    // alert("✅ Your request has been successfully sent!");
+    window.location.reload();
   };
 
   return (
@@ -93,6 +129,11 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
             </div>
           ))}
         </div>
+        {error && (
+          <p className="font-[NeueMontreal-Medium] text-sm">
+            No available times for this day
+          </p>
+        )}
       </div>
       {times.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -113,36 +154,34 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
             <div className="bg-slate-100 w-[90%] p-2 rounded-lg">
               <i className="text-sm">Appointment Request</i>
               <div className="flex justify-around">
-
-              <div>
-                <p>
-                  <b>Barber:</b> {barberName}
-                </p>
-                <p>
-                  <b>Client:</b> {fetchInfo().username}
-                </p>
-              </div>
-              <div>
-                <p>
-                  <b>Day:</b> {desiredDay}
-                </p>
-                <p>
-                  <b>Time:</b> {desiredTime}
-                </p>
-              </div>
+                <div>
+                  <p>
+                    <b>Barber:</b> {barberName}
+                  </p>
+                  <p>
+                    <b>Client:</b> {fetchInfo().username}
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <b>Day:</b> {desiredDay}
+                  </p>
+                  <p>
+                    <b>Time:</b> {desiredTime}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
           <div className="flex justify-center">
-
-          <button
-            className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-            onClick={handleSubmit}
-            disabled={desiredTime == "" || desiredDay == ""}
+            <button
+              className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
+              onClick={handleSubmit}
+              disabled={desiredTime == "" || desiredDay == ""}
             >
-            Submit
-          </button>
-              </div>
+              Submit
+            </button>
+          </div>
         </div>
       )}
     </div>

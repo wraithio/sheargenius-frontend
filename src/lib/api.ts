@@ -70,6 +70,25 @@ export const getRequestsbyBarberName = async (username: string) => {
   return data;
 };
 
+export const getRequestsbyUsername = async (username: string) => {
+  const res = await fetch(
+    `${BASE_URL}Schedule/FindRequestsByUsername/${username}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  if (!res.ok) {
+    const data = await res.json();
+    const message = data.message;
+    console.log(message);
+    return data.success;
+  }
+  const data = await res.json();
+  console.log(data);
+  return data;
+};
+
 export const FilterScheduleByRequest = async (username: string) => {
   const res = await fetch(
     `${BASE_URL}Schedule/FilterScheduleByRequest/${username}`,
