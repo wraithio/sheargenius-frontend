@@ -27,11 +27,9 @@ export default function GeneralKnowledge() {
             <div className="sticky top-24 self-start">
               <QuickLinks />
             </div>
-
           </div>
-          <div className="w-full max-w-4xl mx-auto flex flex-col gap-6">
-          <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
-
+          <div className="w-full max-w-4xl mx-auto flex flex-col">
+            <Card className="flex flex-col-reverse md:flex-row-reverse justify-between gap-4 p-4">
               <div>
                 <CardTitle id="clipper-crash-course">
                   <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
@@ -69,11 +67,10 @@ export default function GeneralKnowledge() {
                 className="rounded-lg w-full md:w-[160px] h-auto object-cover"
               />
             </Card>
-            <Card className="flex flex-col-reverse md:flex-row-reverse justify-between gap-4 p-4">
-
-
+            <svg height={60} id="barber-essentials"></svg>
+            <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
               <div>
-                <CardTitle id="barber-essentials">
+                <CardTitle>
                   <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
                     Barber Essentials
                   </h1>
@@ -120,8 +117,8 @@ export default function GeneralKnowledge() {
                 className="rounded-lg w-full md:w-[160px] h-auto object-cover"
               />
             </Card>
-            <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
-
+            <svg height={60} id="barber-shop-etiquette"></svg>
+            <Card className="flex flex-col-reverse md:flex-row-reverse justify-between gap-4 p-4">
               <div>
                 <CardTitle id="barber-shop-etiquette">
                   <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
@@ -157,122 +154,8 @@ export default function GeneralKnowledge() {
                 className="rounded-lg w-full md:w-[160px] h-auto object-cover"
               />
             </Card>
-            <Card className="flex flex-col-reverse md:flex-row-reverse justify-between gap-4 p-4">
-
-              <div>
-                <CardTitle id="proper-hygiene">
-                  <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
-                    Proper Hygiene
-                  </h1>
-                </CardTitle>
-                <CardDescription className="my-2">
-                  Clean Head = Clean Cut
-                </CardDescription>
-                <CardContent>
-                  <p className="text-xs">
-                    Before heading to the barbershop, practicing proper hygiene
-                    is not just courteous—it makes the haircutting process
-                    easier and more enjoyable for both you and your barber.
-                    Start by washing your hair thoroughly to remove any dirt,
-                    oil, or product buildup, as clean hair is simpler to cut and
-                    style. If you&#39;re sweating or coming from a workout, a
-                    quick shower helps ensure you&#39;re fresh and comfortable.
-                    Pay attention to your scalp health, too—if you have dandruff
-                    or irritation, addressing it beforehand can improve your
-                    overall experience. Additionally, trim excessive facial hair
-                    or clean your neckline if you expect these areas to be
-                    groomed. Arriving clean and prepared shows respect for your
-                    barber&#39;s time and equipment, maintaining a professional
-                    and pleasant environment for everyone.
-                  </p>
-                </CardContent>
-              </div>
-              <Image
-                width={160}
-                height={96}
-                src="/shower.jpg"
-                alt="shower"
-                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
-              />
-            </Card>
+            <svg height={60} id="beard-care-essentials"></svg>
             <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
-
-              <div>
-                <CardTitle id="hair-growth-essentials">
-                  <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
-                    Hair Growth Essentials
-                  </h1>
-                </CardTitle>
-                <CardDescription className="my-2">
-                  Promote healthy habits.
-                </CardDescription>
-                <CardContent>
-                  <p className="text-xs">
-                    Promoting hair growth in men involves a combination of
-                    healthy habits, proper scalp care, and effective products.
-                    Eating a balanced diet rich in vitamins like biotin, Vitamin
-                    D, and zinc can help strengthen hair from within. Staying
-                    hydrated and reducing stress through regular exercise or
-                    relaxation techniques can also support hair health. Gentle
-                    scalp massages with oils like castor or rosemary oil are
-                    believed to stimulate blood circulation and improve follicle
-                    health. Products such as sulfate-free shampoos, conditioners
-                    with keratin, and leave-in treatments with ingredients like
-                    minoxidil are effective for boosting growth and thickening
-                    hair. Avoiding harsh styling tools, excessive heat, and
-                    tight hairstyles is crucial to prevent damage. Consistency
-                    is key—adopting these habits regularly can significantly
-                    enhance hair growth over time.
-                  </p>
-                </CardContent>
-              </div>
-              <Image
-                width={160}
-                height={96}
-                src="/oil.jpg"
-                alt="hair oil"
-                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
-              />
-            </Card>
-            <Card className="flex flex-col-reverse md:flex-row-reverse justify-between gap-4 p-4">
-
-              <div>
-                <CardTitle id="why-mens-hair">
-                  <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
-                    Why Men&#39;s Hair?
-                  </h1>
-                </CardTitle>
-                <CardDescription className="my-2">
-                  Why we do what we do.
-                </CardDescription>
-                <CardContent>
-                  <p className="text-xs">
-                    The team behind this website is deeply passionate about
-                    exploring diverse styles of men&#39;s haircuts and
-                    celebrating the rich traditions of barbershop culture. We
-                    believe that hairstyling is more than just grooming—it&#39;s
-                    an art form and a way to express individuality. The team
-                    feels it&#39;s essential to educate men of all ages, as well
-                    as parents with their children, on how to choose and
-                    maintain hairstyles that suit their personalities,
-                    lifestyles, and preferences. By providing valuable insights,
-                    tips, and inspiration, ShearGenius aims to empower their
-                    audience to approach men&#39;s hair styling with confidence
-                    and creativity, fostering a greater appreciation for the
-                    craftsmanship behind every great cut.
-                  </p>
-                </CardContent>
-              </div>
-              <Image
-                width={160}
-                height={96}
-                src="/comb.jpg"
-                alt="haircut"
-                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
-              />
-            </Card>
-            <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
-
               <div>
                 <CardTitle id="beard-care-essentials">
                   <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
@@ -312,13 +195,51 @@ export default function GeneralKnowledge() {
                 height={96}
                 src="/beard.jpg"
                 alt="hair oil"
-                 className="rounded-lg w-full md:w-[160px] h-auto object-cover"
+                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
               />
             </Card>
+            <svg height={60} id="proper-hygiene"></svg>
             <Card className="flex flex-col-reverse md:flex-row-reverse justify-between gap-4 p-4">
-
               <div>
-                <CardTitle id="haircuts-for-face-shapes">
+                <CardTitle>
+                  <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
+                    Proper Hygiene
+                  </h1>
+                </CardTitle>
+                <CardDescription className="my-2">
+                  Clean Head = Clean Cut
+                </CardDescription>
+                <CardContent>
+                  <p className="text-xs">
+                    Before heading to the barbershop, practicing proper hygiene
+                    is not just courteous—it makes the haircutting process
+                    easier and more enjoyable for both you and your barber.
+                    Start by washing your hair thoroughly to remove any dirt,
+                    oil, or product buildup, as clean hair is simpler to cut and
+                    style. If you&#39;re sweating or coming from a workout, a
+                    quick shower helps ensure you&#39;re fresh and comfortable.
+                    Pay attention to your scalp health, too—if you have dandruff
+                    or irritation, addressing it beforehand can improve your
+                    overall experience. Additionally, trim excessive facial hair
+                    or clean your neckline if you expect these areas to be
+                    groomed. Arriving clean and prepared shows respect for your
+                    barber&#39;s time and equipment, maintaining a professional
+                    and pleasant environment for everyone.
+                  </p>
+                </CardContent>
+              </div>
+              <Image
+                width={160}
+                height={96}
+                src="/shower.jpg"
+                alt="shower"
+                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
+              />
+            </Card>
+            <svg height={60} id="haircuts-for-face-shapes"></svg>
+            <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
+              <div>
+                <CardTitle>
                   <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
                     Haircuts for Different Face Shapes
                   </h1>
@@ -346,14 +267,89 @@ export default function GeneralKnowledge() {
                 height={96}
                 src="/faceshape.jpg"
                 alt="haircuts"
-               className="rounded-lg w-full md:w-[160px] h-auto object-cover"
+                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
               />
             </Card>
-
-            <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
-
+            <svg height={60} id="hair-growth-essentials"></svg>
+            <Card className="flex flex-col-reverse md:flex-row-reverse justify-between gap-4 p-4">
               <div>
-                <CardTitle id="credits">
+                <CardTitle>
+                  <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
+                    Hair Growth Essentials
+                  </h1>
+                </CardTitle>
+                <CardDescription className="my-2">
+                  Promote healthy habits.
+                </CardDescription>
+                <CardContent>
+                  <p className="text-xs">
+                    Promoting hair growth in men involves a combination of
+                    healthy habits, proper scalp care, and effective products.
+                    Eating a balanced diet rich in vitamins like biotin, Vitamin
+                    D, and zinc can help strengthen hair from within. Staying
+                    hydrated and reducing stress through regular exercise or
+                    relaxation techniques can also support hair health. Gentle
+                    scalp massages with oils like castor or rosemary oil are
+                    believed to stimulate blood circulation and improve follicle
+                    health. Products such as sulfate-free shampoos, conditioners
+                    with keratin, and leave-in treatments with ingredients like
+                    minoxidil are effective for boosting growth and thickening
+                    hair. Avoiding harsh styling tools, excessive heat, and
+                    tight hairstyles is crucial to prevent damage. Consistency
+                    is key—adopting these habits regularly can significantly
+                    enhance hair growth over time.
+                  </p>
+                </CardContent>
+              </div>
+              <Image
+                width={160}
+                height={96}
+                src="/oil.jpg"
+                alt="hair oil"
+                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
+              />
+            </Card>
+            <svg height={60} id="why-mens-hair"></svg>
+            <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
+              <div>
+                <CardTitle>
+                  <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
+                    Why Men&#39;s Hair?
+                  </h1>
+                </CardTitle>
+                <CardDescription className="my-2">
+                  Why we do what we do.
+                </CardDescription>
+                <CardContent>
+                  <p className="text-xs">
+                    The team behind this website is deeply passionate about
+                    exploring diverse styles of men&#39;s haircuts and
+                    celebrating the rich traditions of barbershop culture. We
+                    believe that hairstyling is more than just grooming—it&#39;s
+                    an art form and a way to express individuality. The team
+                    feels it&#39;s essential to educate men of all ages, as well
+                    as parents with their children, on how to choose and
+                    maintain hairstyles that suit their personalities,
+                    lifestyles, and preferences. By providing valuable insights,
+                    tips, and inspiration, ShearGenius aims to empower their
+                    audience to approach men&#39;s hair styling with confidence
+                    and creativity, fostering a greater appreciation for the
+                    craftsmanship behind every great cut.
+                  </p>
+                </CardContent>
+              </div>
+              <Image
+                width={160}
+                height={96}
+                src="/comb.jpg"
+                alt="haircut"
+                className="rounded-lg w-full md:w-[160px] h-auto object-cover"
+              />
+            </Card>
+            <svg height={60} id="credits"></svg>
+            <Card className="flex flex-col md:flex-row justify-between gap-4 p-4">
+              <div>
+                <CardTitle>
                   <h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-5xl">
                     Credits/Contact
                   </h1>
@@ -440,4 +436,3 @@ export default function GeneralKnowledge() {
     </SidebarProvider>
   );
 }
-

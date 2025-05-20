@@ -121,17 +121,17 @@ const SchedulingComponent = () => {
 
   const accept = async (id: number) => {
     await acceptRequest(id);
-    // fetchSchedule();
+    fetchSchedule();
   };
 
   const deny = async (id: number) => {
     await declineRequest(id);
-    // fetchSchedule();
+    fetchSchedule();
   };
 
   const complete = async (id: number) => {
     await deleteRequest(id);
-    // fetchSchedule();
+    fetchSchedule();
   };
 
   const toggleMondayTime = (time: string) => {

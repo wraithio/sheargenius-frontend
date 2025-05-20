@@ -43,7 +43,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   };
 
   const handleTabClick = (tab: "explore" | "schedule") => {
-    if(!checkToken() && tab === "schedule") redirect("/login");
+    if (!checkToken() && tab === "schedule") redirect("/login");
     openSidebar(tab);
   };
 
@@ -115,7 +115,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
     if (isSidebarOpen) {
       closeSidebar();
     }
-  },[path]);
+  }, [path]);
 
   const handleSearch = async (q: string) => {
     console.log("Search..", query);
@@ -263,10 +263,13 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
       <div className="h-16"></div>
 
       {addPost && (
-         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-           <div className="w-[90%] max-w-xl md:w-[70%] lg:w-[50%] bg-white rounded-lg relative">
-             <button className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors" onClick={() => setAddPost(false)} aria-label="Close Add Post Modal">
-
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+          <div className="w-[90%] max-w-xl md:w-[70%] lg:w-[50%] bg-white rounded-lg relative">
+            <button
+              className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors"
+              onClick={() => setAddPost(false)}
+              aria-label="Close Add Post Modal"
+            >
               <X />
             </button>
             <AddPostComponent />
@@ -321,7 +324,15 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                     <Search size={22} />
                   </button>
                   <button className="cursor-pointer" onClick={profileClick}>
-                    <CircleUserRound size={22} />
+                    {checkToken() ? (
+                      <img
+                        src={fetchInfo().pfp}
+                        alt="profile pic"
+                        className="rounded-full aspect-square w-22"
+                      />
+                    ) : (
+                      <CircleUserRound size={22} />
+                    )}
                   </button>
                 </div>
               </div>
@@ -565,56 +576,63 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                         Clippers Crash Course
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#barber-essentials"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Barber Essentials
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#barber-shop-etiquette"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Barber Shop Etiquette
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#beard-care-essentials"
+                        onClick={closeSidebar}
+                        className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
+                      >
+                        Beard Care
+                      </Link>
+                      <Link
+                        href="/generalknowledge#proper-hygiene"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Proper Hygiene
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#hair-growth-essentials"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Hair Growth Essentials
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#why-mens-hair"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         More About ShearGenius
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#why-mens-hair"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Why Men&#39;s Hair?
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#credits"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Credits
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#credits"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >

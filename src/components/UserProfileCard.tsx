@@ -506,6 +506,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                 src={data.pfp != "" ? data.pfp : "/nofileselected.png"}
                 alt={`${data.username} profile pic`}
                 className="sm:w-28 sm:h-28 h-16 w-16 rounded-[50%]"
+                priority
               />
               <div className="flex flex-col sm:gap-1">
                 <h4 className="text-slate-500 sm:text-sm text-xs">
@@ -537,7 +538,9 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                     <h3
                     // onClick={() => setOpenFollowers(true)}
                     >
-                      {data.followers.length} Followers
+                      {data.followers.length == 1
+                        ? `${data.followers.length} Follower`
+                        : `${data.followers.length} Followers`}
                     </h3>
                     <div
                       className="absolute top-0 bottom-0 w-full h-full cursor-pointer "

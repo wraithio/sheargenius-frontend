@@ -1,10 +1,12 @@
 'use client'
 import Link from "next/link";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 const Footer = () => {
   const [email,setEmail] = useState<string>("")
   const router = useRouter();
+  const path = usePathname();
+  const isHomePage = path === "/";
   const openNavbarCategory = (category: string) => {
     window.dispatchEvent(
       new CustomEvent("openNavbarCategory", { detail: { category } })
@@ -13,8 +15,11 @@ const Footer = () => {
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
-    if (section) {
+    if (section && isHomePage) {
       section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    else {
+      router.push(`/generalknowledge#${sectionId}`);
     }
   };
 
@@ -54,30 +59,30 @@ const Footer = () => {
                 LOCAL BARBERS
               </a>
               <a
-                onClick={(e) => { e.preventDefault(); scrollToSection("create-account"); }}
+                // onClick={(e) => { e.preventDefault(); scrollToSection("create-account"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#create-account"
+                href="/register"
               >
                 CREATE ACCOUNT
               </a>
               <a
                 onClick={(e) => { e.preventDefault(); scrollToSection("barber-essentials"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#barber-essentials"
+                href="/generalknowledge#barber-essentials"
               >
                 BARBER ESSENTIALS
               </a>
               <a
                 onClick={(e) => { e.preventDefault(); scrollToSection("barber-etiquette"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#barber-etiquette"
+                href="/generalknowledge#barber-shop-etiquette"
               >
                 BARBER SHOP ETIQUETTE
               </a>
               <a
-                onClick={(e) => { e.preventDefault(); scrollToSection("clippers-crash-course"); }}
+                onClick= {(e) => { e.preventDefault(); scrollToSection("clippers-crash-course"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#clippers-crash-course"
+                href="/generalknowledge"
               >
                 CLIPPERS CRASH COURSE
               </a>
