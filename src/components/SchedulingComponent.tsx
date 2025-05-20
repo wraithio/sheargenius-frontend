@@ -117,7 +117,7 @@ const SchedulingComponent = () => {
 
   useEffect(() => {
     fetchSchedule();
-  }, [fetchSchedule, username, accountType]);
+  }, [username, accountType]);
 
   const accept = async (id: number) => {
     await acceptRequest(id);

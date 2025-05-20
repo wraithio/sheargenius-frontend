@@ -78,38 +78,38 @@ const AddPostComponent = () => {
     formData.append("file", file);
     formData.append("fileName", uniqueFileName);
 
-<!-- <<<<<<< frames/login-createacc
-    try {
-      const uploadedUrl = await blobUpload(formData);
-      if (uploadedUrl) {
-        const currentUserInfo = fetchInfo();
-        if (!currentUserInfo || !currentUserInfo.id || !currentUserInfo.username) {
-            alert("Could not fetch user information. Please try logging in again.");
-            return;
-        }
-        const newPost: IPostItems = {
-          id: 0,
-          userId: currentUserInfo.id,
-          publisherName: currentUserInfo.username,
-          date: getFormattedDate(),
-          caption: caption,
-          image: uploadedUrl,
-          likes: [],
-          category: style,
-          isPublished: true,
-          isDeleted: false,
-          comments: [],
-        };
-        await addPostItem(newPost, getToken());
-        alert("Post created successfully!");
-        window.location.reload();
-      } else {
-        alert("Image upload failed. Please try again.");
-      }
-    } catch (error) {
-        console.error("Error creating post:", error);
-        alert("An error occurred while creating the post. Please try again.");
-======= -->
+// <!-- <<<<<<< frames/login-createacc
+//     try {
+//       const uploadedUrl = await blobUpload(formData);
+//       if (uploadedUrl) {
+//         const currentUserInfo = fetchInfo();
+//         if (!currentUserInfo || !currentUserInfo.id || !currentUserInfo.username) {
+//             alert("Could not fetch user information. Please try logging in again.");
+//             return;
+//         }
+//         const newPost: IPostItems = {
+//           id: 0,
+//           userId: currentUserInfo.id,
+//           publisherName: currentUserInfo.username,
+//           date: getFormattedDate(),
+//           caption: caption,
+//           image: uploadedUrl,
+//           likes: [],
+//           category: style,
+//           isPublished: true,
+//           isDeleted: false,
+//           comments: [],
+//         };
+//         await addPostItem(newPost, getToken());
+//         alert("Post created successfully!");
+//         window.location.reload();
+//       } else {
+//         alert("Image upload failed. Please try again.");
+//       }
+//     } catch (error) {
+//         console.error("Error creating post:", error);
+//         alert("An error occurred while creating the post. Please try again.");
+// ======= -->
     //Finally passing that formData into our Backend
     const uploadedUrl = await blobUpload(formData);
 
@@ -138,19 +138,19 @@ const AddPostComponent = () => {
   };
 
   //normal file reader for image preview NOT added to DB
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const reader = new FileReader();
-    const file = e.target.files?.[0];
+  // const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const reader = new FileReader();
+  //   const file = e.target.files?.[0];
 
-    if (file) {
-      //when this files if turned into a string this on load function will run
-      reader.onload = () => {
-        setImagePreview(String(reader.result)); //once the file is read we will store the result into our setter function
-      };
-      reader.readAsDataURL(file); //this converts the file into a bas64-encoded string
+  //   if (file) {
+  //     //when this files if turned into a string this on load function will run
+  //     reader.onload = () => {
+  //       setImagePreview(String(reader.result)); //once the file is read we will store the result into our setter function
+  //     };
+  //     reader.readAsDataURL(file); //this converts the file into a bas64-encoded string
 
-    }
-  };
+  //   }
+  // };
 
   return (
     <div className="px-4 sm:px-6 md:px-8 py-6 w-full">
@@ -264,4 +264,4 @@ const AddPostComponent = () => {
   );
 };
 
-export default AddPostComponent;
+export default AddPostComponent
