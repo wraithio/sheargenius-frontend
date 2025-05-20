@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         hostname: 'aaronsblob123.blob.core.windows.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'sheargeniusblob.blob.core.windows.net',
+        pathname: '/**',
+      },
     ],
   },
 };

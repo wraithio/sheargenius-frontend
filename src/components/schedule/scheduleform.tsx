@@ -1,8 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 
-import { ISchedule } from "@/utils/Interfaces";
-import { setSchedule } from "@/lib/api";
 import { fetchInfo } from '@/utils/DataServices';
 import { useRouter } from 'next/navigation';
 
@@ -37,15 +35,15 @@ const ScheduleForm = () => {
   };
 
   const handleSubmit = async () => {
-    const payload: ISchedule = {
-      id: 0,
-      username: fetchInfo().username,
-      days: selectedDays,
-      times: selectedTimes,
-    };
+    // const payload: ISchedule = {
+    //   id: 0,
+    //   username: fetchInfo().username,
+    //   days: selectedDays,
+    //   times: selectedTimes,
+    // };
 
     try {
-      await setSchedule(payload);
+      // await setSchedule(payload);
       alert("✅ Your schedule has been successfully saved!");
       const queryParams = new URLSearchParams({
         u: fetchInfo().username,

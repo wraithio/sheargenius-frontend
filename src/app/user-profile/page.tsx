@@ -33,7 +33,7 @@ const UserProfile = () => {
     city: "",
     state: "",
     zip: "",
-    pfp: "./nofileselected.png",
+    pfp: "/nofileselected.png",
     isDeleted: false,
   });
   const searchParams = useSearchParams()

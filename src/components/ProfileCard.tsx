@@ -5,7 +5,7 @@ import {
 import { IPostItems, IUserProfileInfo } from "@/utils/Interfaces";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Star, StarHalf } from "lucide-react";
 
 const ProfileCard = (data: IUserProfileInfo) => {
@@ -77,7 +77,7 @@ const ProfileCard = (data: IUserProfileInfo) => {
 
   const gotoProfile = (username: string) => {
     if (!checkToken()) {
-      router.push("/login");
+      redirect("/login");
     } else {
       const queryParams = new URLSearchParams({
         u: username,
@@ -112,22 +112,25 @@ const ProfileCard = (data: IUserProfileInfo) => {
         </div>
       </div>
       <hr className="my-10" />
-      <div className="flex flex-row gap-1">
-      {picSRCs.length > 0 ?
-        picSRCs.map((pic: string, idx: number) => (
+      <div className="flex flex-row justify-between gap-1">
+      {picSRCs.length > 0 ? (
+        <div className="grid grid-cols-3">
+
+       
+        {picSRCs.map((pic: string, idx: number) => (
           (
-            <div key={idx} className="bg-white rounded-sm w-[130px] h-[130px]">
+            <div key={idx} className="bg-white rounded-sm h-[150px] aspect-square">
               <Image
                 src={pic || '/placeholder-image.png'}
                 alt={`Preview ${idx + 1}`}
-                width={130}
-                height={130}
+                width={100}
+                height={100}
                 className="object-cover w-full h-full rounded-sm"
               />
-          </div>)
-        )) :
+          </div>) 
+        ))}</div>) :
           (
-            <div className="flex justify-center items-center bg-gray-200 rounded-sm w-full h-[130px] mr-1">
+            <div className="flex justify-center items-center bg-gray-200 rounded-sm w-full h-[150px] mr-1">
               <h3 className="text-gray-500">No posts yet...</h3>
             </div>
           )

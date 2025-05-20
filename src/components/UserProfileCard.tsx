@@ -2,7 +2,7 @@ import { blobUpload, editAccount } from "@/utils/DataServices";
 import { IUserProfileInfo } from "@/utils/Interfaces";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const UserProfileCard = (info: IUserProfileInfo) => {
@@ -25,11 +25,11 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   const [bio, setBio] = useState<string>(info.bio);
   const [file, setFile] = useState<File | null>(null);
   // const [rating, setRating] = useState<string>("");
-  // const [data] = useState<IUserProfileInfo>({...info});
+  const [data, setData] = useState<IUserProfileInfo>({ ...info });
   const router = useRouter();
 
   const setRatingNum = () => {
-    const division_result = info.rating / info.ratingCount.length;
+    const division_result = data.rating / data.ratingCount.length;
     return String(Math.round(division_result * 10) / 10);
   };
 
@@ -59,11 +59,14 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     // reset input fields
   };
 
-  const saveEdits = async () => {
+  const handlePicSubmit = async () => {
+    //Prevent default so our app doesn't reload on submitting
+    // e.preventDefault();
+
     //Check if the file is inside of our state Variable
     if (!file) {
-      alert("Please select file to upload.");
-      return;
+      // alert('Please select a file to upload.');
+      return null;
     }
     //A Unique file name so data isn't being overwritten in our blob
     const uniqueFileName = `${Date.now()}-${file.name}`;
@@ -77,50 +80,74 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     const uploadedUrl = await blobUpload(formData);
 
     if (uploadedUrl) {
-      const newEditedUser: IUserProfileInfo = {
-        id: 0,
-        username: info.username,
-        salt: info.salt,
-        hash: info.hash,
-        date: info.date,
-        accountType: accountType,
-        name: name,
-        rating: info.rating,
-        ratingCount: info.ratingCount,
-        followers: info.followers,
-        following: info.following,
-        likes: info.likes,
-        securityQuestion: info.securityQuestion,
-        securityAnswer: info.securityAnswer,
-        bio: bio,
-        email: email,
-        shopName: shopName,
-        address: address,
-        city: city,
-        state: state,
-        zip: zip,
-        pfp: uploadedUrl,
-        isDeleted: info.isDeleted,
-      };
-      const result = await editAccount(newEditedUser);
-      console.log(newEditedUser);
-      if (result) {
-        console.log("Editing Success");
-        sessionStorage.setItem("AccountInfo", JSON.stringify(newEditedUser));
-        // router.push("/user-profile");
-        // setData(newEditedUser);
-        cancelEdit();
-        window.location.reload();
-      } else {
-        alert("Editing Failed");
-      }
+      console.log("File uploaded at:", uploadedUrl);
+      // You can now store this URL in your component state or send it to your backend
+    }
+    return uploadedUrl;
+  };
+
+  const saveEdits = async () => {
+    // //Check if the file is inside of our state Variable
+    // if (!file) {
+    //   alert("Please select file to upload.");
+    //   return;
+    // }
+    // //A Unique file name so data isn't being overwritten in our blob
+    // const uniqueFileName = `${Date.now()}-${file.name}`;
+
+    // //New Form Data Object to append our file and file name
+    // const formData = new FormData();
+    // formData.append("file", file);
+    // formData.append("fileName", uniqueFileName);
+
+    // //Finally passing that formData into our Backend
+    // const uploadedUrl = await blobUpload(formData);
+
+    // if (uploadedUrl) {
+    const newEditedUser: IUserProfileInfo = {
+      id: 0,
+      username: data.username,
+      salt: data.salt,
+      hash: data.hash,
+      date: data.date,
+      accountType: accountType,
+      name: name,
+      rating: data.rating,
+      ratingCount: data.ratingCount,
+      followers: data.followers,
+      following: data.following,
+      likes: data.likes,
+      securityQuestion: data.securityQuestion,
+      securityAnswer: data.securityAnswer,
+      bio: bio,
+      email: email,
+      shopName: shopName,
+      address: address,
+      city: city,
+      state: state,
+      zip: zip,
+      pfp: (await handlePicSubmit()) || data.pfp,
+      isDeleted: data.isDeleted,
+    };
+
+    const result = await editAccount(newEditedUser);
+    console.log(newEditedUser);
+    if (result) {
+      console.log("Editing Success");
+      sessionStorage.setItem("AccountInfo", JSON.stringify(newEditedUser));
+      router.push("/user-profile");
+      cancelEdit();
+      setData(newEditedUser);
+      // window.location.reload();
+    } else {
+      alert("Editing Failed");
     }
   };
 
   const logout = () => {
     sessionStorage.removeItem("AccountInfo");
     localStorage.removeItem("token");
-    router.push("/login");
+    redirect("/login");
   };
 
   const deleteAccount = async (model: IUserProfileInfo) => {
@@ -129,7 +156,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     if (result) {
       sessionStorage.removeItem("AccountInfo");
       localStorage.removeItem("token");
-      router.push("/login");
+      redirect("/login");
     } else {
       alert("deletion failed");
     }
@@ -163,20 +190,20 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     router.push(`/user-profile?${queryParams}`);
   };
 
-  const closeMenus = (b:boolean) => {
-    setOpenFollowers(b)
-    setOpenFollowing(b)
-  }
+  const closeMenus = (b: boolean) => {
+    setOpenFollowers(b);
+    setOpenFollowing(b);
+  };
 
   const setFollowers = () => {
-    setOpenFollowers(true)
-    setOpenFollowing(false)
-  }
+    setOpenFollowers(true);
+    setOpenFollowing(false);
+  };
 
   const setFollowing = () => {
-    setOpenFollowers(false)
-    setOpenFollowing(true)
-  }
+    setOpenFollowers(false);
+    setOpenFollowing(true);
+  };
 
   const states = [
     "Alabama",
@@ -234,7 +261,9 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   return (
     <section
       className="font-[NeueMontreal-Medium]"
-      onClick={openFollowers || openFollowing ? () => closeMenus(false) : undefined}
+      onClick={
+        openFollowers || openFollowing ? () => closeMenus(false) : undefined
+      }
     >
       {edit ? (
         <div className="flex flex-col gap-1 bg-[#F5F5F5] rounded-b-sm p-5">
@@ -250,10 +279,10 @@ const UserProfileCard = (info: IUserProfileInfo) => {
           </div>
           <div className="flex relative justify-center">
             <Image
-              width={100}
-              height={100}
-              src={pfp == pfpPreview ? info.pfp : pfpPreview}
-              alt={`${info.username} profile pic`}
+              width={300}
+              height={300}
+              src={pfp == pfpPreview ? data.pfp : pfpPreview}
+              alt={`${data.username} profile pic`}
               className="w-28 h-28 rounded-[50%]"
             />
             <label
@@ -286,7 +315,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                   className="bg-[#f0ebeb] p-2 rounded-sm"
                   type="text"
                   placeholder="Username"
-                  value={info.username}
+                  value={data.username}
                   disabled
                 />
               </div>
@@ -369,19 +398,19 @@ const UserProfileCard = (info: IUserProfileInfo) => {
             <div className="flex flex-col gap-1">
               <p className="font-[NeueMontreal-Medium] text-sm">
                 {" "}
-                Bio - 150 max characters{" "}
+                Bio - 300 max characters{" "}
               </p>
 
               <textarea
                 className="bg-white p-2 rounded-sm h-full resize-none"
                 placeholder="Bio Here..."
                 value={bio}
-                maxLength={150}
+                maxLength={300}
                 onChange={(e) => setBio(e.target.value)}
               ></textarea>
             </div>
             <div className="flex flex-col">
-              {info.accountType == "Barber" || accountType == "Barber" ? (
+              {data.accountType == "Barber" || accountType == "Barber" ? (
                 <div className="flex flex-col gap-1">
                   <p className="font-[NeueMontreal-Medium] text-sm pb-1">
                     {" "}
@@ -471,28 +500,30 @@ const UserProfileCard = (info: IUserProfileInfo) => {
           {/*div when edit is not selected*/}
           <div className="w-[60%] sm:w-[70%] flex flex-col sm:gap-2 gap-5">
             <div className="flex sm:gap-7 gap-3 h-[125px]">
-              <img
-                src={info.pfp != "" ? info.pfp : "/nofileselected.png"}
-                alt={`${info.username} profile pic`}
+              <Image
+                width={300}
+                height={300}
+                src={data.pfp != "" ? data.pfp : "/nofileselected.png"}
+                alt={`${data.username} profile pic`}
                 className="sm:w-28 sm:h-28 h-16 w-16 rounded-[50%]"
               />
               <div className="flex flex-col sm:gap-1">
                 <h4 className="text-slate-500 sm:text-sm text-xs">
-                  Joined: {info.date}
+                  Joined: {data.date}
                 </h4>
                 <div className="flex gap-3 place-items-center">
-                  <h2 className="sm:text-3xl text-xl h-fit">{info.username}</h2>
+                  <h2 className="sm:text-3xl text-xl h-fit">{data.username}</h2>
                   <h3 className="sm:text-base text-xs text-slate-400">
-                    {info.accountType}
+                    {data.accountType}
                   </h3>
                   <div
                     className={
-                      info.accountType == "Barber"
+                      data.accountType == "Barber"
                         ? "flex gap-1 place-items-center"
                         : "hidden"
                     }
                   >
-                    <p>{info.ratingCount.length != 0 ? setRatingNum() : "0"}</p>
+                    <p>{data.ratingCount.length != 0 ? setRatingNum() : "0"}</p>
                     <img
                       className="w-[15px] h-[15px] hover:drop-shadow-xl"
                       src="./icons/star.png"
@@ -500,18 +531,21 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                     />
                   </div>
                 </div>
-                <h2>{info.name}</h2>
+                <h2>{data.name}</h2>
                 <div className="sm:text-base text-xs flex sm:gap-12 gap-2">
                   <div className="relative">
                     <h3
                     // onClick={() => setOpenFollowers(true)}
                     >
-                      {info.followers.length} Followers
+                      {data.followers.length} Followers
                     </h3>
-                    <div className="absolute top-0 bottom-0 w-full h-full cursor-pointer " onClick={() => setFollowers()}></div>
-                    {openFollowers && info.followers.length !== 0 && (
+                    <div
+                      className="absolute top-0 bottom-0 w-full h-full cursor-pointer "
+                      onClick={() => setFollowers()}
+                    ></div>
+                    {openFollowers && data.followers.length !== 0 && (
                       <div className="absolute p-2 rounded-md border-1 bg-white w-60">
-                        {info.followers.map((user, index) => (
+                        {data.followers.map((user, index) => (
                           <div key={index} className="flex justify-between">
                             <h3 className="text-xl">{user}</h3>
                             <button
@@ -525,16 +559,16 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="relative">
-                    <h3
-                    >
-                      {info.following.length} Following
-                    </h3>
-                    <div className="absolute top-0 bottom-0 w-full h-full cursor-pointer " onClick={() => setFollowing()}></div>
-                    {openFollowing && info.following.length !== 0 && (
+                    <h3>{data.following.length} Following</h3>
+                    <div
+                      className="absolute top-0 bottom-0 w-full h-full cursor-pointer "
+                      onClick={() => setFollowing()}
+                    ></div>
+                    {openFollowing && data.following.length !== 0 && (
                       <div className="absolute p-2 rounded-md border-1 bg-white w-60">
-                        {info.following.map((user, index) => (
+                        {data.following.map((user, index) => (
                           <div key={index} className="flex justify-between">
                             <h3 className="text-xl">{user}</h3>
                             <button
@@ -555,7 +589,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
               <h3>Bio</h3>
               <textarea
                 className="h-full text-sm cursor-default resize-none"
-                value={info.bio}
+                value={data.bio}
                 readOnly
                 disabled
               ></textarea>
@@ -574,7 +608,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
               </button>
               {isDropDownOpen && (
                 <div
-                  className={`rounded-md border-gray-300 bg-white p-2 absolute top-[175px] w-[28%] shadow-md transition-all duration-700 flex flex-col gap-2 ${
+                  className={`rounded-md border-gray-300 bg-white p-2 absolute top-[220px] w-[28%] shadow-md transition-all duration-700 flex flex-col gap-2 ${
                     isDropDownOpen
                       ? "opacity-100 visible"
                       : "opacity-0 invisible"
@@ -610,7 +644,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                         <div className="flex gap-3 justify-between">
                           <button
                             className="bg-red-600 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-                            onClick={() => deleteAccount(info)}
+                            onClick={() => deleteAccount(data)}
                           >
                             Yes, delete account
                           </button>
@@ -626,27 +660,27 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                   )}
                 </div>
               )}
-              <Link href="/schedule">
+              {/* <Link href="/schedule">
                 <button className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75">
                   My Schedule
                 </button>
-              </Link>
+              </Link> */}
             </div>
             <div
               className={
-                info.accountType == "Barber"
+                data.accountType == "Barber"
                   ? "flex flex-col bg-white p-2 rounded-sm w-full h-[150px]"
                   : "hidden"
               }
             >
               <h3>Location</h3>
-              <h2 className="text-lg">{info.shopName}</h2>
-              <h2>{info.address}</h2>
+              <h2 className="text-lg">{data.shopName}</h2>
+              <h2>{data.address}</h2>
               <div className="flex gap-1">
-                <h2>{info.city},</h2>
-                <h2>{info.state}</h2>
+                <h2>{data.city},</h2>
+                <h2>{data.state}</h2>
               </div>
-              <h2>{info.zip}</h2>
+              <h2>{data.zip}</h2>
             </div>
           </div>
         </div>

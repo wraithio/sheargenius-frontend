@@ -8,7 +8,7 @@ import {
 } from "@/utils/DataServices";
 import { INewUser, IToken } from "@/utils/Interfaces";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Register = () => {
@@ -95,10 +95,10 @@ const Register = () => {
     console.log(getFormattedDate());
     const newEditedUser: INewUser = {
       id: 0,
-      username: username.toLowerCase(),
-      password: password,
+      username: username.toLowerCase().trim(),
+      password: password.trim(),
       accountType: selectedRole,
-      name: name,
+      name: name.trim(),
       date: getFormattedDate(),
       rating: 0,
       ratingCount: [],
@@ -106,14 +106,14 @@ const Register = () => {
       following: [],
       likes: [],
       securityQuestion: securityQuestion,
-      securityAnswer: securityAnswer.toLowerCase(),
+      securityAnswer: securityAnswer.toLowerCase().trim(),
       bio: Number(exp) > 0 ? `${exp} year(s) of experience.` : "",
       email: email,
-      shopName: barbershopName,
-      address: address,
-      city: city,
-      state: state,
-      zip: zip,
+      shopName: barbershopName.trim(),
+      address: address.trim(),
+      city: city.trim(),
+      state: state.trim(),
+      zip: zip.trim(),
       pfp: "/icons/user-white.png",
       isDeleted: false,
     };
@@ -138,8 +138,7 @@ const Register = () => {
         alert(
           "Account created, but automatic login failed. Please log in manually."
         );
-        router.push("/login");
-        return;
+        redirect("/login");
       }
 
       if (token) {
@@ -158,7 +157,7 @@ const Register = () => {
               );
               localStorage.removeItem("Token");
               sessionStorage.removeItem("AccountInfo");
-              router.push("/login");
+              redirect("/login");
             }
           } catch (err) {
             console.error(
@@ -173,7 +172,7 @@ const Register = () => {
       } else {
         console.log("Automatic login was unsuccessful after registration.");
         alert("Account created successfully! Please log in.");
-        router.push("/login");
+        redirect("/login");
       }
     } else {
       alert("Username already exists or another error occurred.");
@@ -263,7 +262,7 @@ const Register = () => {
 
       <div
         className="w-full lg:w-4/10 flex flex-col flex-grow lg:overflow-y-auto
-                     bg-cover bg-center bg-[url('/loginregister-img.jpg')] lg:bg-none
+                     bg-cover bg-center bg-[url('/loginregister-img.webp')] lg:bg-none
                      lg:justify-center lg:p-8 lg:pt-24"
       >
         <div
@@ -562,7 +561,7 @@ const Register = () => {
       <div className="hidden lg:block lg:w-6/10 lg:h-screen">
         <img
           className="w-full h-full object-cover"
-          src="/loginregister-img.jpg"
+          src="/loginregister-img.webp"
           alt="Decorative background image showing barber tools or shop interior"
         />
       </div>

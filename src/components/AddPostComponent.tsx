@@ -40,6 +40,7 @@ const AddPostComponent = () => {
         console.error("Failed to fetch haircut titles:", error);
       }
     };
+
     fetchCategoryTitles();
   }, []);
 
@@ -61,6 +62,8 @@ const AddPostComponent = () => {
   };
 
   const handleSubmit = async () => {
+    //Check if the file is inside of our state Variable
+    console.log(file);
     if (!file) {
       alert("Please select an image to upload.");
       return;
@@ -75,6 +78,7 @@ const AddPostComponent = () => {
     formData.append("file", file);
     formData.append("fileName", uniqueFileName);
 
+<!-- <<<<<<< frames/login-createacc
     try {
       const uploadedUrl = await blobUpload(formData);
       if (uploadedUrl) {
@@ -105,6 +109,46 @@ const AddPostComponent = () => {
     } catch (error) {
         console.error("Error creating post:", error);
         alert("An error occurred while creating the post. Please try again.");
+======= -->
+    //Finally passing that formData into our Backend
+    const uploadedUrl = await blobUpload(formData);
+
+    if (uploadedUrl) {
+      const newPost: IPostItems = {
+        id: 0,
+        userId: fetchInfo().id,
+        publisherName: fetchInfo().username,
+        date: getFormattedDate(),
+        caption: caption,
+        image: uploadedUrl,
+        likes: [],
+        category: style,
+        isPublished: true,
+        isDeleted: false,
+        comments: [],
+      };
+      console.log(newPost);
+      await addPostItem(newPost, getToken());
+      const queryParams = new URLSearchParams({
+        u: fetchInfo().username,
+      }).toString();
+      router.push(`/search?${queryParams}`);
+      window.location.reload();
+    }
+  };
+
+  //normal file reader for image preview NOT added to DB
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+    const file = e.target.files?.[0];
+
+    if (file) {
+      //when this files if turned into a string this on load function will run
+      reader.onload = () => {
+        setImagePreview(String(reader.result)); //once the file is read we will store the result into our setter function
+      };
+      reader.readAsDataURL(file); //this converts the file into a bas64-encoded string
+
     }
   };
 
@@ -120,6 +164,7 @@ const AddPostComponent = () => {
               Image
             </label>
             <div className="aspect-square w-full bg-gray-100 rounded-md overflow-hidden border border-gray-300 flex items-center justify-center">
+
               <img
                 src={imagePreview}
                 alt="New post preview"
@@ -127,8 +172,7 @@ const AddPostComponent = () => {
               />
             </div>
           </div>
-
-          <div className="w-full md:w-3/5 flex flex-col gap-1.5">
+         <div className="w-full md:w-3/5 flex flex-col gap-1.5">
             <div className="flex justify-between items-center">
               <label htmlFor="postCaption" className="font-[NeueMontreal-Medium] text-sm">
                 Caption

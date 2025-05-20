@@ -10,7 +10,7 @@ import {
 } from "@/utils/DataServices";
 import { ICommentInfo, IPostItems, IUserProfileInfo } from "@/utils/Interfaces";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 const FocusPostComponent = (data: IPostItems) => {
@@ -54,17 +54,18 @@ const FocusPostComponent = (data: IPostItems) => {
 
   useEffect(() => {
     const fetchProfileData = async (username: string, id: number) => {
-      //retrieves posters name and picture
+      //retrieves posters picture
       setUserData(await getUserData(username));
       //retireves comment by userID
       setComments(await getCommentsbyId(id));
     };
+
     fetchProfileData(username, postData.id);
   }, [newComment, postData.id, username]);
 
   const addLike = async () => {
     if (!checkToken()) {
-      router.push("/login");
+      redirect("/login");
     } else {
       await toggleLikes(postData.id, fetchInfo().username, getToken());
       setPostData(await getPostbyPostId(postData.id));
@@ -73,7 +74,7 @@ const FocusPostComponent = (data: IPostItems) => {
 
   const addComment = async () => {
     if (!checkToken()) {
-      router.push("/login");
+      redirect("/login");
     } else {
       setError(false);
       const commentToAdd: ICommentInfo = {
@@ -114,14 +115,13 @@ const FocusPostComponent = (data: IPostItems) => {
           <div className="w-[50%]">
             <div className="flex p-3 w-full gap-2 bg-[#f5f5f5]">
               <Image
-                width={100}
-                height={100}
+                width={300}
+                height={300}
                 src={userData.pfp != "" ? userData.pfp : "/nofileselected.png"}
                 className="w-6 rounded-full h-6 cursor-pointer"
                 alt={`${postData.publisherName}'s profile pic`}
                 onClick={() => gotoProfile(postData.publisherName)}
               />
-
               <h2
                 onClick={() => gotoProfile(postData.publisherName)}
                 className="cursor-pointer"
@@ -130,10 +130,10 @@ const FocusPostComponent = (data: IPostItems) => {
               </h2>
             </div>
             <Image
-              width={100}
-              height={100}
+              width={300}
+              height={300}
               src={postData.image}
-              className="w-full"
+              className="w-full aspect-square object-cover"
               alt={`${postData.publisherName}'s post no.${postData.id}`}
             />
             <div className="flex flex-col p-3 w-full gap-1 bg-[#f5f5f5]">

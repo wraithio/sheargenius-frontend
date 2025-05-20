@@ -125,7 +125,7 @@ const Footer = () => {
           </p>
           <div className="flex flex-col gap-2">
             <input
-              className="bg-white font-[NeueMontreal-Regular] w-full lg:w-[450px] rounded-sm px-3 py-2 sm:px-4 sm:py-3 text-black text-sm placeholder-gray-500 outline-none"
+              className="bg-white font-[NeueMontreal-Regular] w-full lg:w-[350px] rounded-sm px-3 py-2 sm:px-4 sm:py-3 text-black text-sm placeholder-gray-500 outline-none"
               type="text"
               placeholder="email"
               aria-label="Email for account creation"

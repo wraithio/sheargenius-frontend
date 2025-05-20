@@ -27,7 +27,7 @@ const StylistAIComponent = () => {
   const router = useRouter();
 
   const generateQ = async () => {
-    setResult("loading...");
+    setResult("loading, this may take a while...");
     setResult(
       `${await chatBot(
         `Recommend one hairstyle out of these hairstyles (${await categoryTitles()}) from this prompt: "${question}" Keep the answer short, but casual with a brief explanation of why the selected haircut suits their needs. Stringify the response and make it sound natural and remove the quotation marks. When selecting a haircut, use the name verbatim.`
@@ -60,7 +60,7 @@ const StylistAIComponent = () => {
   return (
     <div className="mt-12 flex justify-center place-items-center flex-col gap-3">
       <div className="text-center w-[50%]">
-        <h3>Hi I am your virtual stylist!</h3>
+        <h3>Hi I am Buzzby, your virtual stylist!</h3>
         <h3 className="text-sm">
           Just tell me a little about yourself—your face shape, hair type,
           favorite looks, or even your mood—and I&apos;ll suggest a hairstyle that
@@ -77,7 +77,7 @@ const StylistAIComponent = () => {
         />
       </div>
       <div className="flex flex-col gap-1 justify-center text-center">
-        <h3 className={result == "loading..." ? "animate-bounce " : ""}>
+        <h3 className={result == "loading, this may take a while..." ? "animate-bounce " : ""}>
           {result}
         </h3>
         {showLink && (

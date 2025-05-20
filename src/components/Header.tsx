@@ -1,7 +1,6 @@
 import {
   fetchHaircut,
   getProfileUserData,
-  setCategory,
 } from "@/utils/DataServices";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -22,7 +21,7 @@ const Header = ({
 }: HeaderProps) => {
   const [query, setQuery] = useState("");
   const [searchHovered, setSearchHovered] = useState(false);
-  const [error, setError] = useState(false);
+  const [error] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,9 +31,7 @@ const Header = ({
   }, [searchActive]);
 
   const handleSearch = async () => {
-    console.log("Search..", query);
-    setCategory(query);
- 
+    console.log("Search..", query); 
     const result = await fetchHaircut(query);
     if (result !== undefined) {
       const queryParams = new URLSearchParams({
@@ -49,7 +46,11 @@ const Header = ({
         }).toString();
         router.push(`/user-profile?${queryParams}`);
       } else {
-        setError(true);
+        // setError(true);
+            const queryParams = new URLSearchParams({
+      s: query,
+    }).toString();
+    router.push(`/search?${queryParams}`);
       }
     }
   };
@@ -64,7 +65,7 @@ const Header = ({
     <div className="relative overflow-hidden">
       <img
         className="w-full h-[450px] sm:h-[550px] md:h-[650px] lg:h-[724px] object-cover"
-        src="./sheargenius-banner.png"
+        src="./webpsheargenius-bannerDARK.webp"
         alt="Barber Shop Leather Chair Banner Image"
       />
       {searchActive && (

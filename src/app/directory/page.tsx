@@ -9,7 +9,8 @@ import {
   getPostItemsByCategory,
 } from "@/utils/DataServices";
 import Header from "@/components/Header";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 export default function DirectoryPage() {
   const [haircut, setHaircut] = useState<IHaircutInterface>({
@@ -70,6 +71,7 @@ export default function DirectoryPage() {
   ]);
 
   const [searchActive, setSearchActive] = useState(false);
+  const router = useRouter();
   const searchParameters = useSearchParams()
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +107,14 @@ export default function DirectoryPage() {
     };
 
     fetchData();
-  }, []);
+  }, [searchParameters]);
+
+  const goToSearch = (cut:string) => {
+    const queryParams = new URLSearchParams({
+      s: cut,
+    }).toString();
+    router.push(`/search?${queryParams}`);
+  }
 
   return (
     <Suspense>
@@ -125,13 +134,17 @@ export default function DirectoryPage() {
          <div className="container mt-20 px-4 mx-auto">
            <div>
              <div className="flex flex-col md:flex-row gap-12 justify-evenly items-center">
-               <img
+               <Image
+                width={300}
+               height={300}
                  src={haircut.photo1}
                  alt={haircut.name}
                  className="w-full md:w-[500px] h-[400px] md:h-[500px] object-cover rounded-lg shadow-lg"
                />
                <img src="/icons/sheargenius-logo.svg" alt="Shear Genius Logo" className="hidden md:block w-16 h-16" />
-               <img
+               <Image
+               width={300}
+               height={300}
                  src={haircut.photo2}
                  alt={haircut.name}
                  className="w-full md:w-[500px] h-[400px] md:h-[500px] object-cover rounded-lg shadow-lg"
@@ -152,9 +165,9 @@ export default function DirectoryPage() {
                      </div>
                    ))}
                  </div>
-                 {posts.length > 3 && (
+                 {posts.length > 1 && (
                     <div className="mt-6">
-                    <button className="bg-black w-full text-white font-[NeueMontreal-Medium] py-5 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white transition-all duration-75">
+                    <button className="bg-black w-full text-white font-[NeueMontreal-Medium] py-5 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white transition-all duration-75" onClick={() => goToSearch(haircut.name)}>
                       VIEW ALL POSTS
                     </button>
                   </div>

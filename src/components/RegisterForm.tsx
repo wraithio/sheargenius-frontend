@@ -71,7 +71,7 @@ const RegisterForm = () => {
       <div className="hidden md:flex justify-center md:justify-end items-center">
         <img
           className="max-h-[450px] sm:max-h-[550px] md:max-h-[600px] lg:max-h-[700px] w-auto object-contain rounded-md"
-          src="./registerpopup-image.jpg"
+          src="./registerpopup-image.webp"
           alt="Barber working illustration"
         />
       </div>

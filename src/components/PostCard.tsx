@@ -23,7 +23,7 @@ const PostCard = (data: IPostItems) => {
       setComments(await getCommentsbyId(data.id));
     };
     getCommentNumber();
-  },[router,data.id]);
+  }, [router, data.id]);
 
   return (
     <div>
@@ -42,54 +42,55 @@ const PostCard = (data: IPostItems) => {
       )}
       <div
         onClick={() => setFocus(true)}
-        className="w-full h-[500px] rounded-lg relative cursor-pointer overflow-hidden"
+        className="w-full aspect-square rounded-lg relative cursor-pointer overflow-hidden"
       >
-        <div className="bg-gray-300 text-white h-[410px] flex justify-center">
+        <div className="bg-gray-300 text-white w-full aspect-square flex justify-center">
           <Image
-            width={100}
-            height={100}
+            width={300}
+            height={300}
             src={data.image != null ? data.image : "/nofileselected.png"}
             alt={`${data.publisherName}'s post #${data.id}`}
-            className="w-full h-full object-cover"
+            className="w-full aspect-square object-cover"
             priority
           />
         </div>
-        <div className="bg-[#F5F5F5] w-full h-[90px] px-5 py-3 flex flex-col absolute bottom-0">
-          <div className="flex justify-between">
-            <p className="font-[NeueMontreal-Medium] text-[#949DA4]">
+        <div className="bg-[#ffffff8f] backdrop-blur-sm w-full md:h-[70px] h-[50px] lg:px-5 px-2 lg:py-2 py-1 flex place-items-center absolute bottom-0">
+          <div className="w-full">
+            <p className="font-[NeueMontreal-Medium] text-[#373738] text-sm">
               {data.publisherName}
             </p>
-          </div>
-          <div className="flex justify-between items-center mt-3">
-            <p className="font-[NeueMontreal-Medium] text-black text-lg">
-              {data.category}
-            </p>
-            <div className="flex flex-row gap-5">
+
+            <div className="flex justify-between">
+              <p className="font-[NeueMontreal-Medium] text-black ">
+                {data.category}
+              </p>
               <div className="flex flex-row gap-2">
-                <button>
+                <div className="flex flex-row gap-1">
+                  <button>
+                    <img
+                      className="w-[25px]"
+                      src={
+                        data.likes.includes(fetchInfo().username)
+                          ? "./icons/heartliked.png"
+                          : "./icons/heart.png"
+                      }
+                      alt="Heart Like Button Icon"
+                    />
+                  </button>
+                  <p className="font-[NeueMontreal-Medium] ">
+                    {data.likes.length}
+                  </p>
+                </div>
+                <div className="flex flex-row gap-1">
                   <img
-                    className="w-[25px]"
-                    src={
-                      data.likes.includes(fetchInfo().username)
-                        ? "./icons/heartliked.png"
-                        : "./icons/heart.png"
-                    }
-                    alt="Heart Like Button Icon"
+                    className="w-[25px] h-[25px]"
+                    src="./icons/beacon.png"
+                    alt="Beacon Comment Icon"
                   />
-                </button>
-                <p className="font-[NeueMontreal-Medium] text-lg">
-                  {data.likes.length}
-                </p>
-              </div>
-              <div className="flex flex-row gap-2">
-                <img
-                  className="w-[25px] h-[25px]"
-                  src="./icons/beacon.png"
-                  alt="Beacon Comment Icon"
-                />
-                <p className="font-[NeueMontreal-Medium] text-lg">
-                  {comments != null ? comments.length : "0"}
-                </p>
+                  <p className="font-[NeueMontreal-Medium] ">
+                    {comments != null ? comments.length : "0"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

@@ -259,24 +259,6 @@ export const getUserPosts = async (id: number) => {
   // console.log(data)
   return data;
 };
-// export const getAllPosts = async (token: string) => {
-//   const res = await fetch(`${url}Post/GetAllPosts`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: "Bearer " + token,
-//     },
-//   });
-//   if (!res.ok) {
-//     const errorData = await res.json();
-//     const message = errorData.message;
-//     console.log(message);
-//     return [];
-//   }
-
-//   const data = await res.json();
-//   return data;
-// };
 
 export const getAllBarbers = async () => {
   const res = await fetch(`${url}User/GetAllBarbers`)
@@ -328,24 +310,6 @@ export const getPostItemsByCategory = async (category: string) => {
   const data = await res.json();
   return data;
 };
-// export const getPostItemsByCategory = async (category: string, token: string) => {
-//   const res = await fetch(`${url}Post/GetPostsbyCategory/${category}`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: "Bearer " + token,
-//     },
-//   });
-//   if (!res.ok) {
-//     const errorData = await res.json();
-//     const message = errorData.message;
-//     console.log(message);
-//     return [];
-//   }
-
-//   const data = await res.json();
-//   return data;
-// };
 
 export const addPostItem = async (post: IPostItems, token: string) => {
   const res = await fetch(`${url}Post/AddPost`, {
@@ -468,6 +432,8 @@ export const blobUpload = async (params: FormData)=> {
   }
 };
 
+// AI fetch
+
 export const chatBot = async(prompt:string) =>{
   try{
   const response: Response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -517,3 +483,4 @@ export const getPostsByLocation = async (location: string, token: string) => {
   const data = await res.json();
   return data;
 };
+
