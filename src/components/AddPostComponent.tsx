@@ -36,7 +36,7 @@ const AddPostComponent = () => {
       setHaircuts(await categoryTitles());
     };
     fetchTitles();
-  },[router]);
+  }, [router]);
 
   const handleStyle = (cut: string) => {
     setStyle(cut);
@@ -54,7 +54,7 @@ const AddPostComponent = () => {
   //A Function that Handles the submitting of file to our backend
   const handleSubmit = async () => {
     //Check if the file is inside of our state Variable
-    console.log(file)
+    console.log(file);
     if (!file) {
       alert("Please select a file to upload.");
       return;
@@ -71,7 +71,7 @@ const AddPostComponent = () => {
     const uploadedUrl = await blobUpload(formData);
 
     if (uploadedUrl) {
-      const newPost:IPostItems = {
+      const newPost: IPostItems = {
         id: 0,
         userId: fetchInfo().id,
         publisherName: fetchInfo().username,
@@ -82,10 +82,14 @@ const AddPostComponent = () => {
         category: style,
         isPublished: true,
         isDeleted: false,
-        comments: []
+        comments: [],
       };
       console.log(newPost);
       await addPostItem(newPost, getToken());
+      const queryParams = new URLSearchParams({
+        u: fetchInfo().username,
+      }).toString();
+      router.push(`/search?${queryParams}`);
       window.location.reload();
     }
   };
@@ -106,7 +110,9 @@ const AddPostComponent = () => {
 
   return (
     <div className="px-10 pb-10 pt-3">
-      <h2 className="font-[NeueMontreal-Medium] text-center text-2xl mb-10">Create Post</h2>
+      <h2 className="font-[NeueMontreal-Medium] text-center text-2xl mb-10">
+        Create Post
+      </h2>
       <div className="flex justify-center place-items-center h-[50vh]">
         <div className="flex w-[70%] flex-col gap-3">
           <div className="flex gap-3 min-h-[15vh]">
@@ -121,7 +127,9 @@ const AddPostComponent = () => {
             <div className="w-[60%]">
               <div className="flex justify-between items-center">
                 <h4 className="font-[NeueMontreal-Medium]">Caption</h4>
-                <h5 className="font-[NeueMontreal-Medium] text-gray-500 text-xs">300 characters</h5>
+                <h5 className="font-[NeueMontreal-Medium] text-gray-500 text-xs">
+                  300 characters
+                </h5>
               </div>
 
               <textarea

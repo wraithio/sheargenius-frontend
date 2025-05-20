@@ -33,20 +33,23 @@ export const editSchedule = async (schedule: ISchedule) => {
     console.log(message);
     return data.success;
   }
-
   const data = await res.json();
   return data.success;
 };
 
 export const getScheduleByUsername = async (username: string) => {
   const res = await fetch(
-    `${BASE_URL}Schedule/GetSheduleByUsername/${username}`
+    `${BASE_URL}Schedule/GetScheduleByUsername/${username}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
   );
   if (!res.ok) {
-    const data = await res.json();
-    const message = data.message;
-    console.log(message);
-    return data.success;
+    // const data = await res.json();
+    // const message = data.message;
+    // console.log(message.error);
+    return undefined;
   }
   const data = await res.json();
   return data;
@@ -64,7 +67,7 @@ export const getRequestsbyBarberName = async (username: string) => {
     const data = await res.json();
     const message = data.message;
     console.log(message);
-    return data.success;
+    return undefined;
   }
   const data = await res.json();
   return data;
@@ -85,7 +88,7 @@ export const getRequestsbyUsername = async (username: string) => {
     return data.success;
   }
   const data = await res.json();
-  console.log(data);
+  // console.log(data);
   return data;
 };
 
@@ -110,11 +113,7 @@ export const FilterScheduleByRequest = async (username: string) => {
 
 export const acceptRequest = async (id: number) => {
   const res = await fetch(
-    `${BASE_URL}Schedule/AcceptRequest/${id}`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-    }
+    `${BASE_URL}Schedule/AcceptRequest/${id}`
   );
   if (!res.ok) {
     const data = await res.json();
@@ -123,16 +122,12 @@ export const acceptRequest = async (id: number) => {
     return data.success;
   }
   const data = await res.json();
-  return data;
+  return data.success;
 };
 
 export const declineRequest = async (id: number) => {
   const res = await fetch(
-    `${BASE_URL}Schedule/DeclineRequest/${id}`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-    }
+    `${BASE_URL}Schedule/DeclineRequest/${id}`
   );
   if (!res.ok) {
     const data = await res.json();
@@ -141,25 +136,44 @@ export const declineRequest = async (id: number) => {
     return data.success;
   }
   const data = await res.json();
-  return data;
+  return data.success;
 };
 
+// export const deleteRequest = async (id: number) => {
+//   const res = await fetch(
+//     `${BASE_URL}Schedule/DeleteRequest/${id}`
+//   );
+//   console.log(`${BASE_URL}Schedule/DeleteRequest/${id}`)
+//   if (!res.ok) {
+//     const data = await res.json();
+//     const message = data.message;
+//     console.log(1);
+//     return data.success;
+//   }
+//   const data = await res.json();
+//   return data.success;
+// };
+
 export const deleteRequest = async (id: number) => {
-  const res = await fetch(
-    `${BASE_URL}Schedule/DeleteRequest/${id}`,
-    {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  const res = await fetch(`${BASE_URL}Schedule/DeleteRequest/${id}`);
+  console.log(`${BASE_URL}Schedule/DeleteRequest/${id}`);
+
   if (!res.ok) {
-    const data = await res.json();
-    const message = data.message;
-    console.log(message);
-    return data.success;
+    try {
+      console.log(1);
+      const data = await res.json();
+      return data.success;
+    } catch {
+      return false; // Gracefully handle empty response
+    }
   }
-  const data = await res.json();
-  return data;
+  try {
+    console.log(2);
+    const data = await res.json();
+    return data.success;
+  } catch {
+    return false;
+  }
 };
 
 export const sendRequest = async (request: IRequest) => {
@@ -178,5 +192,5 @@ export const sendRequest = async (request: IRequest) => {
     return data.success;
   }
   const data = await res.json();
-  return data;
+  return data.success;
 };

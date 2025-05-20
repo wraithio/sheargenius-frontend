@@ -122,7 +122,6 @@ const FocusPostComponent = (data: IPostItems) => {
                 alt={`${postData.publisherName}'s profile pic`}
                 onClick={() => gotoProfile(postData.publisherName)}
               />
-
               <h2
                 onClick={() => gotoProfile(postData.publisherName)}
                 className="cursor-pointer"
@@ -134,7 +133,7 @@ const FocusPostComponent = (data: IPostItems) => {
               width={300}
               height={300}
               src={postData.image}
-              className="w-full"
+              className="w-full aspect-square object-cover"
               alt={`${postData.publisherName}'s post no.${postData.id}`}
             />
             <div className="flex flex-col p-3 w-full gap-1 bg-[#f5f5f5]">

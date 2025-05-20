@@ -12,6 +12,7 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
   const [times, setTimes] = useState<string[]>([]);
   const [desiredTime, setDesiredTime] = useState<string>("");
   const [desiredDay, setDesiredDay] = useState<string>("");
+  const [username] = useState<string>(fetchInfo().username || "");
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -103,13 +104,14 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
     const payload: IRequest = {
       id: 0,
       barberName: barberName,
-      username: fetchInfo().username,
+      username: username,
       day: desiredDay,
       time: desiredTime,
       isAccepted: false,
     };
-    await sendRequest(payload);
-    // alert("✅ Your request has been successfully sent!");
+    console.log(payload);
+    if (await sendRequest(payload))
+      alert("✅ Your request has been successfully sent!");
     window.location.reload();
   };
 
