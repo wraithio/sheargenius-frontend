@@ -152,7 +152,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
 
   return (
     <div className="relative">
-      <nav className="fixed top-0 left-0 w-full z-30 bg-white text-black text-sm font-[NeueMontreal-Medium]">
+      <nav className="fixed top-0 left-0 w-full z-30 bg-white text-black text-sm font-[NeueMontreal-Medium] border-b-2">
         <div className="max-w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center flex-row">
@@ -263,13 +263,10 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
       <div className="h-16"></div>
 
       {addPost && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="w-[90%] max-w-xl md:w-[70%] lg:w-[50%] bg-white rounded-lg relative">
-            <button
-              className="absolute top-2 right-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors"
-              onClick={() => setAddPost(false)}
-              aria-label="Close Add Post Modal"
-            >
+         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+           <div className="w-[90%] max-w-xl md:w-[70%] lg:w-[50%] bg-white rounded-lg relative">
+             <button className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors" onClick={() => setAddPost(false)} aria-label="Close Add Post Modal">
+
               <X />
             </button>
             <AddPostComponent />
