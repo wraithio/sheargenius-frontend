@@ -1,17 +1,30 @@
 'use client'
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { checkToken } from "@/utils/DataServices";
 
 const Footer = () => {
-  const [email,setEmail] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
   
   useEffect(() => {
     setIsLoggedIn(checkToken());
   }, []);
+
+  // Handle scrolling when navigating directly to a fragment from another page
+  useEffect(() => {
+    if (isHomePage && window.location.hash) {
+      // Delay to ensure the page is fully loaded
+      setTimeout(() => {
+        const id = window.location.hash.replace('#', '');
+        scrollToSection(id, false);
+      }, 300);
+    }
+  }, [isHomePage]);
 
   const openNavbarCategory = (category: string) => {
     window.dispatchEvent(
@@ -19,10 +32,32 @@ const Footer = () => {
     );
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  const scrollToSection = (sectionId: string, shouldNavigate = true) => {
+    if (isHomePage) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        // Get the height of any fixed headers (approximate)
+        const headerOffset = 100;
+        
+        // Calculate position with offset
+        const elementPosition = section.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+        // Scroll with offset to ensure the section header is visible
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    } else if (shouldNavigate) {
+      router.push(`/#${sectionId}`);
     }
   };
 
@@ -36,7 +71,7 @@ const Footer = () => {
   return (
     <div className="bg-black w-full min-h-[350px] px-4 sm:px-6 lg:px-8 py-8 sm:py-10 text-xs sm:text-sm">
       <p
-        onClick={() => scrollToSection("page-header")}
+        onClick={scrollToTop}
         className="font-[NeueMontreal-Medium] text-white hover:underline cursor-pointer mb-6 sm:mb-8 lg:mb-10 text-sm"
       >
         Back To Top ↑
@@ -61,13 +96,15 @@ const Footer = () => {
               >
                 LOCAL BARBERS
               </a>
-              <a
-                onClick={(e) => { e.preventDefault(); scrollToSection("create-account"); }}
-                className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#create-account"
-              >
-                CREATE ACCOUNT
-              </a>
+              {!isLoggedIn && (
+                <a
+                  onClick={(e) => { e.preventDefault(); scrollToSection("create-account"); }}
+                  className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
+                  href="#create-account"
+                >
+                  CREATE ACCOUNT
+                </a>
+              )}
               <a
                 onClick={(e) => { e.preventDefault(); scrollToSection("barber-essentials"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"

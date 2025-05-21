@@ -80,6 +80,15 @@ export default function Home() {
     }).toString();
     router.push(`/search?${queryParams}`);
   };
+  
+  // New navigation function with proper scrolling offset
+  const navigateToSection = (page: string, sectionId: string) => {
+    router.push(`${page}#${sectionId}`);
+    
+    // Optional: You can also store the section info in localStorage
+    // to handle scrolling after navigation completes
+    localStorage.setItem('scrollToSection', sectionId);
+  };
 
   return (
     <div className="bg-white min-h-screen w-full overflow-x-hidden">
@@ -170,7 +179,9 @@ export default function Home() {
                   Create the best toolbox for success
                 </p>
               </div>
-              <button className="font-[NeueMontreal-Medium] text-black bg-white px-8 py-2 sm:px-10 sm:py-3 rounded text-sm sm:text-base cursor-pointer transition-all duration-75 hover:bg-[#FFFFFF1A] hover:outline-2 hover:outline-white hover:text-white active:text-black active:bg-white active:outline-none">
+              <button 
+                onClick={() => navigateToSection('/generalknowledge', 'barber-essentials')}
+                className="font-[NeueMontreal-Medium] text-black bg-white px-8 py-2 sm:px-10 sm:py-3 rounded text-sm sm:text-base cursor-pointer transition-all duration-75 hover:bg-[#FFFFFF1A] hover:outline-2 hover:outline-white hover:text-white active:text-black active:bg-white active:outline-none">
                 EXPLORE
               </button>
             </div>
@@ -194,7 +205,9 @@ export default function Home() {
                   Make your next visit a breeze
                 </p>
               </div>
-              <button className="font-[NeueMontreal-Medium] text-black bg-white px-8 py-2 sm:px-10 sm:py-3 rounded text-sm sm:text-base cursor-pointer transition-all duration-75 hover:bg-[#FFFFFF1A] hover:outline-2 hover:outline-white hover:text-white active:text-black active:bg-white active:outline-none">
+              <button 
+                onClick={() => navigateToSection('/generalknowledge', 'barber-shop-etiquette')}
+                className="font-[NeueMontreal-Medium] text-black bg-white px-8 py-2 sm:px-10 sm:py-3 rounded text-sm sm:text-base cursor-pointer transition-all duration-75 hover:bg-[#FFFFFF1A] hover:outline-2 hover:outline-white hover:text-white active:text-black active:bg-white active:outline-none">
                 LEARN MORE
               </button>
             </div>
@@ -218,7 +231,9 @@ export default function Home() {
                   Learn basic terminology
                 </p>
               </div>
-              <button className="font-[NeueMontreal-Medium] text-black bg-white px-8 py-2 sm:px-10 sm:py-3 rounded text-sm sm:text-base cursor-pointer transition-all duration-75 hover:bg-[#FFFFFF1A] hover:outline-2 hover:outline-white hover:text-white active:text-black active:bg-white active:outline-none">
+              <button 
+                onClick={() => navigateToSection('/generalknowledge', 'clipper-crash-course')}
+                className="font-[NeueMontreal-Medium] text-black bg-white px-8 py-2 sm:px-10 sm:py-3 rounded text-sm sm:text-base cursor-pointer transition-all duration-75 hover:bg-[#FFFFFF1A] hover:outline-2 hover:outline-white hover:text-white active:text-black active:bg-white active:outline-none">
                 BEGIN
               </button>
             </div>

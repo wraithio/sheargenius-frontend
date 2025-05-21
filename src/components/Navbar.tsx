@@ -21,6 +21,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   const [addPost, setAddPost] = useState(false);
   const [popUp, setPopUp] = useState(false);
   const [error] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState<"explore" | "schedule" | null>(
     null
   );
@@ -116,6 +117,10 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
       closeSidebar();
     }
   },[path]);
+
+  useEffect(() => {
+    setIsLoggedIn(checkToken());
+  }, []);
 
   const handleSearch = async (q: string) => {
     console.log("Search..", query);
@@ -558,35 +563,35 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                   {openCategory === "general-knowledge" && (
                     <div className="mt-2 ml-8 space-y-1">
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#clipper-crash-course"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Clippers Crash Course
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#barber-essentials"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Barber Essentials
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#barber-shop-etiquette"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Barber Shop Etiquette
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#proper-hygiene"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Proper Hygiene
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#hair-growth-essentials"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
@@ -600,33 +605,35 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                         More About ShearGenius
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#why-mens-hair"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Why Men&#39;s Hair?
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#credits"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Credits
                       </Link>
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#credits"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Contact
                       </Link>
-                      <Link
-                        href="/login"
-                        onClick={closeSidebar}
-                        className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
-                      >
-                        Create An Account
-                      </Link>
+                      {!isLoggedIn && (
+                        <Link
+                          href="/login"
+                          onClick={closeSidebar}
+                          className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
+                        >
+                          Create An Account
+                        </Link>
+                      )}
                     </div>
                   )}
                 </div>
