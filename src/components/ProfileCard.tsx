@@ -107,24 +107,20 @@ const ProfileCard = (data: IUserProfileInfo) => {
           </div>
         </div>
 
-        {/* Stars for screens >825px and 476px-767px - right aligned */}
         <div className="hidden min-[826px]:flex min-[476px]:max-[767px]:flex gap-1">
            {renderStars(rating)}
         </div>
       </div>
-      
-      {/* Stars for screens 768px-825px - below profile info */}
+
       <div className="hidden min-[768px]:max-[825px]:flex mt-3 gap-1">
          {renderStars(rating)}
       </div>
 
-      {/* Stars for screens 475px and below - centered and normal size */}
       <div className="flex max-[475px]:flex hidden mt-3 justify-center gap-1">
          {renderStars(rating)}
       </div>
       
       <hr className="my-5" />
-      {/* Images - hidden at tablet size (768px) and below */}
       <div className="hidden min-[826px]:flex flex-row w-full justify-between">
       {picSRCs.length > 0 ?
         picSRCs.map((pic: string, idx: number) => (
