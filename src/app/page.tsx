@@ -88,13 +88,13 @@ export default function Home() {
       <header id="page-header">
         <Header searchActive={searchActive} setSearchActive={setSearchActive} />
       </header>
+      <section
+        id="create-account"
+        className="mt-10"
+      >
+        <RegisterForm />
+      </section>
       <main className="px-4 sm:px-6 lg:px-8">
-        <section
-          id="create-account"
-          className="mt-16 sm:mt-20 lg:mt-24 xl:mt-44"
-        >
-          <RegisterForm />
-        </section>
         <section id="local-barbers" className="mt-16 sm:mt-20 lg:mt-24">
           <div className="text-center mb-6 sm:mb-8 lg:mb-10">
             <h2 className="font-[NeueMontreal-Medium] text-xl sm:text-2xl lg:text-3xl">
@@ -106,14 +106,7 @@ export default function Home() {
             </p>
           </div>
           <div className="mt-10">
-            {/* <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-cols-2 md:grid-rows-2 sm:grid-cols-1 sm:grid-rows-3 gap-3">
-              <ProfileCard />
-              <ProfileCard />
-              <div className="lg:col-span-1 md:col-span-full">
-                <ProfileCard />
-              </div>
-            </div> */}
-            <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-cols-2 md:grid-rows-2 sm:grid-cols-1 sm:grid-rows-3 gap-3">
+            <div className="grid grid-cols-3 max-[1215px]:grid-cols-2 max-[860px]:grid-cols-1 gap-3">
               {barbers.map((barber, idx) => (
                 <div key={idx}>
                   <ProfileCard {...barber} />
@@ -130,7 +123,7 @@ export default function Home() {
               Top Posts{" "}
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {posts.slice(0, 3).map((post, index) => (
               <div key={post.id && post.id !== 0 ? post.id : `post-${index}`}>
                 <PostCard {...post} />

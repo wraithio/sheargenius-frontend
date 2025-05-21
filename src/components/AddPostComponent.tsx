@@ -78,38 +78,6 @@ const AddPostComponent = () => {
     formData.append("file", file);
     formData.append("fileName", uniqueFileName);
 
-<!-- <<<<<<< frames/login-createacc
-    try {
-      const uploadedUrl = await blobUpload(formData);
-      if (uploadedUrl) {
-        const currentUserInfo = fetchInfo();
-        if (!currentUserInfo || !currentUserInfo.id || !currentUserInfo.username) {
-            alert("Could not fetch user information. Please try logging in again.");
-            return;
-        }
-        const newPost: IPostItems = {
-          id: 0,
-          userId: currentUserInfo.id,
-          publisherName: currentUserInfo.username,
-          date: getFormattedDate(),
-          caption: caption,
-          image: uploadedUrl,
-          likes: [],
-          category: style,
-          isPublished: true,
-          isDeleted: false,
-          comments: [],
-        };
-        await addPostItem(newPost, getToken());
-        alert("Post created successfully!");
-        window.location.reload();
-      } else {
-        alert("Image upload failed. Please try again.");
-      }
-    } catch (error) {
-        console.error("Error creating post:", error);
-        alert("An error occurred while creating the post. Please try again.");
-======= -->
     //Finally passing that formData into our Backend
     const uploadedUrl = await blobUpload(formData);
 

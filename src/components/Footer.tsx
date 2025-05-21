@@ -1,10 +1,18 @@
 'use client'
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { checkToken } from "@/utils/DataServices";
+
 const Footer = () => {
   const [email,setEmail] = useState<string>("")
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+  
+  useEffect(() => {
+    setIsLoggedIn(checkToken());
+  }, []);
+
   const openNavbarCategory = (category: string) => {
     window.dispatchEvent(
       new CustomEvent("openNavbarCategory", { detail: { category } })
@@ -119,26 +127,28 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 sm:gap-3 mt-4 md:mt-0 md:max-w-xs lg:max-w-sm xl:max-w-md">
-          <p className="font-[NeueMontreal-Medium] text-white mb-1">
-            CREATE YOUR ACCOUNT
-          </p>
-          <div className="flex flex-col gap-2">
-            <input
-              className="bg-white font-[NeueMontreal-Regular] w-full lg:w-[350px] rounded-sm px-3 py-2 sm:px-4 sm:py-3 text-black text-sm placeholder-gray-500 outline-none"
-              type="text"
-              placeholder="email"
-              aria-label="Email for account creation"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <button
-              onClick={gotoCreate}
-              className="bg-[#1500FF] font-[NeueMontreal-Medium] rounded-sm text-white px-5 py-2.5 sm:py-3 text-sm hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 w-full lg:w-auto"
-            >
-              CREATE ACCOUNT
-            </button>
+        {!isLoggedIn && (
+          <div className="flex flex-col gap-2 sm:gap-3 mt-4 md:mt-0 md:max-w-xs lg:max-w-sm xl:max-w-md">
+            <p className="font-[NeueMontreal-Medium] text-white mb-1">
+              CREATE YOUR ACCOUNT
+            </p>
+            <div className="flex flex-col gap-2">
+              <input
+                className="bg-white font-[NeueMontreal-Regular] w-full lg:w-[350px] rounded-sm px-3 py-2 sm:px-4 sm:py-3 text-black text-sm placeholder-gray-500 outline-none"
+                type="text"
+                placeholder="email"
+                aria-label="Email for account creation"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button
+                onClick={gotoCreate}
+                className="bg-[#1500FF] font-[NeueMontreal-Medium] rounded-sm text-white px-5 py-2.5 sm:py-3 text-sm hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 w-full lg:w-auto"
+              >
+                CREATE ACCOUNT
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="flex flex-col items-center gap-1 mt-8 pt-6 border-t border-gray-700 sm:flex-row sm:justify-between sm:mt-10 sm:pt-8">
