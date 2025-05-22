@@ -1,10 +1,8 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import Footer from "@/components/Footer";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function GeneralKnowledge() {
   const [searchActive, setSearchActive] = useState(false);
@@ -74,7 +72,6 @@ export default function GeneralKnowledge() {
       if (!footerRef.current || !sidebarRef.current) return;
       
       const footerRect = footerRef.current.getBoundingClientRect();
-      const sidebarRect = sidebarRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
 
       if (footerRect.top < viewportHeight) {
@@ -417,18 +414,18 @@ export default function GeneralKnowledge() {
               <div className="prose max-w-none">
                 <p className="text-base sm:text-lg font-[NeueMontreal-Regular] text-gray-700">
                   The team behind this website is deeply passionate about
-                  exploring diverse styles of men's haircuts and
+                  exploring diverse styles of men&apos;s haircuts and
                   celebrating the rich traditions of barbershop culture. We
-                  believe that hairstyling is more than just grooming—it's
+                  believe that hairstyling is more than just grooming—it&apos;s
                   an art form and a way to express individuality.
                 </p>
                 <p className="text-base sm:text-lg font-[NeueMontreal-Regular] text-gray-700 mt-4">
-                  The team feels it's essential to educate men of all ages, as well
+                  The team feels it&apos;s essential to educate men of all ages, as well
                   as parents with their children, on how to choose and
                   maintain hairstyles that suit their personalities,
                   lifestyles, and preferences. By providing valuable insights,
                   tips, and inspiration, ShearGenius aims to empower their
-                  audience to approach men's hair styling with confidence
+                  audience to approach men&apos;s hair styling with confidence
                   and creativity, fostering a greater appreciation for the
                   craftsmanship behind every great cut.
                 </p>

@@ -54,7 +54,7 @@ const StylistAIComponent = ({ inlineMode = false }) => {
       
       setResult(response);
       setConversation(prev => [...prev, {type: 'ai', text: response}]);
-    } catch (error) {
+    } catch {
       const errorMessage = "Sorry, I had trouble processing that. Please try again.";
       setResult(errorMessage);
       setConversation(prev => [...prev, {type: 'ai', text: errorMessage}]);
@@ -150,10 +150,10 @@ const StylistAIComponent = ({ inlineMode = false }) => {
     <div className="flex flex-col h-full max-sm:justify-between">
       <div className="text-center mb-1">
         <h3 className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700">
-          Hi, I'm Buzzby!
+          Hi, I&apos;m Buzzby!
         </h3>
         <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-          Tell me about your style preferences and I'll suggest the perfect haircut.
+          Tell me about your style preferences and I&apos;ll suggest the perfect haircut.
         </p>
       </div>
       

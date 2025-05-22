@@ -5,7 +5,6 @@ import FocusPostComponent from "./FocusPostComponent";
 import { checkToken, fetchInfo, getCommentsbyId, getPostbyPostId, getToken, toggleLikes } from "@/utils/DataServices";
 import { useRouter } from "next/navigation";
 import { Heart, MessageSquare, X } from "lucide-react";
-import { redirect } from "next/navigation";
 
 const PostCard = (data: IPostItems) => {
   const router = useRouter();

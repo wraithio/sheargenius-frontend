@@ -1,11 +1,10 @@
 "use client"
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import StylistAIComponent from './StylistAIComponent'
 
 const BuzzbyComponent = () => {
-    const router = useRouter();
     const path = usePathname();
     const [isChatOpen, setIsChatOpen] = useState(false);
     
