@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-// import ChatbotComponent from "@/components/ChatbotComponent";
 import { Suspense } from "react";
 import BuzzbyComponent from "@/components/BuzzbyComponent";
-// import Footer from "@/components/ui/Footer";
 
 export const metadata: Metadata = {
   title: "ShearGenius",
@@ -24,7 +22,6 @@ export default function RootLayout({
           type="image/png"
           sizes="32x32"
         />
-        {/* <ChatbotComponent/> */}
       </head>
       <body className={`antialiased`}>
         <Suspense>

@@ -81,12 +81,8 @@ export default function Home() {
     router.push(`/search?${queryParams}`);
   };
   
-  // New navigation function with proper scrolling offset
   const navigateToSection = (page: string, sectionId: string) => {
     router.push(`${page}#${sectionId}`);
-    
-    // Optional: You can also store the section info in localStorage
-    // to handle scrolling after navigation completes
     localStorage.setItem('scrollToSection', sectionId);
   };
 
@@ -149,10 +145,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      {/* <section id="create-account" className="mt-16 sm:mt-20 lg:mt-24 xl:mt-44">
-        <RegisterForm />
-      </section> */}
 
       <section className="mt-16 sm:mt-20 lg:mt-24 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-5">

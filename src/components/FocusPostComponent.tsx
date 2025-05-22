@@ -12,8 +12,15 @@ import { ICommentInfo, IPostItems, IUserProfileInfo } from "@/utils/Interfaces";
 import Image from "next/image";
 import { redirect, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import { Clock, Heart, MessageSquare, Send, Tag, User } from "lucide-react";
 
-const FocusPostComponent = (data: IPostItems) => {
+interface FocusPostComponentProps extends IPostItems {
+  onLikeToggle?: (updatedPost: IPostItems) => void;
+}
+
+const FocusPostComponent = (props: FocusPostComponentProps) => {
+  const { onLikeToggle, ...data } = props;
+
   const [userData, setUserData] = useState<IUserProfileInfo>({
     id: 0,
     username: "",
@@ -45,30 +52,83 @@ const FocusPostComponent = (data: IPostItems) => {
   const [newComment, setNewComment] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [postData, setPostData] = useState<IPostItems>(data);
+  const [commentersData, setCommentersData] = useState<Record<string, IUserProfileInfo>>({});
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const initialMount = useRef(true);
+  const currentUserInfo = useRef<IUserProfileInfo | null>(null);
 
   const gotoInput = () => {
     inputRef.current?.focus();
   };
 
   useEffect(() => {
+    if (initialMount.current) {
+      setPostData(data);
+      initialMount.current = false;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!initialMount.current && JSON.stringify(data.likes) !== JSON.stringify(postData.likes)) {
+      setPostData(prevData => ({
+        ...prevData,
+        likes: data.likes
+      }));
+    }
+  }, [data.likes]);
+
+  useEffect(() => {
     const fetchProfileData = async (username: string, id: number) => {
-      //retrieves posters picture
-      setUserData(await getUserData(username));
-      //retireves comment by userID
-      setComments(await getCommentsbyId(id));
+      const userData = await getUserData(username);
+      setUserData(userData);
+      const commentsData = await getCommentsbyId(id);
+      setComments(commentsData);
+      
+      const currentUsername = fetchInfo().username;
+      if (currentUsername) {
+        const currentUserData = await getUserData(currentUsername);
+        currentUserInfo.current = currentUserData;
+      }
     };
 
     fetchProfileData(username, postData.id);
   }, [newComment, postData.id, username]);
+
+  useEffect(() => {
+    const fetchCommentersData = async () => {
+      if (comments && comments.length > 0) {
+        const uniqueUsernames = [...new Set(comments.map(c => c.username))];
+        const userData: Record<string, IUserProfileInfo> = {};
+        
+        for (const username of uniqueUsernames) {
+          const userInfo = await getUserData(username);
+          if (userInfo) {
+            userData[username] = userInfo;
+          }
+        }
+        
+        setCommentersData(userData);
+      }
+    };
+    
+    fetchCommentersData();
+  }, [comments]);
 
   const addLike = async () => {
     if (!checkToken()) {
       redirect("/login");
     } else {
       await toggleLikes(postData.id, fetchInfo().username, getToken());
-      setPostData(await getPostbyPostId(postData.id));
+      const updatedPost = await getPostbyPostId(postData.id);
+      
+      if (updatedPost) {
+        setPostData(updatedPost);
+        
+        if (onLikeToggle) {
+          onLikeToggle(updatedPost);
+        }
+      }
     }
   };
 
@@ -77,23 +137,58 @@ const FocusPostComponent = (data: IPostItems) => {
       redirect("/login");
     } else {
       setError(false);
+      
+      const currentUsername = fetchInfo().username;
+      
       const commentToAdd: ICommentInfo = {
         id: 0,
         postId: postData.id,
-        username: fetchInfo().username,
+        username: currentUsername,
         comment: commentText,
       };
+      
+      const tempDisplayComment: ICommentInfo = {
+        ...commentToAdd,
+        id: Date.now(),
+      };
 
-      console.log(commentToAdd);
-      addCommentToPost(commentToAdd);
-      setNewComment(!newComment);
-      setCommentText("");
-      // comments?.push(commentToAdd);
+      try {
+        setComments(prevComments => {
+          const newComments = prevComments ? [...prevComments, tempDisplayComment] : [tempDisplayComment];
+          return newComments;
+        });
+        
+        if (currentUserInfo.current && !commentersData[currentUsername]) {
+          setCommentersData(prev => ({
+            ...prev,
+            [currentUsername]: currentUserInfo.current!
+          }));
+        }
+
+        const success = await addCommentToPost(commentToAdd);
+        
+        if (success) {
+          setNewComment(prev => !prev);
+        } else {
+          setComments(prevComments => 
+            prevComments ? prevComments.filter(c => c.id !== tempDisplayComment.id) : null
+          );
+          setError(true);
+          console.error("Failed to add comment");
+        }
+      } catch (err) {
+        console.error("Error adding comment:", err);
+        setComments(prevComments => 
+          prevComments ? prevComments.filter(c => c.id !== tempDisplayComment.id) : null
+        );
+        setError(true);
+      } finally {
+        setCommentText("");
+      }
     }
   };
 
   const viewMore = () => {
-    // setCategory(postData.category)
     const queryParams = new URLSearchParams({
       h: postData.category,
     }).toString();
@@ -107,137 +202,193 @@ const FocusPostComponent = (data: IPostItems) => {
     router.push(`/user-profile?${queryParams}`);
   };
 
+  const displayComments = comments ? [...comments].reverse() : [];
+
   return (
-    <div>
-      <h2 className="text-center text-2xl">Post</h2>
-      <div className="flex place-items-center p-2">
-        <div className="flex gap-2 w-full">
-          <div className="w-[50%]">
-            <div className="flex p-3 w-full gap-2 bg-[#f5f5f5]">
-              <Image
-                width={300}
-                height={300}
-                src={userData.pfp != "" ? userData.pfp : "/nofileselected.png"}
-                className="w-6 rounded-full h-6 cursor-pointer"
-                alt={`${postData.publisherName}'s profile pic`}
-                onClick={() => gotoProfile(postData.publisherName)}
-              />
-              <h2
-                onClick={() => gotoProfile(postData.publisherName)}
-                className="cursor-pointer"
-              >
-                {postData.publisherName}
-              </h2>
-            </div>
-            <Image
-              width={300}
-              height={300}
-              src={postData.image}
-              className="w-full aspect-square object-cover"
-              alt={`${postData.publisherName}'s post no.${postData.id}`}
-            />
-            <div className="flex flex-col p-3 w-full gap-1 bg-[#f5f5f5]">
-              <div className="flex flex-row gap-5">
-                <div className="flex flex-row gap-2">
-                  <button>
-                    <img
-                      className="w-[25px] cursor-pointer"
-                      src={
-                        postData.likes.includes(fetchInfo().username)
-                          ? "./icons/heartliked.png"
-                          : "./icons/heart.png"
-                      }
-                      alt="Heart Like Button Icon"
-                      onClick={addLike}
-                    />
-                  </button>
-                  <p className="font-[NeueMontreal-Medium] text-lg">
-                    {postData.likes.length}
-                  </p>
-                </div>
-                <div className="flex flex-row gap-2">
-                  <img
-                    className="w-[25px] h-[25px] cursor-pointer"
-                    src="./icons/beacon.png"
-                    alt="Beacon Comment Icon"
-                    onClick={gotoInput}
+    <div className="font-[NeueMontreal-Regular] pt-2 pb-4">
+      <div className="flex flex-col w-full">
+        <div className="flex flex-col lg:flex-row w-full">
+          <div className="w-full lg:w-3/5">
+            <div className="flex items-center justify-between w-full px-3 py-3 border-b">
+              <div className="flex items-center gap-2">
+                {userData.pfp ? (
+                  <Image
+                    width={300}
+                    height={300}
+                    src={userData.pfp}
+                    className="w-8 h-8 rounded-full object-cover cursor-pointer"
+                    alt={`${postData.publisherName}'s profile pic`}
+                    onClick={() => gotoProfile(postData.publisherName)}
                   />
-                  <p className="font-[NeueMontreal-Medium] text-lg">
-                    {comments != null && comments.length != 0
-                      ? comments.length
-                      : "0"}
-                  </p>
+                ) : (
+                  <div 
+                    className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer"
+                    onClick={() => gotoProfile(postData.publisherName)}
+                  >
+                    <User size={16} className="text-gray-500 cursor-pointer" />
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <h2
+                      onClick={() => gotoProfile(postData.publisherName)}
+                      className="cursor-pointer font-[NeueMontreal-Medium] hover:underline text-sm mr-2"
+                    >
+                      {postData.publisherName}
+                    </h2>
+                    <span className="text-xs text-gray-500 flex items-center">
+                      <Clock size={10} className="mr-1" />
+                      {new Date(postData.date).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-1">
-                <b
-                  className="cursor-pointer"
+              
+              <div className="flex items-center">
+                <div className="flex items-center gap-1 bg-gray-100 text-xs text-gray-500 px-2 py-1 rounded-full">
+                  <Tag size={10} className="text-gray-400" />
+                  <span className="font-[NeueMontreal-Medium]">{postData.category}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="w-full">
+              <Image
+                width={800}
+                height={800}
+                src={postData.image}
+                className="w-full aspect-square object-cover"
+                alt={`${postData.publisherName}'s post`}
+                priority
+              />
+            </div>
+            
+            <div className="flex flex-col px-3 py-3 w-full gap-2">
+              <div className="flex items-center gap-4">
+                <button onClick={addLike} className="flex items-center gap-1 group cursor-pointer">
+                  <Heart 
+                    size={22} 
+                    fill={postData.likes.includes(fetchInfo().username) ? "#ff3040" : "none"} 
+                    strokeWidth={2}
+                    className={`${postData.likes.includes(fetchInfo().username) ? "text-red-500" : "text-gray-700"} group-hover:scale-110 transition-transform cursor-pointer`}
+                  />
+                  <span className="font-[NeueMontreal-Medium] text-sm">
+                    {postData.likes.length}
+                  </span>
+                </button>
+                
+                <button onClick={gotoInput} className="flex items-center gap-1 group cursor-pointer">
+                  <MessageSquare 
+                    size={22} 
+                    strokeWidth={2}
+                    className="text-gray-700 group-hover:scale-110 transition-transform cursor-pointer" 
+                  />
+                  <span className="font-[NeueMontreal-Medium] text-sm">
+                    {comments != null && comments.length !== 0 ? comments.length : "0"}
+                  </span>
+                </button>
+              </div>
+              
+              <div className="flex items-start gap-2 mt-1">
+                <span
+                  className="font-[NeueMontreal-Medium] cursor-pointer hover:underline shrink-0 text-sm"
                   onClick={() => gotoProfile(postData.publisherName)}
                 >
                   {postData.publisherName}
-                </b>
-                <h3>{postData.caption}</h3>
-              </div>
-              <div className="flex gap-1 text-sm">
-                <h3>category:</h3>
-                <h3>{postData.category}</h3>
+                </span>
+                <span className="text-gray-800 text-sm">{postData.caption}</span>
               </div>
             </div>
 
-            <button
-              onClick={viewMore}
-              className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-            >
-              View More Posts Like This
-            </button>
+            <div className="px-3 pt-2 pb-3">
+              <button
+                onClick={viewMore}
+                className="bg-black w-full text-white font-[NeueMontreal-Medium] py-5 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
+              >
+                View More Posts Like This
+              </button>
+            </div>
           </div>
-          <div className="bg-[#f5f5f5] p-2 flex flex-col gap-2 w-[50%]">
-            <h1 className="text-center">Comments</h1>
-            <div className="flex gap-1">
-              <input
-                type="text"
-                ref={inputRef}
-                placeholder="Add a comment"
-                className="rounded-md bg-white text-sm p-1 w-full"
-                value={commentText}
-                maxLength={70}
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-              <div className="rounded-full w-8 h-8 flex justify-center place-items-center cursor-pointer">
-                <button
-                  onClick={
-                    commentText.trim() != "" ? addComment : () => setError(true)
-                  }
+          
+          <div className="w-full lg:w-2/5 border-l lg:min-h-[500px] flex flex-col mt-4 lg:mt-0">
+            <div className="sticky top-0 z-10 bg-white px-3 py-3 border-b">
+              <h2 className="font-[NeueMontreal-Medium]">Comments</h2>
+            </div>
+            
+            <div className="flex-1 p-3 flex flex-col gap-3 max-h-[60vh] lg:max-h-none">
+              <div className="flex items-center gap-2 border rounded-full p-1 pl-3">
+                <input
+                  type="text"
+                  ref={inputRef}
+                  placeholder="Add a comment..."
+                  className="bg-transparent text-sm w-full focus:outline-none cursor-text"
+                  value={commentText}
+                  maxLength={70}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && commentText.trim() !== '' && addComment()}
+                />
+                <button 
+                  className={`p-1.5 rounded-full flex justify-center items-center ${
+                    commentText.trim() !== '' 
+                      ? 'bg-black text-white hover:bg-gray-800 cursor-pointer'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  } transition-colors`}
+                  onClick={commentText.trim() !== '' ? addComment : () => setError(true)}
+                  disabled={commentText.trim() === ''}
                 >
-                  <Image
-                    width={100}
-                    height={100}
-                    alt="comment icon"
-                    src="/icons/addcomment.png"
-                    className="h-[25px] w-[25px] cursor-pointer p-1"
-                  />
+                  <Send size={14} className={commentText.trim() !== '' ? 'cursor-pointer' : 'cursor-not-allowed'} />
                 </button>
               </div>
+              
+              {error && (
+                <p className="text-red-500 text-xs">There was an error posting your comment</p>
+              )}
+              
+              <div className="overflow-y-auto flex-1">
+                {comments != null && comments.length !== 0 ? (
+                  <div className="flex flex-col gap-4">
+                    {displayComments.map((entry, idx) => (
+                      <div key={entry.id || idx} className="flex items-center gap-2">
+                        {commentersData[entry.username]?.pfp ? (
+                          <Image
+                            width={24}
+                            height={24}
+                            src={commentersData[entry.username].pfp}
+                            className="w-6 h-6 rounded-full object-cover cursor-pointer shrink-0"
+                            alt={`${entry.username}'s profile pic`}
+                            onClick={() => gotoProfile(entry.username)}
+                          />
+                        ) : (
+                          <div 
+                            className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer shrink-0"
+                            onClick={() => gotoProfile(entry.username)}
+                          >
+                            <User size={12} className="text-gray-500 cursor-pointer" />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <div className="flex items-start">
+                            <span
+                              className="font-[NeueMontreal-Medium] cursor-pointer hover:underline shrink-0 text-sm mr-1.5"
+                              onClick={() => gotoProfile(entry.username)}
+                            >
+                              {entry.username}
+                            </span>
+                            <span className="text-gray-800 break-words text-sm">{entry.comment}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-gray-400 py-8">
+                    <MessageSquare size={24} className="text-gray-300 mb-2" />
+                    <p className="text-sm">No comments yet</p>
+                    <p className="text-xs text-gray-400">Be the first to comment</p>
+                  </div>
+                )}
+              </div>
             </div>
-            {error && (
-              <h3 className="text-red-500 text-[12px]">Invalid Input</h3>
-            )}
-            <hr />
-            {comments != null && comments.length != 0 ? (
-              comments.reverse().map((entry, idx) => (
-                <div key={idx} className="flex gap-2">
-                  <b
-                    className="cursor-pointer"
-                    onClick={() => gotoProfile(entry.username)}
-                  >
-                    {entry.username}
-                  </b>
-                  <h3>{entry.comment}</h3>
-                </div>
-              ))
-            ) : (
-              <div className="text-center text-slate-400">no comments yet</div>
-            )}
           </div>
         </div>
       </div>
