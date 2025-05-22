@@ -87,6 +87,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
 
   const addPostClick = () => {
     if (checkToken()) {
+      if (isSidebarOpen) closeSidebar();
       setAddPost(true);
     } else {
       if (isSidebarOpen) closeSidebar();

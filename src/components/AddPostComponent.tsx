@@ -62,7 +62,6 @@ const AddPostComponent = () => {
   };
 
   const handleSubmit = async () => {
-    //Check if the file is inside of our state Variable
     console.log(file);
     if (!file) {
       alert("Please select an image to upload.");
@@ -78,7 +77,6 @@ const AddPostComponent = () => {
     formData.append("file", file);
     formData.append("fileName", uniqueFileName);
 
-    //Finally passing that formData into our Backend
     const uploadedUrl = await blobUpload(formData);
 
     if (uploadedUrl) {
@@ -105,18 +103,15 @@ const AddPostComponent = () => {
     }
   };
 
-  //normal file reader for image preview NOT added to DB
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader();
     const file = e.target.files?.[0];
 
     if (file) {
-      //when this files if turned into a string this on load function will run
       reader.onload = () => {
-        setImagePreview(String(reader.result)); //once the file is read we will store the result into our setter function
+        setImagePreview(String(reader.result));
       };
-      reader.readAsDataURL(file); //this converts the file into a bas64-encoded string
-
+      reader.readAsDataURL(file);
     }
   };
 
