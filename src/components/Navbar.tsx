@@ -62,9 +62,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
     const queryParams = new URLSearchParams({
       h: haircutName,
     }).toString();
-    if (path.includes("/directory")) {
-      window.location.reload();
-    }
     router.push(`/directory?${queryParams}`);
     setOpenCategory(null);
     closeSidebar();
@@ -625,6 +622,13 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Hair Growth Essentials
+                      </Link>
+                      <Link
+                        href="/generalknowledge#beard-care-essentials"
+                        onClick={closeSidebar}
+                        className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
+                      >
+                        Beard Care Essentials
                       </Link>
                       <Link
                         href="/generalknowledge"

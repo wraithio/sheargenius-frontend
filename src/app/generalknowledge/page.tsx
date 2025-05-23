@@ -17,6 +17,7 @@ export default function GeneralKnowledge() {
     'barber-shop-etiquette',
     'proper-hygiene',
     'hair-growth-essentials',
+    'beard-care-essentials',
     'why-mens-hair',
     'credits'
   ];
@@ -78,12 +79,12 @@ export default function GeneralKnowledge() {
         const distanceFromBottomOfViewport = viewportHeight - footerRect.top;
         sidebarRef.current.style.maxHeight = `calc(100vh - 96px - ${distanceFromBottomOfViewport}px)`;
       } else {
-        sidebarRef.current.style.maxHeight = 'calc(100vh - 96px)'; // 24px top offset + 72px for margins
+        sidebarRef.current.style.maxHeight = 'calc(100vh - 96px)';
       }
     };
     
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial calculation
+    handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -177,6 +178,7 @@ export default function GeneralKnowledge() {
                   <SidebarLink href="#barber-shop-etiquette" title="Barber Shop Etiquette" />
                   <SidebarLink href="#proper-hygiene" title="Proper Hygiene" />
                   <SidebarLink href="#hair-growth-essentials" title="Hair Growth Essentials" />
+                  <SidebarLink href="#beard-care-essentials" title="Beard Care Essentials" />
                   <SidebarLink href="#why-mens-hair" title="Why Men's Hair?" />
                   <SidebarLink href="#credits" title="Credits & Contact" />
                 </nav>
@@ -388,6 +390,45 @@ export default function GeneralKnowledge() {
                   tight hairstyles is crucial to prevent damage. Consistency
                   is key—adopting these habits regularly can significantly
                   enhance hair growth over time.
+                </p>
+              </div>
+            </section>
+            
+            <section id="beard-care-essentials" className="mb-20 scroll-mt-24">
+              <div className="group relative overflow-hidden rounded-2xl mb-8 transition-all duration-300 hover:shadow-xl">
+                <Image
+                  src="/beard-care.jpg"
+                  alt="Beard care products"
+                  width={1200}
+                  height={600}
+                  className="w-full h-64 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6 sm:p-8">
+                  <h2 className="font-[NeueMontreal-Medium] text-white text-3xl sm:text-4xl">
+                    Beard Care Essentials
+                  </h2>
+                  <p className="font-[NeueMontreal-Regular] text-gray-300 mt-2">
+                    Keep your beard looking sharp.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="prose max-w-none">
+                <p className="text-base sm:text-lg font-[NeueMontreal-Regular] text-gray-700">
+                  To maintain a healthy, well-groomed beard, start by washing
+                  it regularly with a beard-specific shampoo to keep it clean
+                  without stripping natural oils. Moisturize with a beard oil
+                  or balm to hydrate both the hair and the skin underneath,
+                  preventing dryness and irritation.
+                </p>
+                <p className="text-base sm:text-lg font-[NeueMontreal-Regular] text-gray-700 mt-4">
+                  Trim your beard regularly to maintain shape and remove split ends.
+                  Use a beard comb or brush to keep hairs aligned and to distribute
+                  oils evenly. Finally, remember to eat a balanced diet, as proper
+                  nutrition supports beard growth and strength. Essential tools include
+                  beard shampoo for cleansing, beard oil or balm for hydration,
+                  a quality comb or brush for styling, and scissors or a trimmer
+                  for shaping and maintenance.
                 </p>
               </div>
             </section>
