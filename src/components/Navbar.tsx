@@ -44,7 +44,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   };
 
   const handleTabClick = (tab: "explore" | "schedule") => {
-    if(!checkToken() && tab === "schedule") redirect("/login");
+    if (!checkToken() && tab === "schedule") redirect("/login");
     openSidebar(tab);
   };
 
@@ -113,7 +113,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
     if (isSidebarOpen) {
       closeSidebar();
     }
-  },[path]);
+  }, [path]);
 
   useEffect(() => {
     const checkUserLogin = () => {
@@ -286,10 +286,13 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
       <div className="h-16"></div>
 
       {addPost && (
-         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-           <div className="w-[90%] max-w-xl md:w-[70%] lg:w-[50%] bg-white rounded-lg relative">
-             <button className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors" onClick={() => setAddPost(false)} aria-label="Close Add Post Modal">
-
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+          <div className="w-[90%] max-w-xl md:w-[70%] lg:w-[50%] bg-white rounded-lg relative">
+            <button
+              className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors"
+              onClick={() => setAddPost(false)}
+              aria-label="Close Add Post Modal"
+            >
               <X />
             </button>
             <AddPostComponent />
@@ -344,11 +347,13 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                     <Search size={22} />
                   </button>
                   <button className="cursor-pointer" onClick={profileClick}>
+
                     {isLoggedIn && userProfile?.pfp ? (
                       <img 
                         src={userProfile.pfp} 
                         alt="Profile" 
                         className="w-[22px] h-[22px] rounded-full object-cover"
+
                       />
                     ) : (
                       <CircleUserRound size={22} />
@@ -608,6 +613,14 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
                         Barber Shop Etiquette
+                      </Link>
+                      <Link
+
+                        href="/generalknowledge#beard-care-essentials"
+                        onClick={closeSidebar}
+                        className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
+                      >
+                        Beard Care
                       </Link>
                       <Link
                         href="/generalknowledge#proper-hygiene"

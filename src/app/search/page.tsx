@@ -4,7 +4,7 @@ import PostCard from "@/components/PostCard";
 import { getAllPosts } from "@/utils/DataServices";
 import { IPostItems } from "@/utils/Interfaces";
 import { Search } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const SearchResults = () => {
@@ -44,22 +44,7 @@ const SearchResults = () => {
     // alert(`searching for ${i}`);
     setHeading(i);
     const allPosts = await getAllPosts();
-    const searchResults: IPostItems[] = [
-      {
-        id: 0,
-        userId: 0,
-        publisherName: "",
-        date: "",
-        caption: "",
-        image: "/nofileselected.png",
-        likes: [],
-        category: "",
-        isPublished: false,
-        isDeleted: true,
-        comments: null,
-      },
-    ];
-
+    const searchResults: IPostItems[] = []
     allPosts.reverse().map((post: IPostItems) => {
       if (
         post.category.toLowerCase().includes(i.toLowerCase()) ||
@@ -72,6 +57,13 @@ const SearchResults = () => {
     });
     setResults(searchResults);
   };
+
+  const loadResults = async (i:string) => {
+       const queryParams = new URLSearchParams({
+      s: i,
+    }).toString();
+    redirect(`/search?${queryParams}`);
+  }
 
   useEffect(() => {
     setHeading(searchParams.get("s") || "");
@@ -100,7 +92,7 @@ const SearchResults = () => {
           />
           <button
             className="cursor-pointer"
-            onClick={() => handleSearch(query)}
+            onClick={() => loadResults(query)}
           >
             <Search size={22} />
           </button>
@@ -155,7 +147,7 @@ const SearchResults = () => {
             </div>
           </div>
         </header>
-        {searchSuccess ? (
+        {searchSuccess || results.length != 0 ? (
           <div className="grid grid-cols-3 gap-3">
             {results.filter(post => post.isDeleted == false).map((post, idx) => (
               <PostCard key={idx} {...post} />

@@ -1,13 +1,16 @@
 'use client'
 import Link from "next/link";
+
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { checkToken } from "@/utils/DataServices";
+
 
 const Footer = () => {
   const [email, setEmail] = useState<string>("")
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+
   const pathname = usePathname();
   const isHomePage = pathname === '/';
   
@@ -25,7 +28,7 @@ const Footer = () => {
       }, 300);
     }
   }, [isHomePage]);
-
+    
   const openNavbarCategory = (category: string) => {
     window.dispatchEvent(
       new CustomEvent("openNavbarCategory", { detail: { category } })
@@ -58,6 +61,10 @@ const Footer = () => {
       }
     } else if (shouldNavigate) {
       router.push(`/#${sectionId}`);
+
+    }
+    else {
+      router.push(`/generalknowledge#${sectionId}`);
     }
   };
 
@@ -96,6 +103,7 @@ const Footer = () => {
               >
                 LOCAL BARBERS
               </a>
+
               {!isLoggedIn && (
                 <a
                   onClick={(e) => { e.preventDefault(); scrollToSection("create-account"); }}
@@ -105,24 +113,25 @@ const Footer = () => {
                   CREATE ACCOUNT
                 </a>
               )}
+
               <a
                 onClick={(e) => { e.preventDefault(); scrollToSection("barber-essentials"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#barber-essentials"
+                href="/generalknowledge#barber-essentials"
               >
                 BARBER ESSENTIALS
               </a>
               <a
                 onClick={(e) => { e.preventDefault(); scrollToSection("barber-etiquette"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#barber-etiquette"
+                href="/generalknowledge#barber-shop-etiquette"
               >
                 BARBER SHOP ETIQUETTE
               </a>
               <a
-                onClick={(e) => { e.preventDefault(); scrollToSection("clippers-crash-course"); }}
+                onClick= {(e) => { e.preventDefault(); scrollToSection("clippers-crash-course"); }}
                 className="font-[NeueMontreal-Regular] text-gray-300 hover:text-white cursor-pointer transition-colors duration-150"
-                href="#clippers-crash-course"
+                href="/generalknowledge"
               >
                 CLIPPERS CRASH COURSE
               </a>
