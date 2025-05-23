@@ -209,7 +209,7 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
       <div className="flex flex-col w-full">
         <div className="flex flex-col lg:flex-row w-full">
           <div className="w-full lg:w-3/5">
-            <div className="flex items-center justify-between w-full px-3 py-3 border-b">
+            <div className="flex items-center justify-between w-full h-14 px-3 py-3 border-b">
               <div className="flex items-center gap-2">
                 {userData.pfp ? (
                   <Image
@@ -311,7 +311,7 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
           </div>
           
           <div className="w-full lg:w-2/5 border-l lg:min-h-[500px] flex flex-col mt-4 lg:mt-0">
-            <div className="sticky top-0 z-10 bg-white px-3 py-3 border-b">
+            <div className="sticky top-0 z-10 bg-white h-14 px-3 py-3 border-b flex items-center">
               <h2 className="font-[NeueMontreal-Medium]">Comments</h2>
             </div>
             
