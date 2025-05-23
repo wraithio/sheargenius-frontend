@@ -265,9 +265,9 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
             
             <div className="flex flex-col px-3 py-3 w-full gap-2">
               <div className="flex items-center gap-4">
-                <button onClick={addLike} className="flex items-center gap-1 group cursor-pointer">
+                <button onClick={addLike} className="flex items-center gap-1.5 group cursor-pointer">
                   <Heart 
-                    size={22} 
+                    size={26} 
                     fill={postData.likes.includes(fetchInfo().username) ? "#ff3040" : "none"} 
                     strokeWidth={2}
                     className={`${postData.likes.includes(fetchInfo().username) ? "text-red-500" : "text-gray-700"} group-hover:scale-110 transition-transform cursor-pointer`}
@@ -277,9 +277,9 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
                   </span>
                 </button>
                 
-                <button onClick={gotoInput} className="flex items-center gap-1 group cursor-pointer">
+                <button onClick={gotoInput} className="flex items-center gap-1.5 group cursor-pointer">
                   <MessageSquare 
-                    size={22} 
+                    size={26} 
                     strokeWidth={2}
                     className="text-gray-700 group-hover:scale-110 transition-transform cursor-pointer" 
                   />
@@ -300,7 +300,7 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
               </div>
             </div>
 
-            <div className="px-3 pt-2 pb-3">
+            <div className="px-3 pt-2">
               <button
                 onClick={viewMore}
                 className="bg-black w-full text-white font-[NeueMontreal-Medium] py-5 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
@@ -382,7 +382,7 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-gray-400 py-8">
-                    <MessageSquare size={24} className="text-gray-300 mb-2" />
+                    <MessageSquare size={28} className="text-gray-300 mb-2" />
                     <p className="text-sm">No comments yet</p>
                     <p className="text-xs text-gray-400">Be the first to comment</p>
                   </div>
