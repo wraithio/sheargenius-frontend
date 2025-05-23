@@ -110,9 +110,10 @@ const SendRequestComponent = ({ barberName }: RatingComponentProps) => {
       isAccepted: false,
     };
     console.log(payload);
-    if (await sendRequest(payload))
-      alert("✅ Your request has been successfully sent!");
+    await sendRequest(payload)
+    alert(`✅ Your request to ${barberName} been successfully sent!`);
     window.location.reload();
+
   };
 
   return (

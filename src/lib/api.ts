@@ -113,8 +113,12 @@ export const FilterScheduleByRequest = async (username: string) => {
 
 export const acceptRequest = async (id: number) => {
   const res = await fetch(
-    `${BASE_URL}Schedule/AcceptRequest/${id}`
-  );
+    `${BASE_URL}Schedule/AcceptRequest/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
@@ -127,8 +131,12 @@ export const acceptRequest = async (id: number) => {
 
 export const declineRequest = async (id: number) => {
   const res = await fetch(
-    `${BASE_URL}Schedule/DeclineRequest/${id}`
-  );
+    `${BASE_URL}Schedule/DeclineRequest/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
@@ -155,8 +163,12 @@ export const declineRequest = async (id: number) => {
 // };
 
 export const deleteRequest = async (id: number) => {
-  const res = await fetch(`${BASE_URL}Schedule/DeleteRequest/${id}`);
-  console.log(`${BASE_URL}Schedule/DeleteRequest/${id}`);
+  const res = await fetch(`${BASE_URL}Schedule/DeleteRequest/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   if (!res.ok) {
     try {
@@ -186,6 +198,7 @@ export const sendRequest = async (request: IRequest) => {
     }
   );
   if (!res.ok) {
+    console.log("Error in sendRequest");
     const data = await res.json();
     const message = data.message;
     console.log(message);

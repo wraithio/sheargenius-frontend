@@ -95,6 +95,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
             src={profileData.pfp}
             alt={`${profileData.username} profile pic`}
             className="sm:w-28 sm:h-28 h-16 w-16 rounded-[50%]"
+            priority
           />
           <div className="flex flex-col sm:gap-1">
             <h4 className="text-slate-500 sm:text-sm text-xs">

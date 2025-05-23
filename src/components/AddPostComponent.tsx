@@ -103,6 +103,7 @@ const AddPostComponent = () => {
     }
   };
 
+
   return (
     <div className="px-3 sm:px-4 md:px-6 py-4 sm:py-5 md:py-6 w-full max-h-[90vh] overflow-y-auto">
       <h2 className="font-[NeueMontreal-Medium] text-center text-lg sm:text-xl md:text-2xl mb-4 sm:mb-5">
@@ -216,4 +217,4 @@ const AddPostComponent = () => {
   );
 };
 
-export default AddPostComponent;
+export default AddPostComponent
