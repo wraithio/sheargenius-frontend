@@ -115,7 +115,7 @@ const RatingComponent = ({ usernameToRate }: RatingComponentProps) => {
         className={`w-full font-[NeueMontreal-Medium] py-3 sm:py-4 rounded-lg text-sm sm:text-base transition-all duration-200 ${
           rating === 0
             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-            : "bg-black text-white hover:bg-gray-800 active:bg-black"
+            : "bg-black w-full text-white font-[NeueMontreal-Medium] py-5 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
         }`}
         onClick={submitRating}
         disabled={rating === 0 || isSubmitting}
