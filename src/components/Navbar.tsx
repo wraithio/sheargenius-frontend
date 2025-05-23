@@ -21,6 +21,8 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   const [addPost, setAddPost] = useState(false);
   const [popUp, setPopUp] = useState(false);
   const [error] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ username: string; pfp: string } | null>(null);
   const [activeTab, setActiveTab] = useState<"explore" | "schedule" | null>(
     null
   );
@@ -28,7 +30,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   const [query, setQuery] = useState("");
   const router = useRouter();
   const path = usePathname();
-  // console.log(path);
 
   const openSidebar = (tab: "explore" | "schedule") => {
     setActiveTab(tab);
@@ -58,7 +59,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   };
 
   const handleHaircutLinkClick = (haircutName: string) => {
-    // setCategory(haircutName);
     const queryParams = new URLSearchParams({
       h: haircutName,
     }).toString();
@@ -86,6 +86,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
 
   const addPostClick = () => {
     if (checkToken()) {
+      if (isSidebarOpen) closeSidebar();
       setAddPost(true);
     } else {
       if (isSidebarOpen) closeSidebar();
@@ -117,6 +118,25 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
     }
   }, [path]);
 
+  useEffect(() => {
+    const checkUserLogin = () => {
+      const isUserLoggedIn = checkToken();
+      setIsLoggedIn(isUserLoggedIn);
+      
+      if (isUserLoggedIn) {
+        const userInfo = fetchInfo();
+        setUserProfile({
+          username: userInfo.username,
+          pfp: userInfo.pfp || ""
+        });
+      } else {
+        setUserProfile(null);
+      }
+    };
+    
+    checkUserLogin();
+  }, []);
+
   const handleSearch = async (q: string) => {
     console.log("Search..", query);
     const result = await fetchHaircut(q);
@@ -135,7 +155,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
         setPopUp(false);
         router.push(`/user-profile?${queryParams}`);
       } else {
-        // setError(true);
         const queryParams = new URLSearchParams({
           s: q,
         }).toString();
@@ -202,7 +221,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                           <input
                             type="text"
                             placeholder="Search.."
-                            // value={query}
                             onChange={(e) =>
                               setQuery(e.target.value.toLowerCase())
                             }
@@ -230,7 +248,15 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                     </div>
                   )}
                   <button className="cursor-pointer" onClick={profileClick}>
-                    <CircleUserRound size={22} />
+                    {isLoggedIn && userProfile?.pfp ? (
+                      <img 
+                        src={userProfile.pfp} 
+                        alt="Profile" 
+                        className="w-[22px] h-[22px] rounded-full object-cover"
+                      />
+                    ) : (
+                      <CircleUserRound size={22} />
+                    )}
                   </button>
                 </div>
               </div>
@@ -324,11 +350,13 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                     <Search size={22} />
                   </button>
                   <button className="cursor-pointer" onClick={profileClick}>
-                    {checkToken() ? (
-                      <img
-                        src={fetchInfo().pfp}
-                        alt="profile pic"
-                        className="rounded-full aspect-square w-22"
+
+                    {isLoggedIn && userProfile?.pfp ? (
+                      <img 
+                        src={userProfile.pfp} 
+                        alt="Profile" 
+                        className="w-[22px] h-[22px] rounded-full object-cover"
+
                       />
                     ) : (
                       <CircleUserRound size={22} />
@@ -569,7 +597,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                   {openCategory === "general-knowledge" && (
                     <div className="mt-2 ml-8 space-y-1">
                       <Link
-                        href="/generalknowledge"
+                        href="/generalknowledge#clipper-crash-course"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
                       >
@@ -590,6 +618,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                         Barber Shop Etiquette
                       </Link>
                       <Link
+
                         href="/generalknowledge#beard-care-essentials"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
@@ -638,13 +667,15 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                       >
                         Contact
                       </Link>
-                      <Link
-                        href="/login"
-                        onClick={closeSidebar}
-                        className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
-                      >
-                        Create An Account
-                      </Link>
+                      {!isLoggedIn && (
+                        <Link
+                          href="/login"
+                          onClick={closeSidebar}
+                          className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"
+                        >
+                          Create An Account
+                        </Link>
+                      )}
                     </div>
                   )}
                 </div>
@@ -653,9 +684,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
 
             {activeTab === "schedule" && (
               <div>
-                {/* <h3 className="font-[NeueMontreal-Medium] text-xl text-center text-gray-500 mt-10">
-                  Schedule Content Goes Here
-                </h3> */}
                 <SchedulingComponent />
               </div>
             )}

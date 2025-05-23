@@ -2,13 +2,14 @@ import { ICommentInfo, IPostItems } from "@/utils/Interfaces";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import FocusPostComponent from "./FocusPostComponent";
-import { fetchInfo, getCommentsbyId } from "@/utils/DataServices";
+import { checkToken, fetchInfo, getCommentsbyId, getPostbyPostId, getToken, toggleLikes } from "@/utils/DataServices";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import { Heart, MessageSquare, X } from "lucide-react";
 
 const PostCard = (data: IPostItems) => {
   const router = useRouter();
   const [focus, setFocus] = useState<boolean>(false);
+  const [postData, setPostData] = useState<IPostItems>(data);
   const [comments, setComments] = useState<ICommentInfo[]>([
     {
       id: 0,
@@ -25,69 +26,85 @@ const PostCard = (data: IPostItems) => {
     getCommentNumber();
   }, [router, data.id]);
 
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!checkToken()) {
+      router.push('/login');
+      return;
+    } 
+    
+    await toggleLikes(postData.id, fetchInfo().username, getToken());
+    const updatedPost = await getPostbyPostId(postData.id);
+    if (updatedPost) {
+      setPostData(updatedPost);
+    }
+  };
+
+  const handleFocusLike = (updatedPost: IPostItems) => {
+    setPostData(updatedPost);
+  };
+
   return (
     <div>
       {focus && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-          <div className="w-[50%] bg-white p-2 rounded-sm relative">
-            <h3
-              className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors"
+        <div className="fixed inset-0 bg-black/75 flex justify-center items-center z-50 p-2 sm:p-4 overflow-y-auto">
+          <div className="w-full max-w-3xl bg-white rounded-lg relative shadow-xl">
+            <button
+              className="absolute top-3 right-3 z-20 p-2 rounded-full bg-gray-100 text-gray-500 hover:text-black hover:bg-gray-200 transition-colors cursor-pointer"
               onClick={() => setFocus(false)}
             >
-              <X />
-            </h3>
-            <FocusPostComponent {...data} />
+              <X size={20} className="cursor-pointer" />
+            </button>
+            <div className="max-h-[90vh] overflow-y-auto">
+              <FocusPostComponent {...postData} onLikeToggle={handleFocusLike} />
+            </div>
           </div>
         </div>
       )}
       <div
         onClick={() => setFocus(true)}
-        className="w-full aspect-square rounded-lg relative cursor-pointer overflow-hidden"
+        className="w-full aspect-square rounded-lg relative cursor-pointer overflow-hidden group transition-all duration-300 hover:shadow-lg"
       >
         <div className="bg-gray-300 text-white w-full aspect-square flex justify-center">
           <Image
-            width={300}
-            height={300}
-            src={data.image != null ? data.image : "/nofileselected.png"}
-            alt={`${data.publisherName}'s post #${data.id}`}
-            className="w-full aspect-square object-cover"
+            width={500}
+            height={500}
+            src={postData.image != null ? postData.image : "/nofileselected.png"}
+            alt={`${postData.publisherName}'s post #${postData.id}`}
+            className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105"
             priority
           />
         </div>
-        <div className="bg-[#ffffff8f] backdrop-blur-sm w-full md:h-[70px] h-[50px] lg:px-5 px-2 lg:py-2 py-1 flex place-items-center absolute bottom-0">
-          <div className="w-full">
-            <p className="font-[NeueMontreal-Medium] text-[#373738] text-sm">
-              {data.publisherName}
+        <div className="bg-gradient-to-t from-black/70 to-transparent w-full h-20 px-4 py-2 flex items-center absolute bottom-0">
+          <div className="w-full text-white">
+            <p className="font-[NeueMontreal-Medium] text-sm cursor-pointer" onClick={() => setFocus(true)}>
+              {postData.publisherName}
             </p>
 
-            <div className="flex justify-between">
-              <p className="font-[NeueMontreal-Medium] text-black ">
-                {data.category}
+            <div className="flex justify-between items-center">
+              <p className="font-[NeueMontreal-Medium] cursor-pointer" onClick={() => setFocus(true)}>
+                {postData.category}
               </p>
-              <div className="flex flex-row gap-2">
-                <div className="flex flex-row gap-1">
-                  <button>
-                    <img
-                      className="w-[25px]"
-                      src={
-                        data.likes.includes(fetchInfo().username)
-                          ? "./icons/heartliked.png"
-                          : "./icons/heart.png"
-                      }
-                      alt="Heart Like Button Icon"
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={handleLike} 
+                    className="hover:scale-110 transition-transform cursor-pointer"
+                  >
+                    <Heart 
+                      size={24} 
+                      fill={postData.likes.includes(fetchInfo().username) ? "#ff3040" : "none"} 
+                      className={`${postData.likes.includes(fetchInfo().username) ? "text-red-500" : "text-white"} cursor-pointer`}
                     />
                   </button>
-                  <p className="font-[NeueMontreal-Medium] ">
-                    {data.likes.length}
+                  <p className="font-[NeueMontreal-Medium] text-sm cursor-default">
+                    {postData.likes.length}
                   </p>
                 </div>
-                <div className="flex flex-row gap-1">
-                  <img
-                    className="w-[25px] h-[25px]"
-                    src="./icons/beacon.png"
-                    alt="Beacon Comment Icon"
-                  />
-                  <p className="font-[NeueMontreal-Medium] ">
+                <div className="flex items-center gap-1 cursor-pointer" onClick={() => setFocus(true)}>
+                  <MessageSquare size={24} className="text-white cursor-pointer" />
+                  <p className="font-[NeueMontreal-Medium] text-sm cursor-default">
                     {comments != null ? comments.length : "0"}
                   </p>
                 </div>
