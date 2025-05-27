@@ -95,39 +95,49 @@ const AddPostComponent = () => {
       };
       console.log(newPost);
       await addPostItem(newPost, getToken());
+      console.log("Post added successfully!");
       const queryParams = new URLSearchParams({
-        u: fetchInfo().username,
+        u: newPost.publisherName,
       }).toString();
-      router.push(`/search?${queryParams}`);
+      router.push(`/user-profile?${queryParams}`);
       window.location.reload();
     }
   };
-
 
   return (
     <div className="px-3 sm:px-4 md:px-6 py-4 sm:py-5 md:py-6 w-full max-h-[90vh] overflow-y-auto">
       <h2 className="font-[NeueMontreal-Medium] text-center text-lg sm:text-xl md:text-2xl mb-4 sm:mb-5">
         Create Post
       </h2>
-      
+
       <div className="mx-auto flex flex-col gap-4 sm:gap-5">
         <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-5">
           <div className="w-full md:w-2/5 flex flex-col gap-1 sm:gap-1.5">
-            <label htmlFor="pictureSelect" className="font-[NeueMontreal-Medium] text-xs sm:text-sm">
+            <label
+              htmlFor="pictureSelect"
+              className="font-[NeueMontreal-Medium] text-xs sm:text-sm"
+            >
               Image
             </label>
             <div className="aspect-square w-full bg-gray-100 rounded-md overflow-hidden border border-gray-300 flex items-center justify-center">
               <img
                 src={imagePreview}
                 alt="New post preview"
-                className={`w-full h-full ${imagePreview === "/nofileselected.png" ? "object-scale-down p-4 sm:p-6 md:p-8 opacity-50" : "object-cover"}`}
+                className={`w-full h-full ${
+                  imagePreview === "/nofileselected.png"
+                    ? "object-scale-down p-4 sm:p-6 md:p-8 opacity-50"
+                    : "object-cover"
+                }`}
               />
             </div>
           </div>
-           
+
           <div className="w-full md:w-3/5 flex flex-col gap-1 sm:gap-1.5">
             <div className="flex justify-between items-center">
-              <label htmlFor="postCaption" className="font-[NeueMontreal-Medium] text-xs sm:text-sm">
+              <label
+                htmlFor="postCaption"
+                className="font-[NeueMontreal-Medium] text-xs sm:text-sm"
+              >
                 Caption
               </label>
               <span className="font-[NeueMontreal-Medium] text-gray-500 text-xs">
@@ -163,7 +173,10 @@ const AddPostComponent = () => {
         </div>
 
         <div className="flex flex-col gap-1 sm:gap-1.5">
-          <label htmlFor="categoryStyle" className="font-[NeueMontreal-Medium] text-xs sm:text-sm">
+          <label
+            htmlFor="categoryStyle"
+            className="font-[NeueMontreal-Medium] text-xs sm:text-sm"
+          >
             Category / Style
           </label>
           <div className="relative">
@@ -217,4 +230,4 @@ const AddPostComponent = () => {
   );
 };
 
-export default AddPostComponent
+export default AddPostComponent;

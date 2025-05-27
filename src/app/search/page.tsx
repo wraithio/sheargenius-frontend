@@ -44,37 +44,56 @@ const SearchResults = () => {
     // alert(`searching for ${i}`);
     setHeading(i);
     const allPosts = await getAllPosts();
-    const searchResults: IPostItems[] = []
+    const searchResults: IPostItems[] = [];
     allPosts.reverse().map((post: IPostItems) => {
       if (
         post.category.toLowerCase().includes(i.toLowerCase()) ||
         post.publisherName.toLowerCase().includes(i.toLowerCase())
-      )
-      {
+      ) {
         searchResults.push(post);
-        setSearchSuccess(true)
+        setSearchSuccess(true);
       }
     });
     setResults(searchResults);
   };
 
-  const loadResults = async (i:string) => {
-       const queryParams = new URLSearchParams({
+  const loadResults = async (i: string) => {
+    const queryParams = new URLSearchParams({
       s: i,
     }).toString();
     redirect(`/search?${queryParams}`);
-  }
+  };
 
   useEffect(() => {
     setHeading(searchParams.get("s") || "");
-    if(searchParams.get("s") == "all posts")
-    {
-      handleSearch("")
+    if (searchParams.get("s") == "all posts") {
+      handleSearch("");
+    } else {
+      handleSearch(searchParams.get("s") || "");
     }
-    else{
-      handleSearch(searchParams.get("s") || "")
+  }, [searchActive, heading, searchParams]);
+
+  useEffect(() => {
+    if (selectedFilter === "Top Rated") {
+      setResults((prevPosts) =>
+        [...prevPosts].sort((a, b) => b.likes.length - a.likes.length)
+      );
+    } else if (selectedFilter === "Category: A-Z") {
+      setResults((prevPosts) =>
+        [...prevPosts].sort((a, b) => a.category.localeCompare(b.category))
+      );
+    } else if (selectedFilter === "Category: Z-A") {
+      setResults((prevPosts) =>
+        [...prevPosts].sort((a, b) => b.category.localeCompare(a.category))
+      );
+    } else {
+      setResults((prevPosts) =>
+        [...prevPosts].sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+      );
     }
-  }, [searchActive,heading,searchParams]);
+  }, [selectedFilter]);
 
   return (
     <div>
@@ -90,10 +109,7 @@ const SearchResults = () => {
             id="searchID"
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button
-            className="cursor-pointer"
-            onClick={() => loadResults(query)}
-          >
+          <button className="cursor-pointer" onClick={() => loadResults(query)}>
             <Search size={22} />
           </button>
         </div>
@@ -118,7 +134,7 @@ const SearchResults = () => {
               </div>
               {isDropDownOpen && (
                 <div
-                  className={`rounded-md border-gray-300 bg-white p-3 absolute top-[45px] w-[100%] shadow-md transition-all duration-700 ${
+                  className={`rounded-md z-50 border-gray-300 bg-white p-3 absolute top-[45px] w-[100%] shadow-md transition-all duration-700 ${
                     isDropDownOpen
                       ? "opacity-100 visible"
                       : "opacity-0 invisible"
@@ -148,15 +164,17 @@ const SearchResults = () => {
           </div>
         </header>
         {searchSuccess || results.length != 0 ? (
-          <div className="grid grid-cols-3 gap-3">
-            {results.filter(post => post.isDeleted == false).map((post, idx) => (
-              <PostCard key={idx} {...post} />
-            ))}
+          <div className="grid grid-cols-4 gap-1">
+            {results
+              .filter((post) => post.isDeleted == false)
+              .map((post, idx) => (
+                <PostCard key={idx} {...post} />
+              ))}
           </div>
         ) : (
-           <div className="bg-[#F5F5F5] flex justify-center place-items-center h-24 mb-8">
-                    <h3>{`No related posts for ${heading}...`}</h3>
-                  </div>
+          <div className="bg-[#F5F5F5] flex justify-center place-items-center h-24 mb-8">
+            <h3>{`No related posts for ${heading}...`}</h3>
+          </div>
         )}
       </div>
     </div>

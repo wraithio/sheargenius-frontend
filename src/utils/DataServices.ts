@@ -482,5 +482,23 @@ export const getPostsByLocation = async (location: string, token: string) => {
 
   const data = await res.json();
   return data;
+}
+
+export const findLikesByUsername = async (username:string) => {
+  const res = await fetch(`${url}Post/FindLikesByUsername/${username}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.error(message);
+    return [];
+  }
+  const data = await res.json();
+  return data;
 };
 

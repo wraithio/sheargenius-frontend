@@ -21,7 +21,6 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
   const [rating, setRating] = useState<string>("0");
   const router = useRouter();
 
-
   useEffect(() => {
     setProfileData(data);
     const division_result = data.rating / data.ratingCount.length;
@@ -75,7 +74,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
     setOpenFollowing(true);
   };
 
-   const setRatingNum = () => {
+  const setRatingNum = () => {
     const division_result = profileData.rating / profileData.ratingCount.length;
     return String(Math.round(division_result * 10) / 10);
   };
@@ -90,8 +89,8 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
       <div className="w-[60%] sm:w-[70%] flex flex-col sm:gap-2 gap-5">
         <div className="flex sm:gap-7 gap-3 h-[125px]">
           <Image
-          width={300}
-          height={300}
+            width={300}
+            height={300}
             src={profileData.pfp}
             alt={`${profileData.username} profile pic`}
             className="sm:w-28 sm:h-28 h-16 w-16 rounded-[50%]"
@@ -115,7 +114,9 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
                     : "hidden"
                 }
               >
-                <p>{profileData.ratingCount.length != 0 ? setRatingNum() : "0"}</p>
+                <p>
+                  {profileData.ratingCount.length != 0 ? setRatingNum() : "0"}
+                </p>
                 <img
                   className="w-[15px] h-[15px] hover:drop-shadow-xl"
                   src="/icons/star.png"
@@ -184,25 +185,29 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
       </div>
       <div className="w-[40%] sm:w-[30%] flex flex-col sm:gap-2 gap-5">
         <div className=" flex flex-col gap-1 h-[125px] place-content-end">
-          <button className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75" onClick={() => setSchedule(true)}>
-            Schedule
-          </button>
-           {schedule && (
-        <div className="fixed top-0 left-0 h-screen w-screen bg-[#f5f5f596] flex justify-center place-items-center z-50">
-          <div className="w-fit bg-white p-2 rounded-sm relative">
-            <h3
-              className="text-slate-600 hover:text-black cursor-pointer absolute top-2 left-3 text-2xl"
-              onClick={() => setSchedule(false)}
+          {profileData.accountType == "Barber" && (
+            <button
+              className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
+              onClick={() => setSchedule(true)}
             >
-              X
-            </h3>
-            <div className="mt-7">
-            <SendRequestComponent barberName={profileData.username} />
-
+              Schedule
+            </button>
+          )}
+          {schedule && (
+            <div className="fixed top-0 left-0 h-screen w-screen bg-[#f5f5f596] flex justify-center place-items-center z-50">
+              <div className="w-fit bg-white p-2 rounded-sm relative">
+                <h3
+                  className="text-slate-600 hover:text-black cursor-pointer absolute top-2 left-3 text-2xl"
+                  onClick={() => setSchedule(false)}
+                >
+                  X
+                </h3>
+                <div className="mt-7">
+                  <SendRequestComponent barberName={profileData.username} />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
           <button
             className="bg-blue-500 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
             onClick={follow}
@@ -211,12 +216,14 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
               ? "Unfollow"
               : "Follow"}
           </button>
-          <button
-            className="bg-red-600 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-            onClick={openRate}
-          >
-            Rate
-          </button>
+          {profileData.accountType == "Barber" && (
+            <button
+              className="bg-red-600 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
+              onClick={openRate}
+            >
+              Rate
+            </button>
+          )}
           {/* {error && (
             <p className="text-red-600 pt-2">
               you have already rated {profileData.username}
