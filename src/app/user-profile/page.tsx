@@ -36,43 +36,39 @@ const UserProfile = () => {
     pfp: "/nofileselected.png",
     isDeleted: false,
   });
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const getInfo = async() => {
-      if(searchParams.get("u")) setAccountData(await getUserData(searchParams.get("u")||""))
-    }
-    getInfo()
-  }, [searchActive,searchParams]);
-  // useEffect(() => {
-  //   if (
-  //     typeof window !== "undefined" &&
-  //     sessionStorage.getItem("AccountInfo")
-  //   ) {
-  //     setAccountData(JSON.parse(sessionStorage.getItem("AccountInfo") || "{}"));
-  //   }
-  // }, [searchActive]);
-
-  // console.log(accountData);
-
-  // const router = useRouter();
-
-  // account checking
-  // if(!checkFToken) router.push("/login")
+    const getInfo = async () => {
+      if (searchParams.get("u"))
+        setAccountData(await getUserData(searchParams.get("u") || ""));
+    };
+    getInfo();
+  }, [searchActive, searchParams]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar setSearchActive={setSearchActive} />
-      <div className="flex min-h-screen flex-col gap-2 font-[NeueMontreal-Medium] mx-5">
-        {accountData.username == fetchInfo().username ? 
-        <UserProfileCard {...accountData} />
-      :
-        <SearchProfileCard {...accountData}/>
-        }
-        <PostFeed {...accountData} />
-      </div>
-      <div className="mt-16 sm:mt-20 lg:mt-25">
-        <Footer />
+      
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col gap-8">
+          {accountData.username == fetchInfo().username ? (
+            <UserProfileCard {...accountData} />
+          ) : (
+            <SearchProfileCard {...accountData} />
+          )}
+
+          <div className="w-full">
+            <PostFeed {...accountData} />
+          </div>
+        </div>
+      </main>
+
+      <div className="mt-16 sm:mt-20 lg:mt-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50"></div>
+        <div className="relative">
+          <Footer />
+        </div>
       </div>
     </div>
   );

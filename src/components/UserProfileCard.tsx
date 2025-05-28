@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { X, Camera, MapPin, Mail, User, Calendar, AlignLeft, Smile, TextSelect, Settings, LogOut, Trash2, Type } from "lucide-react";
 
 const UserProfileCard = (info: IUserProfileInfo) => {
   const [isDropDownOpen, setDropDownOpen] = useState(false);
@@ -259,193 +260,197 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   ];
 
   return (
-    <section
-      className="font-[NeueMontreal-Medium]"
-      onClick={
-        openFollowers || openFollowing ? () => closeMenus(false) : undefined
-      }
+    <section 
+      className="font-[NeueMontreal-Medium]" 
+      onClick={openFollowers || openFollowing ? () => closeMenus(false) : undefined}
     >
       {edit ? (
-        <div className="flex flex-col gap-1 bg-[#F5F5F5] rounded-b-sm p-5">
-          {/* div when edit is selected */}
-          <button
-            className="w-fit cursor-pointer text-slate-500 hover:text-black text-2xl px-3"
-            onClick={cancelEdit}
-          >
-            X
-          </button>
-          <div className="flex justify-center">
-            <h2 className="text-2xl">Edit Profile</h2>
-          </div>
-          <div className="flex relative justify-center">
-            <Image
-              width={300}
-              height={300}
-              src={pfp == pfpPreview ? data.pfp : pfpPreview}
-              alt={`${data.username} profile pic`}
-              className="w-28 h-28 rounded-[50%]"
-            />
-            <label
-              htmlFor="pictureSelect"
-              className="absolute top-[35%] cursor-pointer"
-            >
-              <img
-                src="/imghover.png"
-                alt="edit logo image"
-                className="w-10 h-10 opacity-50 hover:opacity-100 drop-shadow-2xl"
-              />
-            </label>
+        <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
+          <div className="flex flex-col gap-6 p-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-[NeueMontreal-Medium] bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                Edit Profile
+              </h2>
+              <button
+                className="text-gray-500 hover:text-black transition-colors p-2 hover:bg-gray-100 rounded-full"
+                onClick={cancelEdit}
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-            <input
-              type="file"
-              id="pictureSelect"
-              accept="image/*,.pdf"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </div>
-          <div className="grid grid-cols-[1fr_2fr_1fr] gap-2 grid-rows-[1fr]">
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col">
-                <p className="font-[NeueMontreal-Medium] text-sm pb-1">
-                  {" "}
-                  Username{" "}
-                </p>
-                <input
-                  className="bg-[#f0ebeb] p-2 rounded-sm"
-                  type="text"
-                  placeholder="Username"
-                  value={data.username}
-                  disabled
-                />
-              </div>
-              <div className="flex flex-col">
-                <p className="font-[NeueMontreal-Medium] text-sm pb-1">
-                  {" "}
-                  Name{" "}
-                </p>
-                <input
-                  className="bg-white p-2 rounded-sm"
-                  type="text"
-                  placeholder="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col">
-                <p className="font-[NeueMontreal-Medium] text-sm pb-1">
-                  {" "}
-                  Email{" "}
-                </p>
-                <input
-                  className="bg-white p-2 rounded-sm"
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col">
-                <p className="font-[NeueMontreal-Medium] text-sm pb-1">
-                  {" "}
-                  Role{" "}
-                </p>
+            <div className="flex flex-col items-center gap-6">
+              <div className="relative group">
                 <div className="relative">
-                  <div
-                    onClick={toggleDropDown}
-                    className="bg-white flex justify-between items-center rounded-md px-4 py-2 cursor-pointer text-black"
+                  <Image
+                    width={300}
+                    height={300}
+                    src={pfp == pfpPreview ? data.pfp : pfpPreview}
+                    alt={`${data.username} profile pic`}
+                    className="w-32 h-32 rounded-full object-cover ring-4 ring-black/5"
+                  />
+                  <label
+                    htmlFor="pictureSelect"
+                    className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
                   >
-                    {accountType}
-                    <img
-                      className={`w-[25px] m-0 p-0 transition-transform duration-500 ${
-                        isDropDownOpen ? "rotate-180" : "rotate-0"
-                      }`}
-                      src="./icons/dropdown.png"
-                      alt="Drop Down Icon"
-                    />
-                  </div>
-                  {isDropDownOpen && (
+                    <Camera className="w-6 h-6 text-white" />
+                  </label>
+                </div>
+                <input
+                  type="file"
+                  id="pictureSelect"
+                  accept="image/*,.pdf"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="flex flex-col gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600 flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Username
+                  </label>
+                  <input
+                    className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
+                    type="text"
+                    value={data.username}
+                    onChange={(e) => {
+                      setData({ ...data, username: e.target.value });
+                    }}
+                    placeholder="Enter your username"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600 flex items-center gap-2">
+                    <Type className="w-4 h-4" />
+                    Name
+                  </label>
+                  <input
+                    className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600 flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Email
+                  </label>
+                  <input
+                    className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm text-gray-600 flex items-center gap-2">
+                    <Smile className="w-4 h-4" />
+                    Role
+                  </label>
+                  <div className="relative">
                     <div
-                      className={`rounded-md border-gray-300 bg-white p-3 absolute top-[45px] w-[100%] shadow-md transition-all duration-700 ${
-                        isDropDownOpen
-                          ? "opacity-100 visible"
-                          : "opacity-0 invisible"
-                      }`}
+                      onClick={toggleDropDown}
+                      className="w-full bg-white border border-gray-200 p-3 rounded-xl flex justify-between items-center cursor-pointer hover:border-gray-300 transition-colors"
                     >
-                      <div
-                        onClick={() => setType("User")}
-                        className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                      >
-                        User
-                      </div>
-                      <div
-                        onClick={() => setType("Barber")}
-                        className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                      >
-                        Barber
-                      </div>
+                      <span>{accountType}</span>
+                      <img
+                        className={`w-5 transition-transform duration-200 ${
+                          isDropDownOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                        src="./icons/dropdown.png"
+                        alt="Drop Down Icon"
+                      />
                     </div>
-                  )}
+                    {isDropDownOpen && (
+                      <div className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                        <div
+                          onClick={() => setType("User")}
+                          className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                        >
+                          User
+                        </div>
+                        <div
+                          onClick={() => setType("Barber")}
+                          className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                        >
+                          Barber
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <Link 
+                    href="/forgot-password"
+                    className="text-sm text-gray-600 hover:text-black transition-colors flex items-center gap-2"
+                  >
+                    Change your Password
+                  </Link>
                 </div>
               </div>
-              <div>
-                <p className="font-[NeueMontreal-Medium] text-sm pb-1 hover:text-slate-500 cursor-pointer">
-                  <Link href={"/forgot-password"}>Change your Password</Link>
-                </p>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-gray-600 flex items-center gap-2">
+                  <AlignLeft className="w-4 h-4" />
+                  Bio
+                </label>
+                <div className="relative">
+                  <textarea
+                    className="w-full h-full bg-white border border-gray-200 p-3 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
+                    placeholder="Tell us about yourself..."
+                    value={bio}
+                    maxLength={300}
+                    onChange={(e) => setBio(e.target.value)}
+                  />
+                  <span className="absolute bottom-2 right-2 text-xs text-gray-400">
+                    {bio.length}/300
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div className="flex flex-col gap-1">
-              <p className="font-[NeueMontreal-Medium] text-sm">
-                {" "}
-                Bio - 300 max characters{" "}
-              </p>
-
-              <textarea
-                className="bg-white p-2 rounded-sm h-full resize-none"
-                placeholder="Bio Here..."
-                value={bio}
-                maxLength={300}
-                onChange={(e) => setBio(e.target.value)}
-              ></textarea>
-            </div>
-            <div className="flex flex-col">
-              {data.accountType == "Barber" || accountType == "Barber" ? (
-                <div className="flex flex-col gap-1">
-                  <p className="font-[NeueMontreal-Medium] text-sm pb-1">
-                    {" "}
-                    Location{" "}
-                  </p>
-                  <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
+                {(data.accountType === "Barber" || accountType === "Barber") && (
+                  <div className="space-y-4">
+                    <label className="text-sm text-gray-600 flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      Location
+                    </label>
                     <input
-                      className="bg-white p-2 rounded-sm"
+                      className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
                       type="text"
                       placeholder="Barbershop Name"
                       value={shopName}
                       onChange={(e) => setShopName(e.target.value)}
                     />
                     <input
-                      className="bg-white p-2 rounded-sm"
+                      className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
                       type="text"
                       placeholder="Address"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                     />
                     <input
-                      className="bg-white p-2 rounded-sm"
+                      className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
                       type="text"
                       placeholder="City"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                     />
-                    <div className="flex flex-col">
+                    <div className="relative">
                       <div
                         onClick={toggleDropDown2}
-                        className="bg-white flex justify-between items-center rounded-md px-4 py-2 cursor-pointer text-black"
+                        className="w-full bg-white border border-gray-200 p-3 rounded-xl flex justify-between items-center cursor-pointer hover:border-gray-300 transition-colors"
                       >
-                        {state}
+                        <span>{state}</span>
                         <img
-                          className={`w-[25px] m-0 p-0 transition-transform duration-500 ${
+                          className={`w-5 transition-transform duration-200 ${
                             isDropDownOpen2 ? "rotate-180" : "rotate-0"
                           }`}
                           src="./icons/dropdown.png"
@@ -453,237 +458,221 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                         />
                       </div>
                       {isDropDownOpen2 && (
-                        <div
-                          className={`rounded-md border-gray-300 bg-white p-3 absolute z-30 w-[100%] shadow-md transition-all duration-700 h-64 overflow-scroll ${
-                            isDropDownOpen2
-                              ? "opacity-100 visible"
-                              : "opacity-0 invisible"
-                          }`}
-                        >
-                          <div>
-                            {states.map((state) => (
-                              <div
-                                key={state}
-                                onClick={() => setStateMenu(state)}
-                                className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                              >
-                                {state}
-                              </div>
-                            ))}
-                          </div>
+                        <div className="absolute z-10 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 max-h-48 overflow-y-auto">
+                          {states.map((state) => (
+                            <div
+                              key={state}
+                              onClick={() => setStateMenu(state)}
+                              className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                            >
+                              {state}
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
                     <input
-                      className="bg-white p-2 rounded-sm"
+                      className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
                       type="text"
                       placeholder="ZIP"
                       value={zip}
                       onChange={(e) => setZip(e.target.value)}
                     />
                   </div>
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          </div>
-          <button
-            className="bg-[#1500FF] text-white py-2 mt-2 rounded-md font-[NeueMontreal-Medium] text-sm hover:bg-black active:bg-[#1500FF] cursor-pointer"
-            onClick={saveEdits}
-          >
-            SAVE
-          </button>
-        </div>
-      ) : (
-        <div className="flex gap-2 bg-[#F5F5F5] rounded-b-sm p-5">
-          {/*div when edit is not selected*/}
-          <div className="w-[60%] sm:w-[70%] flex flex-col sm:gap-2 gap-5">
-            <div className="flex sm:gap-7 gap-3 h-[125px]">
-              <Image
-                width={300}
-                height={300}
-                src={data.pfp != "" ? data.pfp : "/nofileselected.png"}
-                alt={`${data.username} profile pic`}
-                className="sm:w-28 sm:h-28 h-16 w-16 rounded-[50%]"
-                priority
-              />
-              <div className="flex flex-col sm:gap-1">
-                <h4 className="text-slate-500 sm:text-sm text-xs">
-                  Joined: {data.date}
-                </h4>
-                <div className="flex gap-3 place-items-center">
-                  <h2 className="sm:text-3xl text-xl h-fit">{data.username}</h2>
-                  <h3 className="sm:text-base text-xs text-slate-400">
-                    {data.accountType}
-                  </h3>
-                  <div
-                    className={
-                      data.accountType == "Barber"
-                        ? "flex gap-1 place-items-center"
-                        : "hidden"
-                    }
-                  >
-                    <p>{data.ratingCount.length != 0 ? setRatingNum() : "0"}</p>
-                    <img
-                      className="w-[15px] h-[15px] hover:drop-shadow-xl"
-                      src="./icons/star.png"
-                      alt="Star Icon"
-                    />
-                  </div>
-                </div>
-                <h2>{data.name}</h2>
-                <div className="sm:text-base text-xs flex sm:gap-12 gap-2">
-                  <div className="relative">
-                    <h3
-                    // onClick={() => setOpenFollowers(true)}
-                    >
-                      {data.followers.length == 1
-                        ? `${data.followers.length} Follower`
-                        : `${data.followers.length} Followers`}
-                    </h3>
-                    <div
-                      className="absolute top-0 bottom-0 w-full h-full cursor-pointer "
-                      onClick={() => setFollowers()}
-                    ></div>
-                    {openFollowers && data.followers.length !== 0 && (
-                      <div className="absolute p-2 rounded-md border-1 bg-white w-60">
-                        {data.followers.map((user, index) => (
-                          <div key={index} className="flex justify-between">
-                            <h3 className="text-xl">{user}</h3>
-                            <button
-                              className="cursor-pointer hover:text-white hover:bg-black px-2 border-1"
-                              onClick={() => goToProfile(user)}
-                            >
-                              go to profile
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="relative">
-                    <h3>{data.following.length} Following</h3>
-                    <div
-                      className="absolute top-0 bottom-0 w-full h-full cursor-pointer "
-                      onClick={() => setFollowing()}
-                    ></div>
-                    {openFollowing && data.following.length !== 0 && (
-                      <div className="absolute p-2 rounded-md border-1 bg-white w-60">
-                        {data.following.map((user, index) => (
-                          <div key={index} className="flex justify-between">
-                            <h3 className="text-xl">{user}</h3>
-                            <button
-                              className="cursor-pointer hover:text-white hover:bg-black px-2 border-1"
-                              onClick={() => goToProfile(user)}
-                            >
-                              go to profile
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
             </div>
-            <div className="flex flex-col gap-2 bg-white p-2 rounded-sm w-full h-[150px]">
-              <h3>Bio</h3>
-              <textarea
-                className="h-full text-sm cursor-default resize-none"
-                value={data.bio}
-                readOnly
-                disabled
-              ></textarea>
-            </div>
+
+            <button
+              className="bg-black w-full text-white font-[NeueMontreal-Medium] py-5 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
+              onClick={saveEdits}
+            >
+              Save Changes
+            </button>
           </div>
-          <div className="w-[40%] sm:w-[30%] flex flex-col sm:gap-2 gap-5">
-            <div className=" flex flex-col gap-1 h-[125px] place-content-end">
-              {/* <button className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75">
-                User Menu
-              </button> */}
-              <button
-                className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-                onClick={toggleDropDown}
-              >
-                {isDropDownOpen ? "Close Menu" : "User Menu"}
-              </button>
-              {isDropDownOpen && (
-                <div
-                  className={`rounded-md border-gray-300 bg-white p-2 absolute top-[220px] w-[28%] shadow-md transition-all duration-700 flex flex-col gap-2 ${
-                    isDropDownOpen
-                      ? "opacity-100 visible"
-                      : "opacity-0 invisible"
-                  }`}
-                >
-                  <button
-                    className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-                    onClick={enableEdit}
-                  >
-                    Edit Profile
-                  </button>
-                  <button
-                    className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-                    onClick={logout}
-                  >
-                    Log Out
-                  </button>
-                  <button
-                    className="bg-red-600 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-                    onClick={() => setOpenState(true)}
-                  >
-                    Delete Account
-                  </button>
-                  {openState && (
-                    <div className="fixed top-0 left-0 w-full min-h-screen bg-[#807a7a80] z-10 flex justify-center place-items-center font-[NeueMontreal-Regular">
-                      <div className="w-[25%] bg-white p-4 flex flex-col gap-2 rounded-sm">
-                        <p className="text-sm">
-                          Are you sure you want to delete your account?
-                        </p>
-                        <p className="text-[11px]">
-                          This action CANNOT be undone!
-                        </p>
-                        <div className="flex gap-3 justify-between">
-                          <button
-                            className="bg-red-600 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-                            onClick={() => deleteAccount(data)}
-                          >
-                            Yes, delete account
-                          </button>
-                          <button
-                            className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-                            onClick={() => setOpenState(false)}
-                          >
-                            No, dismiss
-                          </button>
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
+          <div className="p-8">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-1">
+                <div className="relative w-full">
+                  <div className="absolute top-0 right-0 flex items-center gap-4">
+                    <button
+                      onClick={enableEdit}
+                      className="group relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <Settings className="w-5 h-5 text-gray-600 hover:text-black transition-colors" />
+                      <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        Edit Profile
+                      </span>
+                    </button>
+                    <button
+                      onClick={logout}
+                      className="group relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <LogOut className="w-5 h-5 text-gray-600 hover:text-black transition-colors" />
+                      <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        Logout
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setOpenState(true)}
+                      className="group relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <Trash2 className="w-5 h-5 text-red-500 hover:text-red-600 transition-colors" />
+                      <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        Delete Account
+                      </span>
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-8">
+                    <div className="relative group">
+                      <Image
+                        width={300}
+                        height={300}
+                        src={data.pfp !== "" ? data.pfp : "/nofileselected.png"}
+                        alt={`${data.username} profile pic`}
+                        className="w-36 h-36 rounded-full object-cover ring-4 ring-black/5"
+                        priority
+                      />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-gray-500 text-sm">
+                          <Calendar className="w-4 h-4" />
+                          <span>Joined: {data.date}</span>
                         </div>
+                        <div className="flex items-center gap-3">
+                          <h2 className="text-3xl sm:text-4xl font-[NeueMontreal-Medium] bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                            {data.username}
+                          </h2>
+                          <div className={`px-3 mt-1.5 py-1 rounded-full text-xs font-medium ${
+                            data.accountType === "Barber" 
+                              ? "bg-blue-100 text-blue-800 ring-1 ring-blue-800/10" 
+                              : "bg-gray-100 text-gray-800 ring-1 ring-gray-800/10"
+                          }`}>
+                            {data.accountType}
+                          </div>
+                        </div>
+                        <h3 className="text-xl text-gray-600">{data.name}</h3>
+                      </div>
+                      
+                      <div className="flex gap-6 text-sm">
+                        <div className="relative">
+                          <button 
+                            onClick={() => setFollowers()} 
+                            className="text-gray-600 hover:text-black transition-colors"
+                          >
+                            {data.followers.length === 1
+                              ? `${data.followers.length} Follower`
+                              : `${data.followers.length} Followers`}
+                          </button>
+                          {openFollowers && data.followers.length !== 0 && (
+                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
+                              {data.followers.map((user, index) => (
+                                <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
+                                  <span className="font-medium">{user}</span>
+                                  <button
+                                    onClick={() => goToProfile(user)}
+                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+                                  >
+                                    View Profile
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="relative">
+                          <button 
+                            onClick={() => setFollowing()} 
+                            className="text-gray-600 hover:text-black transition-colors"
+                          >
+                            {data.following.length} Following
+                          </button>
+                          {openFollowing && data.following.length !== 0 && (
+                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
+                              {data.following.map((user, index) => (
+                                <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
+                                  <span className="font-medium">{user}</span>
+                                  <button
+                                    onClick={() => goToProfile(user)}
+                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+                                  >
+                                    View Profile
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                    <h3 className="text-lg mb-3">Bio</h3>
+                    <p className="text-gray-600 leading-relaxed">{data.bio || "No bio yet."}</p>
+                  </div>
+                </div>
+
+                <div className="md:w-72 flex flex-col gap-4">
+                  {data.accountType === "Barber" && (
+                    <div className="bg-gray-50 rounded-2xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <MapPin className="w-5 h-5 text-gray-600" />
+                        <h3 className="text-lg">Location</h3>
+                      </div>
+                      <div className="space-y-2">
+                        <h2 className="text-xl font-medium">{data.shopName}</h2>
+                        <p className="text-gray-600">{data.address}</p>
+                        <p className="text-gray-600">
+                          {data.city}, {data.state} {data.zip}
+                        </p>
                       </div>
                     </div>
                   )}
                 </div>
-              )}
-              {/* <Link href="/schedule">
-                <button className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75">
-                  My Schedule
-                </button>
-              </Link> */}
-            </div>
-            <div
-              className={
-                data.accountType == "Barber"
-                  ? "flex flex-col bg-white p-2 rounded-sm w-full h-[150px]"
-                  : "hidden"
-              }
-            >
-              <h3>Location</h3>
-              <h2 className="text-lg">{data.shopName}</h2>
-              <h2>{data.address}</h2>
-              <div className="flex gap-1">
-                <h2>{data.city},</h2>
-                <h2>{data.state}</h2>
               </div>
-              <h2>{data.zip}</h2>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {openState && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full animate-in zoom-in-95 relative">
+            <button
+              onClick={() => setOpenState(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
+                <Trash2 className="w-6 h-6 text-red-500" />
+              </div>
+              <h3 className="text-2xl font-[NeueMontreal-Medium] mb-2">Delete Account</h3>
+              <p className="text-gray-600 mb-2">Are you sure you want to delete your account?</p>
+              <p className="text-red-500 text-sm mb-8">This action CANNOT be undone!</p>
+              
+              <div className="flex flex-col w-full gap-3">
+                <button
+                  onClick={() => deleteAccount(data)}
+                  className="w-full bg-red-500 text-white py-4 rounded-xl hover:bg-red-600 active:bg-red-500 transition-colors font-[NeueMontreal-Medium]"
+                >
+                  Yes, delete my account
+                </button>
+                <button
+                  onClick={() => setOpenState(false)}
+                  className="w-full bg-gray-100 text-gray-600 py-4 rounded-xl hover:bg-gray-200 active:bg-gray-100 transition-colors font-[NeueMontreal-Medium]"
+                >
+                  No, keep my account
+                </button>
+              </div>
             </div>
           </div>
         </div>

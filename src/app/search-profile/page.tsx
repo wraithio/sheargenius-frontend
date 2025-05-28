@@ -38,19 +38,30 @@ const SearchProfile = () => {
   useEffect(() => {
     const getData = async (name: string) => {
       setData(await getUserData(name));
-      //   console.log(await getProfileUserData(name) as INewUser)
     };
     getData(getCategory());
   }, [searchActive]);
+
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar setSearchActive={setSearchActive} />
-      <div className="flex min-h-screen flex-col gap-2 font-[NeueMontreal-Medium] mx-5">
-        <SearchProfileCard {...data} />
-        
-        <PostFeed {...data} />
+      
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col gap-8">
+          <SearchProfileCard {...data} />
+          
+          <div className="w-full">
+            <PostFeed {...data} />
+          </div>
+        </div>
+      </main>
+
+      <div className="mt-16 sm:mt-20 lg:mt-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50"></div>
+        <div className="relative">
+          <Footer />
+        </div>
       </div>
-      <Footer />
     </div>
   );
 };

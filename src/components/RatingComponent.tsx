@@ -93,9 +93,9 @@ const RatingComponent = ({ usernameToRate }: RatingComponentProps) => {
   };
 
   return (
-    <div className="p-5 sm:p-6 md:p-8 bg-white rounded-xl shadow-sm">
+    <div className="p-5 sm:p-6 md:p-8">
       <h2 className="font-[NeueMontreal-Medium] text-center text-xl sm:text-2xl mb-6 sm:mb-8">
-        How would you rate <span className="font-[NeueMontreal-Bold]">{usernameToRate}</span>?
+        How would you rate <span className="font-[NeueMontreal-Bold] text-red-500">{usernameToRate}</span>?
       </h2>
       
       <div className="flex justify-center items-center gap-1 sm:gap-2 md:gap-3 mb-8 sm:mb-10" 
