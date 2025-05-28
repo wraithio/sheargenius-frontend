@@ -348,34 +348,34 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
                 {comments != null && comments.length !== 0 ? (
                   <div className="flex flex-col gap-4">
                     {displayComments.map((entry, idx) => (
-                      <div key={entry.id || idx} className="flex items-center gap-2">
-                        {commentersData[entry.username]?.pfp ? (
-                          <Image
-                            width={24}
-                            height={24}
-                            src={commentersData[entry.username].pfp}
-                            className="w-6 h-6 rounded-full object-cover cursor-pointer shrink-0"
-                            alt={`${entry.username}'s profile pic`}
-                            onClick={() => gotoProfile(entry.username)}
-                          />
-                        ) : (
-                          <div 
-                            className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer shrink-0"
-                            onClick={() => gotoProfile(entry.username)}
-                          >
-                            <User size={12} className="text-gray-500 cursor-pointer" />
-                          </div>
-                        )}
-                        <div className="flex-1">
-                          <div className="flex items-start">
-                            <span
-                              className="font-[NeueMontreal-Medium] cursor-pointer hover:underline shrink-0 text-sm mr-1.5"
+                      <div key={entry.id || idx} className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                          {commentersData[entry.username]?.pfp ? (
+                            <Image
+                              width={24}
+                              height={24}
+                              src={commentersData[entry.username].pfp}
+                              className="w-6 h-6 rounded-full object-cover cursor-pointer shrink-0"
+                              alt={`${entry.username}'s profile pic`}
+                              onClick={() => gotoProfile(entry.username)}
+                            />
+                          ) : (
+                            <div 
+                              className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer shrink-0"
                               onClick={() => gotoProfile(entry.username)}
                             >
-                              {entry.username}
-                            </span>
-                            <span className="text-gray-800 break-words text-sm">{entry.comment}</span>
-                          </div>
+                              <User size={12} className="text-gray-500 cursor-pointer" />
+                            </div>
+                          )}
+                          <span
+                            className="font-[NeueMontreal-Medium] cursor-pointer hover:underline text-sm"
+                            onClick={() => gotoProfile(entry.username)}
+                          >
+                            {entry.username}
+                          </span>
+                        </div>
+                        <div className="pl-8">
+                          <span className="text-gray-800 break-words text-sm">{entry.comment}</span>
                         </div>
                       </div>
                     ))}
