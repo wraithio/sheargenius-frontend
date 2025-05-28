@@ -13,6 +13,27 @@ const PostFeed = (data: IUserProfileInfo) => {
   const [isDropDownOpen, setDropDownOpen] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("Most Recent");
+
+//   const [activeTab, setActiveTab] = useState("posts");
+//   const [posts, setPosts] = useState<IPostItems[]>([]);
+//   const [likedPosts, setLikedPosts] = useState<IPostItems[]>([]);
+
+//   useEffect(() => {
+//     const asyncGetPosts = async (id: number) => {
+//       if (id !== 0) {
+//         const userPosts = await getUserPosts(id);
+//         setPosts(userPosts.filter((post: IPostItems) => !post.isDeleted));
+        
+//         // Filter liked posts
+//         const liked = userPosts.filter((post: IPostItems) => 
+//           post.likes && post.likes.includes(data.id) && !post.isDeleted
+//         );
+//         setLikedPosts(liked);
+//       }
+//     };
+//     asyncGetPosts(data.id);
+//   }, [data.id, data.username]);
+
   const [posts, setPosts] = useState<IPostItems[]>([
     {
       id: 0,
@@ -132,6 +153,7 @@ const PostFeed = (data: IUserProfileInfo) => {
   //   }
   // };
 
+
   const toggleDropDown = () => {
     setDropDownOpen(!isDropDownOpen);
   };
@@ -141,7 +163,36 @@ const PostFeed = (data: IUserProfileInfo) => {
     setDropDownOpen(false);
   };
 
+  const handleTabClick = (tab: "posts" | "likes") => {
+    setActiveTab(tab);
+  };
+
   return (
+
+<!--     <div className="w-full">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div className="flex gap-4">
+          <button
+            onClick={() => handleTabClick("posts")}
+            className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
+              activeTab === "posts"
+                ? "bg-black text-white"
+                : "bg-transparent text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            Posts
+          </button>
+          <button
+            onClick={() => handleTabClick("likes")}
+            className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
+              activeTab === "likes"
+                ? "bg-black text-white"
+                : "bg-transparent text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            Likes
+          </button> -->
+
     <div>
       {" "}
       <div className="flex justify-between mt-12 mb-4 place-items-center">
@@ -156,25 +207,46 @@ const PostFeed = (data: IUserProfileInfo) => {
               Likes
             </h3>
           </Button>
+
         </div>
-        <div className="flex gap-2 place-items-center">
-          <h3>Sort by:</h3>
-          <div className="flex flex-col mt-1">
-            <div className="flex flex-col">
-              <div className="relative">
+
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-gray-600">Sort by:</span>
+          <div className="relative">
+            <button
+              onClick={toggleDropDown}
+              className="bg-gray-50 hover:bg-gray-100 flex items-center gap-2 rounded-full px-4 py-2 transition-colors"
+            >
+              <span>{selectedFilter}</span>
+              <img
+                className={`w-4 transition-transform duration-200 ${
+                  isDropDownOpen ? "rotate-180" : "rotate-0"
+                }`}
+                src="./icons/dropdown.png"
+                alt="Drop Down Icon"
+              />
+            </button>
+            {isDropDownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-[5]">
                 <div
-                  onClick={toggleDropDown}
-                  className="bg-[#f5f5f5] flex justify-between items-center rounded-md px-4 py-2 cursor-pointer"
+                  onClick={() => selectFilter("Top Rated")}
+                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
-                  {selectedFilter}
-                  <img
-                    className={`w-[25px] m-0 p-0 transition-transform duration-500 ${
-                      isDropDownOpen ? "rotate-180" : "rotate-0"
-                    }`}
-                    src="./icons/dropdown.png"
-                    alt="Drop Down Icon"
-                  />
+                  Top Rated
                 </div>
+                <div
+                  onClick={() => selectFilter("Category: A-Z")}
+                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer transition-colors"
+                >
+                  Category: A-Z
+                </div>
+                <div
+                  onClick={() => selectFilter("Category: Z-A")}
+                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer transition-colors"
+                >
+                  Category: Z-A
+                </div>
+
                 {isDropDownOpen && (
                   <div
                     className={`rounded-md border-gray-300 bg-white p-3 absolute z-50 top-[45px] w-[100%] shadow-md transition-all duration-700 ${
@@ -204,10 +276,49 @@ const PostFeed = (data: IUserProfileInfo) => {
                   </div>
                 )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
+      
+// {activeTab === "posts" && ( 
+       // <>
+         // {posts.length === 0 ? (
+          //  <div className="bg-gray-50 rounded-2xl py-12 px-4 text-center">
+             // <p className="text-gray-600">
+             //   {data.username === fetchInfo().username
+             //     ? "Click the + above to create your first post!"
+             //     : "No posts yet..."}
+            //  </p>
+           // </div>
+         // ) : (
+           // <div className="grid grid-cols-1 max-[860px]:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            //  {posts.map((post, idx) => (
+             //   <div key={idx} className="w-full">
+             //     <PostCard {...post} />
+            //    </div>
+           //   ))}
+           // </div>
+         // )}
+     //   </>
+     // )}
+
+     // {activeTab === "likes" && (
+       // <>
+        //  {likedPosts.length === 0 ? (
+           // <div className="bg-gray-50 rounded-2xl py-12 px-4 text-center">
+           //   <p className="text-gray-600">No liked posts yet...</p>
+           // </div>
+         // ) : (
+          //  <div className="grid grid-cols-1 max-[860px]:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            //  {likedPosts.map((post, idx) => (
+             //   <div key={idx} className="w-full">
+                 // <PostCard {...post} />
+              //  </div>
+             // ))}
+            //</div>
+         // )}
+       //</>
       {posts.length == 0 ? (
         <div className="bg-[#F5F5F5] flex justify-center place-items-center h-24 mb-8">
           <h3>

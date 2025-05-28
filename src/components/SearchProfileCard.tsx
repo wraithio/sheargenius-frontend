@@ -10,12 +10,12 @@ import React, { useEffect, useState } from "react";
 import RatingComponent from "./RatingComponent";
 import Image from "next/image";
 import SendRequestComponent from "./SendRequestComponent";
+import { UserRoundMinus, UserRoundPlus, Sparkles, ClipboardPlus, Star } from "lucide-react";
 
 const SearchProfileCard = (data: IUserProfileInfo) => {
   const [profileData, setProfileData] = useState<IUserProfileInfo>(data);
   const [rate, setRate] = useState<boolean>(false);
   const [schedule, setSchedule] = useState<boolean>(false);
-  // const [error, setError] = useState<boolean>(false);
   const [openFollowing, setOpenFollowing] = useState(false);
   const [openFollowers, setOpenFollowers] = useState(false);
   const [rating, setRating] = useState<string>("0");
@@ -44,8 +44,6 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
     if (!profileData.ratingCount.includes(fetchInfo().username)) {
       setRate(true);
     } else {
-      //need front-end styling for when error is set to true
-      // setError(true);
       alert(`you have already rated ${profileData.username}`);
     }
   };
@@ -80,192 +78,225 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
   };
 
   return (
-    <div
-      className="flex gap-2 bg-[#F5F5F5] rounded-b-sm p-5"
-      onClick={
-        openFollowers || openFollowing ? () => closeMenus(false) : undefined
-      }
+    <section 
+      className="font-[NeueMontreal-Medium]"
+      onClick={openFollowers || openFollowing ? () => closeMenus(false) : undefined}
     >
-      <div className="w-[60%] sm:w-[70%] flex flex-col sm:gap-2 gap-5">
-        <div className="flex sm:gap-7 gap-3 h-[125px]">
-          <Image
-            width={300}
-            height={300}
-            src={profileData.pfp}
-            alt={`${profileData.username} profile pic`}
-            className="sm:w-28 sm:h-28 h-16 w-16 rounded-[50%]"
-            priority
-          />
-          <div className="flex flex-col sm:gap-1">
-            <h4 className="text-slate-500 sm:text-sm text-xs">
-              Joined: {profileData.date}
-            </h4>
-            <div className="flex gap-3 place-items-center">
-              <h2 className="sm:text-3xl text-xl h-fit">
-                {profileData.username}
-              </h2>
-              <h3 className="sm:text-base text-xs text-slate-400">
-                {profileData.accountType}
-              </h3>
-              <div
-                className={
-                  profileData.accountType == "Barber"
-                    ? "flex gap-1 place-items-center"
-                    : "hidden"
-                }
-              >
-                <p>
-                  {profileData.ratingCount.length != 0 ? setRatingNum() : "0"}
-                </p>
-                <img
-                  className="w-[15px] h-[15px] hover:drop-shadow-xl"
-                  src="/icons/star.png"
-                  alt="Star Icon"
-                />
-              </div>
-            </div>
-            <h2>{profileData.name}</h2>
-            <div className="sm:text-base text-xs flex sm:gap-12 gap-2">
-              <div className="relative">
-                <h3
-                // onClick={() => setOpenFollowers(true)}
-                >
-                  {profileData.followers.length} Followers
-                </h3>
-                <div
-                  className="absolute top-0 bottom-0 w-full h-full cursor-pointer "
-                  onClick={() => setFollowers()}
-                ></div>
-                {openFollowers && profileData.followers.length !== 0 && (
-                  <div className="absolute p-2 rounded-md border-1 bg-white w-60">
-                    {profileData.followers.map((user, index) => (
-                      <div key={index} className="flex justify-between">
-                        <h3 className="text-xl">{user}</h3>
-                        <button
-                          className="cursor-pointer hover:text-white hover:bg-black px-2 border-1"
-                          onClick={() => goToProfile(user)}
-                        >
-                          go to profile
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
 
-              <div className="relative">
-                <h3>{profileData.following.length} Following</h3>
-                <div
-                  className="absolute top-0 bottom-0 w-full h-full cursor-pointer "
-                  onClick={() => setFollowing()}
-                ></div>
-                {openFollowing && profileData.following.length !== 0 && (
-                  <div className="absolute p-2 rounded-md border-1 bg-white w-60">
-                    {profileData.following.map((user, index) => (
-                      <div key={index} className="flex justify-between">
-                        <h3 className="text-xl">{user}</h3>
-                        <button
-                          className="cursor-pointer hover:text-white hover:bg-black px-2 border-1"
-                          onClick={() => goToProfile(user)}
-                        >
-                          go to profile
-                        </button>
-                      </div>
-                    ))}
+      <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
+        <div className="p-8">
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="flex-1">
+              <div className="relative w-full">
+                <div className="absolute top-0 right-0 flex items-center gap-4">
+                  <button
+                    onClick={() => setSchedule(true)}
+                    className="group relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <ClipboardPlus className="w-5 h-5 text-gray-600 hover:text-black transition-colors" />
+                    <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Schedule Appointment
+                    </span>
+                  </button>
+                  <button
+                    onClick={follow}
+                    className="group relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    {profileData.followers.includes(loggedInUsername) ? (
+                      <>
+                        <UserRoundMinus className="w-5 h-5 text-red-500 hover:text-red-600 transition-colors" />
+                        <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          Unfollow
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <UserRoundPlus className="w-5 h-5 text-blue-500 hover:text-blue-600 transition-colors" />
+                        <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          Follow
+                        </span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={openRate}
+                    className="group relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <Sparkles className="w-5 h-5 text-yellow-500 hover:text-yellow-600 transition-colors" />
+                    <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Rate Barber
+                    </span>
+                  </button>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-8">
+                  <div className="relative group">
+                    <Image
+                      width={300}
+                      height={300}
+                      src={profileData.pfp}
+                      alt={`${profileData.username} profile pic`}
+                      className="w-36 h-36 rounded-full object-cover ring-4 ring-black/5"
+                      priority
+                    />
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-2 bg-white p-2 rounded-sm w-full h-[150px]">
-          <h3>Bio</h3>
-          <h3>{profileData.bio}</h3>
-        </div>
-      </div>
-      <div className="w-[40%] sm:w-[30%] flex flex-col sm:gap-2 gap-5">
-        <div className=" flex flex-col gap-1 h-[125px] place-content-end">
-          {profileData.accountType == "Barber" && (
-            <button
-              className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-              onClick={() => setSchedule(true)}
-            >
-              Schedule
-            </button>
-          )}
-          {schedule && (
-            <div className="fixed top-0 left-0 h-screen w-screen bg-[#f5f5f596] flex justify-center place-items-center z-50">
-              <div className="w-fit bg-white p-2 rounded-sm relative">
-                <h3
-                  className="text-slate-600 hover:text-black cursor-pointer absolute top-2 left-3 text-2xl"
-                  onClick={() => setSchedule(false)}
-                >
-                  X
-                </h3>
-                <div className="mt-7">
-                  <SendRequestComponent barberName={profileData.username} />
+                  <div className="flex flex-col gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-gray-500 text-sm">
+                        <span>Joined: {profileData.date}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-3xl sm:text-4xl font-[NeueMontreal-Medium] bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                          {profileData.username}
+                        </h2>
+                        <div className={`px-3 mt-1.5 py-1 rounded-full text-xs font-medium ${
+                          profileData.accountType === "Barber" 
+                            ? "bg-blue-100 text-blue-800 ring-1 ring-blue-800/10" 
+                            : "bg-gray-100 text-gray-800 ring-1 ring-gray-800/10"
+                        }`}>
+                          {profileData.accountType}
+                        </div>
+                        {profileData.accountType === "Barber" && (
+                          <div className="flex items-center gap-1 px-3 py-1 bg-yellow-50 rounded-full mt-1.5">
+                            <span className="text-yellow-700 text-sm">
+                              {profileData.ratingCount.length !== 0 ? setRatingNum() : "0"}
+                            </span>
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          </div>
+                        )}
+                      </div>
+                      <h3 className="text-xl text-gray-600">{profileData.name}</h3>
+                    </div>
+                    
+                    <div className="flex gap-6 text-sm">
+                      <div className="relative">
+                        <button 
+                          onClick={() => setFollowers()} 
+                          className="text-gray-600 hover:text-black transition-colors"
+
+                        >
+                          {profileData.followers.length === 1
+                            ? `${profileData.followers.length} Follower`
+                            : `${profileData.followers.length} Followers`}
+                        </button>
+                        {openFollowers && profileData.followers.length !== 0 && (
+                          <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
+                            {profileData.followers.map((user, index) => (
+                              <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
+                                <span className="font-medium">{user}</span>
+                                <button
+                                  onClick={() => goToProfile(user)}
+                                  className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+                                >
+                                  View Profile
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <button 
+                          onClick={() => setFollowing()} 
+                          className="text-gray-600 hover:text-black transition-colors"
+                        >
+                          {profileData.following.length} Following
+                        </button>
+                        {openFollowing && profileData.following.length !== 0 && (
+                          <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
+                            {profileData.following.map((user, index) => (
+                              <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
+                                <span className="font-medium">{user}</span>
+                                <button
+                                  onClick={() => goToProfile(user)}
+                                  className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+                                >
+                                  View Profile
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-8 mt-8">
+                  <div className="flex-1 bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                    <h3 className="text-lg mb-3">Bio</h3>
+                    <p className="text-gray-600 leading-relaxed">{profileData.bio || "No bio yet."}</p>
+                  </div>
+
+                  {profileData.accountType === "Barber" && (
+                    <div className="lg:w-80 bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                      <h3 className="text-lg mb-4">Location</h3>
+                      <div className="space-y-2">
+                        <h2 className="text-xl font-medium">{profileData.shopName}</h2>
+                        <p className="text-gray-600">{profileData.address}</p>
+                        <p className="text-gray-600">
+                          {profileData.city}, {profileData.state} {profileData.zip}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-          )}
-          <button
-            className="bg-blue-500 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-            onClick={follow}
-          >
-            {profileData.followers.includes(loggedInUsername)
-              ? "Unfollow"
-              : "Follow"}
-          </button>
-          {profileData.accountType == "Barber" && (
-            <button
-              className="bg-red-600 w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75"
-              onClick={openRate}
-            >
-              Rate
-            </button>
-          )}
-          {/* {error && (
-            <p className="text-red-600 pt-2">
-              you have already rated {profileData.username}
-            </p>
-          // )} */}
-          {rate && (
-            <div className="fixed inset-0 h-screen w-screen bg-black/60 flex justify-center items-center z-50 p-4">
-              <div className="w-[100%] max-w-md sm:w-[70%] md:w-[60%] lg:w-[50%] bg-white p-4 pt-10 sm:pt-12 rounded-lg relative shadow-md">
-                <button
-                  className="absolute top-2 left-2 p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors"
-                  onClick={() => setRate(false)}
-                  aria-label="Close Rating Modal"
-                >
-                  <img
-                    className="w-5 h-5 sm:w-6 sm:h-6"
-                    src="/icons/cross-small.png"
-                    alt="Close"
-                  />
-                </button>
-                <RatingComponent usernameToRate={profileData.username} />
-              </div>
-            </div>
-          )}
-        </div>
-        <div
-          className={
-            profileData.accountType == "Barber"
-              ? "flex flex-col bg-white p-2 rounded-sm w-full h-[150px]"
-              : "hidden"
-          }
-        >
-          <h3>Location</h3>
-          <h2 className="text-lg">{profileData.shopName}</h2>
-          <h2>{profileData.address}</h2>
-          <div className="flex gap-1">
-            <h2>{profileData.city},</h2>
-            <h2>{profileData.state}</h2>
           </div>
-          <h2>{profileData.zip}</h2>
         </div>
       </div>
-    </div>
+
+
+      {schedule && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full animate-in zoom-in-95 relative">
+            <button
+              onClick={() => setSchedule(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <img
+                className="w-5 h-5"
+                src="/icons/cross-small.png"
+                alt="Close"
+              />
+            </button>
+            <SendRequestComponent barberName={profileData.username} />
+          </div>
+        </div>
+      )}
+
+      {rate && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full animate-in zoom-in-95 relative">
+            <button
+              onClick={() => setRate(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <img
+                className="w-5 h-5"
+                src="/icons/cross-small.png"
+                alt="Close"
+              />
+            </button>
+            <RatingComponent usernameToRate={profileData.username} />
+
+//            profileData.accountType == "Barber"
+//               ? "flex flex-col bg-white p-2 rounded-sm w-full h-[150px]"
+//               : "hidden"
+//           }
+//         >
+//           <h3>Location</h3>
+//           <h2 className="text-lg">{profileData.shopName}</h2>
+//           <h2>{profileData.address}</h2>
+//           <div className="flex gap-1">
+//             <h2>{profileData.city},</h2>
+//             <h2>{profileData.state}</h2>
+
+          </div>
+        </div>
+      )}
+    </section>
   );
 };
 

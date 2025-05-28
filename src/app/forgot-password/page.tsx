@@ -136,7 +136,7 @@ const ForgotPassword = () => {
       <div className="flex-6/10">
         <img
           className="w-[1000px] h-[100vh] object-cover"
-          src="./loginregister-img.jpg"
+          src="./loginregister-img.webp"
           alt=""
         />
       </div>
