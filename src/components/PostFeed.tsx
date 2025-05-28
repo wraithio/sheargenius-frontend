@@ -115,9 +115,9 @@ const PostFeed = (data: IUserProfileInfo) => {
     // }
   }, [showLikes]);
 
-  useEffect(() => {
-    console.log("posts feed: ", posts);
-  }, [posts]);
+  // useEffect(() => {
+  //   console.log("posts feed: ", posts);
+  // }, [posts]);
 
   useEffect(() => {
     if (selectedFilter === "Top Rated") {
@@ -171,7 +171,7 @@ const PostFeed = (data: IUserProfileInfo) => {
     //       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     //         <div className="flex gap-4">
     //           <button
-    //             onClick={() => handleTabClick("posts")}
+    //             onClick={() => setShowLikes(false)}
     //             className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
     //               activeTab === "posts"
     //                 ? "bg-black text-white"
@@ -181,7 +181,7 @@ const PostFeed = (data: IUserProfileInfo) => {
     //             Posts
     //           </button>
     //           <button
-    //             onClick={() => handleTabClick("likes")}
+    //             onClick={() => {() => setShowLikes(true)}>
     //             className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
     //               activeTab === "likes"
     //                 ? "bg-black text-white"
@@ -195,16 +195,26 @@ const PostFeed = (data: IUserProfileInfo) => {
       {" "}
       <div className="flex justify-between mt-12 mb-4 place-items-center">
         <div className="flex gap-8">
-          <Button className="shadow-none rounded-[2px] bg-transparent text-block h-fit p-0 px-1 hover:text-white hover:bg-black">
-            <h3 className="text-lg" onClick={() => setShowLikes(false)}>
-              Posts
-            </h3>
-          </Button>
-          <Button className="shadow-none rounded-[2px] bg-transparent text-block h-fit p-0 px-1 hover:text-white hover:bg-black">
-            <h3 className="text-lg" onClick={() => setShowLikes(true)}>
-              Likes
-            </h3>
-          </Button>
+          <button
+                onClick={() => setShowLikes(false)}
+                className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
+                  showLikes === false
+                    ? "bg-black text-white"
+                    : "bg-transparent text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                Posts
+              </button>
+              <button
+                onClick={() => setShowLikes(true)}
+                className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
+                  showLikes === true
+                    ? "bg-black text-white"
+                    : "bg-transparent text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                Likes
+              </button>
         </div>
 
         <div className="flex items-center gap-2 text-sm">
@@ -296,7 +306,7 @@ const PostFeed = (data: IUserProfileInfo) => {
         </div>
       ) : (
         <div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 max-[860px]:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {/* {showLikes ? (
             <div className="grid grid-cols-4 gap-3">
               {likedPosts
