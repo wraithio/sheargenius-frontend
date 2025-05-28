@@ -82,6 +82,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
       className="font-[NeueMontreal-Medium]"
       onClick={openFollowers || openFollowing ? () => closeMenus(false) : undefined}
     >
+
       <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
         <div className="p-8">
           <div className="flex flex-col md:flex-row gap-8">
@@ -172,6 +173,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
                         <button 
                           onClick={() => setFollowers()} 
                           className="text-gray-600 hover:text-black transition-colors"
+
                         >
                           {profileData.followers.length === 1
                             ? `${profileData.followers.length} Follower`
@@ -245,6 +247,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
         </div>
       </div>
 
+
       {schedule && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full animate-in zoom-in-95 relative">
@@ -277,6 +280,19 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
               />
             </button>
             <RatingComponent usernameToRate={profileData.username} />
+
+//            profileData.accountType == "Barber"
+//               ? "flex flex-col bg-white p-2 rounded-sm w-full h-[150px]"
+//               : "hidden"
+//           }
+//         >
+//           <h3>Location</h3>
+//           <h2 className="text-lg">{profileData.shopName}</h2>
+//           <h2>{profileData.address}</h2>
+//           <div className="flex gap-1">
+//             <h2>{profileData.city},</h2>
+//             <h2>{profileData.state}</h2>
+
           </div>
         </div>
       )}

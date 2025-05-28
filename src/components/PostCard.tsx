@@ -9,7 +9,8 @@ import { Heart, MessageSquare, X } from "lucide-react";
 const PostCard = (data: IPostItems) => {
   const router = useRouter();
   const [focus, setFocus] = useState<boolean>(false);
-  const [postData, setPostData] = useState<IPostItems>(data);
+    const [newdata, setdata] = useState<IPostItems>(data);
+
   const [comments, setComments] = useState<ICommentInfo[]>([
     {
       id: 0,
@@ -34,15 +35,16 @@ const PostCard = (data: IPostItems) => {
       return;
     } 
     
-    await toggleLikes(postData.id, fetchInfo().username, getToken());
-    const updatedPost = await getPostbyPostId(postData.id);
+    await toggleLikes(data.id, fetchInfo().username, getToken());
+    const updatedPost = await getPostbyPostId(data.id);
     if (updatedPost) {
-      setPostData(updatedPost);
+      setdata(updatedPost);
     }
   };
 
   const handleFocusLike = (updatedPost: IPostItems) => {
-    setPostData(updatedPost);
+    setdata(updatedPost);
+    console.log(newdata);
   };
 
   return (
@@ -57,7 +59,7 @@ const PostCard = (data: IPostItems) => {
               <X size={20} className="cursor-pointer" />
             </button>
             <div className="max-h-[90vh] overflow-y-auto">
-              <FocusPostComponent {...postData} onLikeToggle={handleFocusLike} />
+              <FocusPostComponent {...data} onLikeToggle={handleFocusLike} />
             </div>
           </div>
         </div>
@@ -70,8 +72,8 @@ const PostCard = (data: IPostItems) => {
           <Image
             width={500}
             height={500}
-            src={postData.image != null ? postData.image : "/nofileselected.png"}
-            alt={`${postData.publisherName}'s post #${postData.id}`}
+            src={data.image != null ? data.image : "/nofileselected.png"}
+            alt={`${data.publisherName}'s post #${data.id}`}
             className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105"
             priority
           />
@@ -79,12 +81,12 @@ const PostCard = (data: IPostItems) => {
         <div className="bg-gradient-to-t from-black/70 to-transparent w-full h-20 px-4 py-2 flex items-center absolute bottom-0">
           <div className="w-full text-white">
             <p className="font-[NeueMontreal-Medium] text-sm cursor-pointer" onClick={() => setFocus(true)}>
-              {postData.publisherName}
+              {data.publisherName}
             </p>
 
             <div className="flex justify-between items-center">
               <p className="font-[NeueMontreal-Medium] cursor-pointer" onClick={() => setFocus(true)}>
-                {postData.category}
+                {data.category}
               </p>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
@@ -94,12 +96,12 @@ const PostCard = (data: IPostItems) => {
                   >
                     <Heart 
                       size={24} 
-                      fill={postData.likes.includes(fetchInfo().username) ? "#ff3040" : "none"} 
-                      className={`${postData.likes.includes(fetchInfo().username) ? "text-red-500" : "text-white"} cursor-pointer`}
+                      fill={data.likes.includes(fetchInfo().username) ? "#ff3040" : "none"} 
+                      className={`${data.likes.includes(fetchInfo().username) ? "text-red-500" : "text-white"} cursor-pointer`}
                     />
                   </button>
                   <p className="font-[NeueMontreal-Medium] text-sm cursor-default">
-                    {postData.likes.length}
+                    {data.likes.length}
                   </p>
                 </div>
                 <div className="flex items-center gap-1 cursor-pointer" onClick={() => setFocus(true)}>
