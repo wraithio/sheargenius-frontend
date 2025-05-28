@@ -314,8 +314,9 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                     Username
                   </label>
                   <input
-                    className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
+                    className="w-full bg-gray-100 border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow"
                     type="text"
+                    disabled
                     value={data.username}
                     onChange={(e) => {
                       setData({ ...data, username: e.target.value });

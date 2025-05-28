@@ -391,6 +391,26 @@ export const toggleLikes = async (postId: number, username: string, token: strin
   return data.success;
 };
 
+export const changePassword = async (payload:IUserInfo,token:string ) => {
+  const res = await fetch(`${url}User/UpdatePassword`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.log(message);
+    return false;
+  }
+  const data = await res.json();
+  //returns true and successfully changed password
+  return data.success;
+};
+
 export const fetchHaircut = async (cut: string) => {
   const response = await fetch("/Haircuts.json");
   const data = await response.json();

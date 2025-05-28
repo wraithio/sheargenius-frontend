@@ -116,7 +116,7 @@ const ProfileCard = (data: IUserProfileInfo) => {
          {renderStars(rating)}
       </div>
 
-      <div className="flex max-[475px]:flex hidden mt-3 justify-center gap-1">
+      <div className="max-[475px]:flex hidden mt-3 justify-center gap-1">
          {renderStars(rating)}
       </div>
       
