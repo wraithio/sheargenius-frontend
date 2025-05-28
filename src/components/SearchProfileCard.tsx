@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import RatingComponent from "./RatingComponent";
 import Image from "next/image";
 import SendRequestComponent from "./SendRequestComponent";
+import FollowModal from "./FollowModal";
 import {
   UserRoundMinus,
   UserRoundPlus,
@@ -22,8 +23,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
   const [profileData, setProfileData] = useState<IUserProfileInfo>(data);
   const [rate, setRate] = useState<boolean>(false);
   const [schedule, setSchedule] = useState<boolean>(false);
-  const [openFollowing, setOpenFollowing] = useState(false);
-  const [openFollowers, setOpenFollowers] = useState(false);
+  const [showFollowModal, setShowFollowModal] = useState(false);
   const [rating, setRating] = useState<string>("0");
   const router = useRouter();
 
@@ -63,33 +63,13 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
     router.push(`/user-profile?${queryParams}`);
   };
 
-  const closeMenus = (b: boolean) => {
-    setOpenFollowers(b);
-    setOpenFollowing(b);
-  };
-
-  const setFollowers = () => {
-    setOpenFollowers(true);
-    setOpenFollowing(false);
-  };
-
-  const setFollowing = () => {
-    setOpenFollowers(false);
-    setOpenFollowing(true);
-  };
-
   const setRatingNum = () => {
     const division_result = profileData.rating / profileData.ratingCount.length;
     return String(Math.round(division_result * 10) / 10);
   };
 
   return (
-    <section
-      className="font-[NeueMontreal-Medium]"
-      onClick={
-        openFollowers || openFollowing ? () => closeMenus(false) : undefined
-      }
-    >
+    <section className="font-[NeueMontreal-Medium]">
       <div className="rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
         <div className="p-8">
           <div className="flex flex-col md:flex-row gap-8">
@@ -186,62 +166,20 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
                     </div>
 
                     <div className="flex gap-6 text-sm">
-                      <div className="relative">
-                        <button
-                          onClick={() => setFollowers()}
-                          className="text-gray-600 hover:text-black transition-colors"
-                        >
-                          {profileData.followers.length === 1
-                            ? `${profileData.followers.length} Follower`
-                            : `${profileData.followers.length} Followers`}
-                        </button>
-                        {openFollowers &&
-                          profileData.followers.length !== 0 && (
-                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
-                              {profileData.followers.map((user, index) => (
-                                <div
-                                  key={index}
-                                  className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl"
-                                >
-                                  <span className="font-medium">{user}</span>
-                                  <button
-                                    onClick={() => goToProfile(user)}
-                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-                                  >
-                                    View Profile
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                      </div>
-                      <div className="relative">
-                        <button
-                          onClick={() => setFollowing()}
-                          className="text-gray-600 hover:text-black transition-colors"
-                        >
-                          {profileData.following.length} Following
-                        </button>
-                        {openFollowing &&
-                          profileData.following.length !== 0 && (
-                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
-                              {profileData.following.map((user, index) => (
-                                <div
-                                  key={index}
-                                  className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl"
-                                >
-                                  <span className="font-medium">{user}</span>
-                                  <button
-                                    onClick={() => goToProfile(user)}
-                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-                                  >
-                                    View Profile
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                      </div>
+                      <button
+                        onClick={() => setShowFollowModal(true)}
+                        className="text-gray-600 hover:text-black transition-colors"
+                      >
+                        {profileData.followers.length === 1
+                          ? `${profileData.followers.length} Follower`
+                          : `${profileData.followers.length} Followers`}
+                      </button>
+                      <button
+                        onClick={() => setShowFollowModal(true)}
+                        className="text-gray-600 hover:text-black transition-colors"
+                      >
+                        {profileData.following.length} Following
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -275,6 +213,15 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
           </div>
         </div>
       </div>
+
+      <FollowModal
+        isOpen={showFollowModal}
+        onClose={() => setShowFollowModal(false)}
+        followers={profileData.followers}
+        following={profileData.following}
+        onViewProfile={goToProfile}
+        isOwnProfile={false}
+      />
 
       {schedule && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">

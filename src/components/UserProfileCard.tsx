@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { X, Camera, MapPin, Mail, User, Calendar, AlignLeft, Smile, TextSelect, Settings, LogOut, Trash2, Type } from "lucide-react";
+import FollowModal from "./FollowModal";
 
 const UserProfileCard = (info: IUserProfileInfo) => {
   const [isDropDownOpen, setDropDownOpen] = useState(false);
@@ -25,9 +26,9 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   const [zip, setZip] = useState<string>(info.zip);
   const [bio, setBio] = useState<string>(info.bio);
   const [file, setFile] = useState<File | null>(null);
-  // const [rating, setRating] = useState<string>("");
   const [data, setData] = useState<IUserProfileInfo>({ ...info });
   const router = useRouter();
+  const [showFollowModal, setShowFollowModal] = useState(false);
 
   const setRatingNum = () => {
     const division_result = data.rating / data.ratingCount.length;
@@ -57,54 +58,27 @@ const UserProfileCard = (info: IUserProfileInfo) => {
 
   const cancelEdit = () => {
     setEdit(false);
-    // reset input fields
   };
 
   const handlePicSubmit = async () => {
-    //Prevent default so our app doesn't reload on submitting
-    // e.preventDefault();
-
-    //Check if the file is inside of our state Variable
     if (!file) {
-      // alert('Please select a file to upload.');
       return null;
     }
-    //A Unique file name so data isn't being overwritten in our blob
     const uniqueFileName = `${Date.now()}-${file.name}`;
 
-    //New Form Data Object to append our file and file name
     const formData = new FormData();
     formData.append("file", file);
     formData.append("fileName", uniqueFileName);
 
-    //Finally passing that formData into our Backend
     const uploadedUrl = await blobUpload(formData);
 
     if (uploadedUrl) {
       console.log("File uploaded at:", uploadedUrl);
-      // You can now store this URL in your component state or send it to your backend
     }
     return uploadedUrl;
   };
 
   const saveEdits = async () => {
-    // //Check if the file is inside of our state Variable
-    // if (!file) {
-    //   alert("Please select file to upload.");
-    //   return;
-    // }
-    // //A Unique file name so data isn't being overwritten in our blob
-    // const uniqueFileName = `${Date.now()}-${file.name}`;
-
-    // //New Form Data Object to append our file and file name
-    // const formData = new FormData();
-    // formData.append("file", file);
-    // formData.append("fileName", uniqueFileName);
-
-    // //Finally passing that formData into our Backend
-    // const uploadedUrl = await blobUpload(formData);
-
-    // if (uploadedUrl) {
     const newEditedUser: IUserProfileInfo = {
       id: 0,
       username: data.username,
@@ -139,7 +113,6 @@ const UserProfileCard = (info: IUserProfileInfo) => {
       router.push("/user-profile");
       cancelEdit();
       setData(newEditedUser);
-      // window.location.reload();
     } else {
       alert("Editing Failed");
     }
@@ -176,11 +149,10 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     const file = e.target.files?.[0];
 
     if (file) {
-      //when this files if turned into a string this on load function will run
       reader.onload = () => {
-        setPfpPreview(String(reader.result)); //once the file is read we will store the result into our setter function
+        setPfpPreview(String(reader.result));
       };
-      reader.readAsDataURL(file); //this converts the file into a bas64-encoded string
+      reader.readAsDataURL(file);
     }
   };
 
@@ -189,21 +161,6 @@ const UserProfileCard = (info: IUserProfileInfo) => {
       u: name,
     }).toString();
     router.push(`/user-profile?${queryParams}`);
-  };
-
-  const closeMenus = (b: boolean) => {
-    setOpenFollowers(b);
-    setOpenFollowing(b);
-  };
-
-  const setFollowers = () => {
-    setOpenFollowers(true);
-    setOpenFollowing(false);
-  };
-
-  const setFollowing = () => {
-    setOpenFollowers(false);
-    setOpenFollowing(true);
   };
 
   const states = [
@@ -260,10 +217,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   ];
 
   return (
-    <section 
-      className="font-[NeueMontreal-Medium]" 
-      onClick={openFollowers || openFollowing ? () => closeMenus(false) : undefined}
-    >
+    <section className="font-[NeueMontreal-Medium]">
       {edit ? (
         <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
           <div className="flex flex-col gap-6 p-6">
@@ -560,54 +514,20 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                       </div>
                       
                       <div className="flex gap-6 text-sm">
-                        <div className="relative">
-                          <button 
-                            onClick={() => setFollowers()} 
-                            className="text-gray-600 hover:text-black transition-colors"
-                          >
-                            {data.followers.length === 1
-                              ? `${data.followers.length} Follower`
-                              : `${data.followers.length} Followers`}
-                          </button>
-                          {openFollowers && data.followers.length !== 0 && (
-                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
-                              {data.followers.map((user, index) => (
-                                <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
-                                  <span className="font-medium">{user}</span>
-                                  <button
-                                    onClick={() => goToProfile(user)}
-                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-                                  >
-                                    View Profile
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <div className="relative">
-                          <button 
-                            onClick={() => setFollowing()} 
-                            className="text-gray-600 hover:text-black transition-colors"
-                          >
-                            {data.following.length} Following
-                          </button>
-                          {openFollowing && data.following.length !== 0 && (
-                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
-                              {data.following.map((user, index) => (
-                                <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
-                                  <span className="font-medium">{user}</span>
-                                  <button
-                                    onClick={() => goToProfile(user)}
-                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-                                  >
-                                    View Profile
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                        <button
+                          onClick={() => setShowFollowModal(true)}
+                          className="text-gray-600 hover:text-black transition-colors"
+                        >
+                          {data.followers.length === 1
+                            ? `${data.followers.length} Follower`
+                            : `${data.followers.length} Followers`}
+                        </button>
+                        <button
+                          onClick={() => setShowFollowModal(true)}
+                          className="text-gray-600 hover:text-black transition-colors"
+                        >
+                          {data.following.length} Following
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -637,6 +557,15 @@ const UserProfileCard = (info: IUserProfileInfo) => {
           </div>
         </div>
       )}
+
+      <FollowModal
+        isOpen={showFollowModal}
+        onClose={() => setShowFollowModal(false)}
+        followers={data.followers}
+        following={data.following}
+        onViewProfile={goToProfile}
+        isOwnProfile={true}
+      />
 
       {openState && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
