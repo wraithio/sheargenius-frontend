@@ -61,10 +61,10 @@ const Login = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-white">
       <div className="fixed top-4 left-4 sm:top-6 sm:left-6 z-10">
-        <p className="font-[NeueMontreal-Medium] text-lg lg:text-xl text-white lg:text-black">
+       <p className="font-[NeueMontreal-Medium] text-lg lg:text-xl text-white lg:text-black">
           {" "}
-          SHEARGENIUS{" "}
-        </p>
+           SHEARGENIUS{" "}
+        </p> 
       </div>
 
       <div
