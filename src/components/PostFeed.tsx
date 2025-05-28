@@ -315,7 +315,7 @@ const PostFeed = (data: IUserProfileInfo) => {
             </div>
           )} */}
             {posts
-              .filter((post) => post.isDeleted == false)
+              .filter((post) => post.isDeleted == false && post.isPublished == true)
               .map((post, idx) => (
                 <PostCard key={idx} {...post} />
               ))}

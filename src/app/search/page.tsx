@@ -166,7 +166,7 @@ const SearchResults = () => {
         {searchSuccess || results.length != 0 ? (
           <div className="grid grid-cols-4 gap-1">
             {results
-              .filter((post) => post.isDeleted == false)
+              .filter((post) => post.isDeleted == false && post.isPublished == true)
               .map((post, idx) => (
                 <PostCard key={idx} {...post} />
               ))}

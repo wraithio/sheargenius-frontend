@@ -12,7 +12,6 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-
 const Register = () => {
   const [isDropDownOpen, setDropDownOpen] = useState(false);
   const [isDropDownOpen2, setDropDownOpen2] = useState(false);
@@ -37,10 +36,8 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
 
-
-
   const router = useRouter();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   const toggleDropDown = () => {
     setDropDownOpen(!isDropDownOpen);
@@ -75,7 +72,6 @@ const Register = () => {
     setIsSecurityModalOpen(false);
   };
 
-
   const evaluatePasswordStrength = (pwd: string) => {
     let strength = 0;
     if (pwd.length >= 8) strength++;
@@ -88,7 +84,6 @@ const Register = () => {
     if (strength === 3 || strength === 4) return "Moderate";
     return "Strong";
   };
-
 
   const handleSubmit = async () => {
     if (
@@ -119,7 +114,6 @@ const Register = () => {
       alert("Passwords do not match.");
       return;
     }
-
 
     console.log(getFormattedDate());
     const newEditedUser: INewUser = {
@@ -275,17 +269,18 @@ const Register = () => {
 
   useEffect(() => {
     if (searchParams.size != 0 && searchParams.get("presetEmail")) {
-      setEmail(searchParams.get("presetEmail") || "")
+      setEmail(searchParams.get("presetEmail") || "");
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-white">
-      <div className="fixed top-4 left-4 sm:top-6 sm:left-6 z-20">
-        <p className="font-[NeueMontreal-Medium] text-lg lg:text-xl text-white lg:text-black">
-          {" "}
-          SHEARGENIUS{" "}
-        </p>
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20">
+        <Link href={"/"} className="cursor-pointer">
+          <p className="font-[NeueMontreal-Medium] text-lg lg:text-xl text-white lg:text-black">
+            SHEARGENIUS
+          </p>
+        </Link>
       </div>
 
       <div
@@ -319,6 +314,7 @@ const Register = () => {
                   className={inputBaseClass}
                   type="text"
                   placeholder="Name"
+                   maxLength={20}
                   onChange={(e) => setName(e.target.value)}
                   required
                   aria-label="Name"
@@ -332,6 +328,7 @@ const Register = () => {
                 <input
                   className={inputBaseClass}
                   type="text"
+                  maxLength={20}
                   placeholder="Username"
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -343,16 +340,16 @@ const Register = () => {
                   {" "}
                   Email{" "}
                 </p>
-                {searchParams.get("presetEmail") ?
-                  (<input
+                {searchParams.get("presetEmail") ? (
+                  <input
                     className={inputBaseClass}
                     type="email"
                     placeholder="Email"
                     onChange={(e) => setEmail(e.target.value)}
                     value={searchParams.get("presetEmail") || ""}
-                  />)
-                  :
-                  (<input
+                  />
+                ) : (
+                  <input
                     className={inputBaseClass}
                     type="email"
                     placeholder="Email"
@@ -360,20 +357,22 @@ const Register = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     aria-label="Email"
                   />
-                  )}
-
+                )}
               </div>
 
-
               <div className="flex flex-col relative">
-                <p className="font-[NeueMontreal-Medium] text-sm pb-1">Password</p>
+                <p className="font-[NeueMontreal-Medium] text-sm pb-1">
+                  Password
+                </p>
                 <input
                   className={`${inputBaseClass} pr-10`}
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    setPasswordStrength(evaluatePasswordStrength(e.target.value));
+                    setPasswordStrength(
+                      evaluatePasswordStrength(e.target.value)
+                    );
                   }}
                   value={password}
                   required
@@ -382,31 +381,37 @@ const Register = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-9 text-gray-500 hover:text-black"
+                  className="absolute right-3 top-[50%] text-gray-500 hover:text-black cursor-pointer"
                   aria-label="Toggle password visibility"
                 >
-                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  {showPassword ? (
+                    <FaEyeSlash size={20} />
+                  ) : (
+                    <FaEye size={20} />
+                  )}
                 </button>
 
                 {password && (
                   <>
                     <div className="h-2 mt-1 rounded bg-gray-200">
                       <div
-                        className={`h-full rounded transition-all duration-300 ${passwordStrength === "Strong"
+                        className={`h-full rounded transition-all duration-300 ${
+                          passwordStrength === "Strong"
                             ? "bg-green-500 w-full"
                             : passwordStrength === "Moderate"
-                              ? "bg-yellow-500 w-2/3"
-                              : "bg-red-500 w-1/3"
-                          }`}
+                            ? "bg-yellow-500 w-2/3"
+                            : "bg-red-500 w-1/3"
+                        }`}
                       ></div>
                     </div>
                     <span
-                      className={`text-xs mt-1 ${passwordStrength === "Strong"
+                      className={`text-xs mt-1 ${
+                        passwordStrength === "Strong"
                           ? "text-green-600"
                           : passwordStrength === "Moderate"
-                            ? "text-yellow-600"
-                            : "text-red-600"
-                        }`}
+                          ? "text-yellow-600"
+                          : "text-red-600"
+                      }`}
                     >
                       Strength: {passwordStrength}
                     </span>
@@ -414,11 +419,10 @@ const Register = () => {
                 )}
               </div>
 
-
-
-
               <div className="flex flex-col relative">
-                <p className="font-[NeueMontreal-Medium] text-sm pb-1">Confirm Password</p>
+                <p className="font-[NeueMontreal-Medium] text-sm pb-1">
+                  Confirm Password
+                </p>
                 <input
                   className={`${inputBaseClass} pr-10`}
                   type={showConfirmPassword ? "text" : "password"}
@@ -431,10 +435,14 @@ const Register = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-9 text-gray-500 hover:text-black"
+                  className="absolute right-3 top-[50%] text-gray-500 hover:text-black cursor-pointer"
                   aria-label="Toggle confirm password visibility"
                 >
-                  {showConfirmPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  {showConfirmPassword ? (
+                    <FaEyeSlash size={20} />
+                  ) : (
+                    <FaEye size={20} />
+                  )}
                 </button>
 
                 {confirmPassword && password !== confirmPassword && (
@@ -444,8 +452,6 @@ const Register = () => {
                 )}
               </div>
 
-
-
               <div className="flex flex-col">
                 <p className="font-[NeueMontreal-Medium] text-sm pb-1">
                   {" "}
@@ -454,25 +460,28 @@ const Register = () => {
                 <div className="relative">
                   <div
                     onClick={toggleDropDown}
-                    className={`${dropdownTriggerClass} ${selectedRole === "User / Barber"
-                      ? "text-gray-500"
-                      : "text-black"
-                      }`}
+                    className={`${dropdownTriggerClass} ${
+                      selectedRole === "User / Barber"
+                        ? "text-gray-500"
+                        : "text-black"
+                    }`}
                   >
                     {selectedRole}
                     <img
-                      className={`w-[20px] sm:w-[25px] transition-transform duration-300 ${isDropDownOpen ? "rotate-180" : "rotate-0"
-                        }`}
+                      className={`w-[20px] sm:w-[25px] transition-transform duration-300 ${
+                        isDropDownOpen ? "rotate-180" : "rotate-0"
+                      }`}
                       src="/icons/dropdown.png"
                       alt="Drop Down Icon"
                     />
                   </div>
                   {isDropDownOpen && (
                     <div
-                      className={`rounded-md border border-gray-200 bg-white p-2 absolute top-full mt-1 w-full shadow-lg transition-opacity duration-300 z-30 ${isDropDownOpen
-                        ? "opacity-100 visible"
-                        : "opacity-0 invisible"
-                        }`}
+                      className={`rounded-md border border-gray-200 bg-white p-2 absolute top-full mt-1 w-full shadow-lg transition-opacity duration-300 z-30 ${
+                        isDropDownOpen
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible"
+                      }`}
                     >
                       <div
                         onClick={() => selectRole("User")}
@@ -492,10 +501,11 @@ const Register = () => {
               </div>
 
               <div
-                className={`${selectedRole === "Barber"
-                  ? "flex flex-col gap-3 mt-2 border-t border-gray-200 pt-3"
-                  : "hidden"
-                  }`}
+                className={`${
+                  selectedRole === "Barber"
+                    ? "flex flex-col gap-3 mt-2 border-t border-gray-200 pt-3"
+                    : "hidden"
+                }`}
               >
                 <div className="flex flex-col">
                   <p className="font-[NeueMontreal-Medium] text-sm pb-1">
@@ -558,23 +568,26 @@ const Register = () => {
                   <div className="relative">
                     <div
                       onClick={toggleDropDown3}
-                      className={`${dropdownTriggerClass} ${state === "State" ? "text-gray-500" : "text-black"
-                        }`}
+                      className={`${dropdownTriggerClass} ${
+                        state === "State" ? "text-gray-500" : "text-black"
+                      }`}
                     >
                       {state}
                       <img
-                        className={`w-[20px] sm:w-[25px] transition-transform duration-300 ${isDropDownOpen3 ? "rotate-180" : "rotate-0"
-                          }`}
+                        className={`w-[20px] sm:w-[25px] transition-transform duration-300 ${
+                          isDropDownOpen3 ? "rotate-180" : "rotate-0"
+                        }`}
                         src="/icons/dropdown.png"
                         alt="Drop Down Icon"
                       />
                     </div>
                     {isDropDownOpen3 && (
                       <div
-                        className={`rounded-md border border-gray-200 bg-white p-2 absolute top-full mt-1 w-full shadow-lg transition-opacity duration-300 z-30 max-h-60 overflow-y-auto ${isDropDownOpen3
-                          ? "opacity-100 visible"
-                          : "opacity-0 invisible"
-                          }`}
+                        className={`rounded-md border border-gray-200 bg-white p-2 absolute top-full mt-1 w-full shadow-lg transition-opacity duration-300 z-30 max-h-60 overflow-y-auto ${
+                          isDropDownOpen3
+                            ? "opacity-100 visible"
+                            : "opacity-0 invisible"
+                        }`}
                       >
                         {states.map((stateItem) => (
                           <div
@@ -648,7 +661,7 @@ const Register = () => {
         </div>
       </div>
 
-      <div className="hidden lg:block lg:w-6/10 lg:h-screen">
+      <div className="hidden lg:block lg:w-6/10">
         <img
           className="w-full h-full object-cover"
           src="/loginregister-img.webp"
@@ -681,25 +694,28 @@ const Register = () => {
                 <div className="relative">
                   <div
                     onClick={toggleDropDown2}
-                    className={`${dropdownTriggerClass} ${securityQuestion === "-please select-"
-                      ? "text-gray-500"
-                      : "text-black"
-                      }`}
+                    className={`${dropdownTriggerClass} ${
+                      securityQuestion === "-please select-"
+                        ? "text-gray-500"
+                        : "text-black"
+                    }`}
                   >
                     {securityQuestion}
                     <img
-                      className={`w-[20px] sm:w-[25px] transition-transform duration-300 ${isDropDownOpen2 ? "rotate-180" : "rotate-0"
-                        }`}
+                      className={`w-[20px] sm:w-[25px] transition-transform duration-300 ${
+                        isDropDownOpen2 ? "rotate-180" : "rotate-0"
+                      }`}
                       src="/icons/dropdown.png"
                       alt="Drop Down Icon"
                     />
                   </div>
                   {isDropDownOpen2 && (
                     <div
-                      className={`rounded-md border border-gray-200 bg-white p-2 absolute top-full mt-1 w-full shadow-lg transition-opacity duration-300 z-50 ${isDropDownOpen2
-                        ? "opacity-100 visible"
-                        : "opacity-0 invisible"
-                        }`}
+                      className={`rounded-md border border-gray-200 bg-white p-2 absolute top-full mt-1 w-full shadow-lg transition-opacity duration-300 z-50 ${
+                        isDropDownOpen2
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible"
+                      }`}
                     >
                       <div
                         onClick={() =>

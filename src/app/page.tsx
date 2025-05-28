@@ -129,7 +129,7 @@ export default function Home() {
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {posts.slice(0, 3).map((post, index) => (
+            {posts.sort((a, b) => b.likes.length - a.likes.length).slice(0, 3).map((post, index) => (
               <div key={post.id && post.id !== 0 ? post.id : `post-${index}`}>
                 <PostCard {...post} />
               </div>
