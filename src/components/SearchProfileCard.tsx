@@ -83,7 +83,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
       onClick={openFollowers || openFollowing ? () => closeMenus(false) : undefined}
     >
 
-      <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
+      <div className="rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
         <div className="p-8">
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex-1">
@@ -281,7 +281,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
             </button>
             <RatingComponent usernameToRate={profileData.username} />
 
-//            profileData.accountType == "Barber"
+{/* //            profileData.accountType == "Barber"
 //               ? "flex flex-col bg-white p-2 rounded-sm w-full h-[150px]"
 //               : "hidden"
 //           }
@@ -291,7 +291,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
 //           <h2>{profileData.address}</h2>
 //           <div className="flex gap-1">
 //             <h2>{profileData.city},</h2>
-//             <h2>{profileData.state}</h2>
+//             <h2>{profileData.state}</h2> */}
 
           </div>
         </div>

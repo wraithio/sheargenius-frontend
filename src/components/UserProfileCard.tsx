@@ -492,7 +492,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
+        <div className="rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
           <div className="p-8">
             <div className="flex flex-col md:flex-row gap-8">
               <div className="flex-1">
@@ -612,19 +612,16 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                     </div>
                   </div>
 
-                  <div className="mt-8 bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                </div>
+                 <div className="flex flex-col lg:flex-row gap-8 mt-8">
+                  <div className="flex-1 bg-gray-50 rounded-2xl p-6 border border-gray-200">
                     <h3 className="text-lg mb-3">Bio</h3>
                     <p className="text-gray-600 leading-relaxed">{data.bio || "No bio yet."}</p>
                   </div>
-                </div>
 
-                <div className="md:w-72 flex flex-col gap-4">
                   {data.accountType === "Barber" && (
-                    <div className="bg-gray-50 rounded-2xl p-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        <MapPin className="w-5 h-5 text-gray-600" />
-                        <h3 className="text-lg">Location</h3>
-                      </div>
+                    <div className="lg:w-80 bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                      <h3 className="text-lg mb-4">Location</h3>
                       <div className="space-y-2">
                         <h2 className="text-xl font-medium">{data.shopName}</h2>
                         <p className="text-gray-600">{data.address}</p>

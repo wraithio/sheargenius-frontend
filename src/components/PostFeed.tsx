@@ -14,25 +14,25 @@ const PostFeed = (data: IUserProfileInfo) => {
   const [showLikes, setShowLikes] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("Most Recent");
 
-//   const [activeTab, setActiveTab] = useState("posts");
-//   const [posts, setPosts] = useState<IPostItems[]>([]);
-//   const [likedPosts, setLikedPosts] = useState<IPostItems[]>([]);
+  //   const [activeTab, setActiveTab] = useState("posts");
+  //   const [posts, setPosts] = useState<IPostItems[]>([]);
+  //   const [likedPosts, setLikedPosts] = useState<IPostItems[]>([]);
 
-//   useEffect(() => {
-//     const asyncGetPosts = async (id: number) => {
-//       if (id !== 0) {
-//         const userPosts = await getUserPosts(id);
-//         setPosts(userPosts.filter((post: IPostItems) => !post.isDeleted));
-        
-//         // Filter liked posts
-//         const liked = userPosts.filter((post: IPostItems) => 
-//           post.likes && post.likes.includes(data.id) && !post.isDeleted
-//         );
-//         setLikedPosts(liked);
-//       }
-//     };
-//     asyncGetPosts(data.id);
-//   }, [data.id, data.username]);
+  //   useEffect(() => {
+  //     const asyncGetPosts = async (id: number) => {
+  //       if (id !== 0) {
+  //         const userPosts = await getUserPosts(id);
+  //         setPosts(userPosts.filter((post: IPostItems) => !post.isDeleted));
+
+  //         // Filter liked posts
+  //         const liked = userPosts.filter((post: IPostItems) =>
+  //           post.likes && post.likes.includes(data.id) && !post.isDeleted
+  //         );
+  //         setLikedPosts(liked);
+  //       }
+  //     };
+  //     asyncGetPosts(data.id);
+  //   }, [data.id, data.username]);
 
   const [posts, setPosts] = useState<IPostItems[]>([
     {
@@ -153,7 +153,6 @@ const PostFeed = (data: IUserProfileInfo) => {
   //   }
   // };
 
-
   const toggleDropDown = () => {
     setDropDownOpen(!isDropDownOpen);
   };
@@ -163,35 +162,34 @@ const PostFeed = (data: IUserProfileInfo) => {
     setDropDownOpen(false);
   };
 
-  const handleTabClick = (tab: "posts" | "likes") => {
-    setActiveTab(tab);
-  };
+  // const handleTabClick = (tab: "posts" | "likes") => {
+  //   setActiveTab(tab);
+  // };
 
   return (
-
-<!--     <div className="w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div className="flex gap-4">
-          <button
-            onClick={() => handleTabClick("posts")}
-            className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
-              activeTab === "posts"
-                ? "bg-black text-white"
-                : "bg-transparent text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            Posts
-          </button>
-          <button
-            onClick={() => handleTabClick("likes")}
-            className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
-              activeTab === "likes"
-                ? "bg-black text-white"
-                : "bg-transparent text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            Likes
-          </button> -->
+    //      <div className="w-full">
+    //       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+    //         <div className="flex gap-4">
+    //           <button
+    //             onClick={() => handleTabClick("posts")}
+    //             className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
+    //               activeTab === "posts"
+    //                 ? "bg-black text-white"
+    //                 : "bg-transparent text-gray-600 hover:bg-gray-100"
+    //             }`}
+    //           >
+    //             Posts
+    //           </button>
+    //           <button
+    //             onClick={() => handleTabClick("likes")}
+    //             className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
+    //               activeTab === "likes"
+    //                 ? "bg-black text-white"
+    //                 : "bg-transparent text-gray-600 hover:bg-gray-100"
+    //             }`}
+    //           >
+    //             Likes
+    //           </button>
 
     <div>
       {" "}
@@ -207,7 +205,6 @@ const PostFeed = (data: IUserProfileInfo) => {
               Likes
             </h3>
           </Button>
-
         </div>
 
         <div className="flex items-center gap-2 text-sm">
@@ -246,42 +243,12 @@ const PostFeed = (data: IUserProfileInfo) => {
                 >
                   Category: Z-A
                 </div>
-
-                {isDropDownOpen && (
-                  <div
-                    className={`rounded-md border-gray-300 bg-white p-3 absolute z-50 top-[45px] w-[100%] shadow-md transition-all duration-700 ${
-                      isDropDownOpen
-                        ? "opacity-100 visible"
-                        : "opacity-0 invisible"
-                    }`}
-                  >
-                    <div
-                      onClick={() => selectFilter("Top Rated")}
-                      className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                    >
-                      Top Rated
-                    </div>
-                    <div
-                      onClick={() => selectFilter("Category: A-Z")}
-                      className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                    >
-                      Category: A-Z
-                    </div>
-                    <div
-                      onClick={() => selectFilter("Category: Z-A")}
-                      className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                    >
-                      Category: Z-A
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>
         </div>
       </div>
-      
-// {activeTab === "posts" && ( 
+      {/* {activeTab === "posts" && ( 
        // <>
          // {posts.length === 0 ? (
           //  <div className="bg-gray-50 rounded-2xl py-12 px-4 text-center">
@@ -318,7 +285,7 @@ const PostFeed = (data: IUserProfileInfo) => {
              // ))}
             //</div>
          // )}
-       //</>
+       //</> */}
       {posts.length == 0 ? (
         <div className="bg-[#F5F5F5] flex justify-center place-items-center h-24 mb-8">
           <h3>
