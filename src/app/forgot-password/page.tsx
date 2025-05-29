@@ -1,5 +1,11 @@
 "use client";
-import { changePassword, fetchInfo, getLoggedInUserData, getToken, login } from "@/utils/DataServices";
+import {
+  changePassword,
+  fetchInfo,
+  getLoggedInUserData,
+  getToken,
+  login,
+} from "@/utils/DataServices";
 import { IUserInfo, IUserProfileInfo } from "@/utils/Interfaces";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -49,24 +55,18 @@ const ForgotPassword = () => {
     }
   };
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     console.log("password change initiated");
     if (accountData.securityAnswer == answer.toLowerCase()) {
       // RESET PASSWORD LOGIC AND PUSH THE USER PAGE
       console.log("answers matches");
-      const payload:IUserInfo = {username:username, password:newPassword}
-      if(await changePassword(payload,getToken()))
-      {
-        setError(false)
-        await login(payload)
-           const queryParams = new URLSearchParams({
-      u: username,
-    }).toString();
-    router.push(`/user-profile?${queryParams}`);
+      const payload: IUserInfo = { username: username, password: newPassword };
+      if (await changePassword(payload, getToken())) {
+        setError(false);
+        router.push(`/login`);
       }
-    }
-    else{
-      setError(true)
+    } else {
+      setError(true);
     }
   };
 
@@ -116,7 +116,11 @@ const ForgotPassword = () => {
                     onChange={(e) => setAnswer(e.target.value)}
                     required
                   />
-                  {error && (<p className="font-[NeueMontreal-Medium] text-sm pb-1">Security answer was incorrect...</p>)}
+                  {error && (
+                    <p className="font-[NeueMontreal-Medium] text-sm pb-1">
+                      Security answer was incorrect...
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <p className="font-[NeueMontreal-Medium] text-sm pb-1">

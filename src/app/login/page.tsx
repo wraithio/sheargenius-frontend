@@ -55,17 +55,17 @@ const Login = () => {
     }
   };
 
-  const clearStorage = () =>{
-    if(sessionStorage.getItem("presetEmail") != null) sessionStorage.removeItem("presetEmail")
-  }
+  const clearStorage = () => {
+    if (sessionStorage.getItem("presetEmail") != null)
+      sessionStorage.removeItem("presetEmail");
+  };
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-white">
       <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
         <Link href={"/"} className="cursor-pointer">
-        <p className="font-[NeueMontreal-Medium] text-lg lg:text-xl text-white lg:text-black">
-        
-          SHEARGENIUS
-        </p>
+          <p className="font-[NeueMontreal-Medium] text-lg lg:text-xl text-white lg:text-black">
+            SHEARGENIUS
+          </p>
         </Link>
       </div>
 
@@ -83,10 +83,7 @@ const Login = () => {
               {" "}
               LOGIN{" "}
             </p>
-            <p className="font-[NeueMontreal-Medium] text-sm">
-              {" "}
-              Welcome!{" "}
-            </p>
+            <p className="font-[NeueMontreal-Medium] text-sm"> Welcome! </p>
           </div>
 
           <div className="flex flex-col mt-8 sm:mt-12 flex-grow">
@@ -135,7 +132,8 @@ const Login = () => {
                   Don&#39;t have an account?
                   <Link
                     className="text-[#1500FF] active:text-[#3F5CFF] hover:underline ml-1"
-                    href={"./register"} onClick={() => clearStorage()}
+                    href={"./register"}
+                    onClick={() => clearStorage()}
                   >
                     Sign Up
                   </Link>
