@@ -36,12 +36,12 @@ const FollowModal = ({ isOpen, onClose, followers, following, onViewProfile, isO
     const fetchProfilePictures = async () => {
       const followerPromises = followers.map(async (follower) => {
         const userData = await getUserData(follower);
-        return { username: follower, pfp: userData?.pfp || '/nofileselected.png' };
+        return { username: follower, pfp: userData?.pfp || '/default-pfp.jpeg' };
       });
 
       const followingPromises = following.map(async (followedUser) => {
         const userData = await getUserData(followedUser);
-        return { username: followedUser, pfp: userData?.pfp || '/nofileselected.png' };
+        return { username: followedUser, pfp: userData?.pfp || '/default-pfp.jpeg' };
       });
 
       const followerResults = await Promise.all(followerPromises);
@@ -146,7 +146,7 @@ const FollowModal = ({ isOpen, onClose, followers, following, onViewProfile, isO
                             <Image
                               width={40}
                               height={40}
-                              src={followerPics[follower] || '/nofileselected.png'}
+                              src={followerPics[follower] || '/default-pfp.jpeg'}
                               alt={`${follower}'s profile picture`}
                               className="w-full h-full object-cover"
                             />
@@ -199,7 +199,7 @@ const FollowModal = ({ isOpen, onClose, followers, following, onViewProfile, isO
                             <Image
                               width={40}
                               height={40}
-                              src={followingPics[followedUser] || '/nofileselected.png'}
+                              src={followingPics[followedUser] || '/default-pfp.jpeg'}
                               alt={`${followedUser}'s profile picture`}
                               className="w-full h-full object-cover"
                             />
@@ -252,7 +252,7 @@ const FollowModal = ({ isOpen, onClose, followers, following, onViewProfile, isO
                           <Image
                             width={40}
                             height={40}
-                            src={followerPics[follower] || '/nofileselected.png'}
+                            src={followerPics[follower] || '/default-pfp.jpeg'}
                             alt={`${follower}'s profile picture`}
                             className="w-full h-full object-cover"
                           />
@@ -311,7 +311,7 @@ const FollowModal = ({ isOpen, onClose, followers, following, onViewProfile, isO
                           <Image
                             width={40}
                             height={40}
-                            src={followingPics[followedUser] || '/nofileselected.png'}
+                            src={followingPics[followedUser] || '/default-pfp.jpeg'}
                             alt={`${followedUser}'s profile picture`}
                             className="w-full h-full object-cover"
                           />

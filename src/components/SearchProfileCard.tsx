@@ -17,6 +17,7 @@ import {
   Sparkles,
   ClipboardPlus,
   Star,
+  X,
 } from "lucide-react";
 
 const SearchProfileCard = (data: IUserProfileInfo) => {
@@ -125,7 +126,7 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
                     <Image
                       width={300}
                       height={300}
-                      src={profileData.pfp}
+                      src={profileData.pfp || "/default-pfp.jpeg"}
                       alt={`${profileData.username} profile pic`}
                       className="w-36 h-36 rounded-full object-cover ring-4 ring-black/5"
                       priority
@@ -224,19 +225,20 @@ const SearchProfileCard = (data: IUserProfileInfo) => {
       />
 
       {schedule && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full animate-in zoom-in-95 relative">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-[500px] h-auto max-h-[90vh] relative">
             <button
               onClick={() => setSchedule(false)}
               className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <img
-                className="w-5 h-5"
-                src="/icons/cross-small.png"
-                alt="Close"
-              />
+              <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
             </button>
-            <SendRequestComponent barberName={profileData.username} />
+            <div className="h-full">
+              <SendRequestComponent 
+                barberName={profileData.username} 
+                onClose={() => setSchedule(false)}
+              />
+            </div>
           </div>
         </div>
       )}

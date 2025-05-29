@@ -11,7 +11,8 @@ import {
 import { fetchInfo, getUserData } from "@/utils/DataServices";
 import { IRequest, ISchedule } from "@/utils/Interfaces";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { Calendar, Clock, X, Check, AlertCircle, CalendarClock, CalendarDays, CalendarRange, UserRoundCheck, SquarePen, MapPin } from "lucide-react";
 
 interface ILocation {
   shopName: string;
@@ -46,9 +47,100 @@ const SchedulingComponent = () => {
     return `${displayHour}${suffix}`;
   });
 
-  const fetchSchedule = async () => {
-    // let data:ISchedule|IRequest[]|undefined
+  const formatDayTimeRange = (times: string[]) => {
+    if (times.length === 0) return [];
+    
+    // Sort times chronologically
+    const sortedTimes = [...times].sort((a, b) => {
+      const aHour = parseInt(a.replace(/[ap]m/, ''));
+      const bHour = parseInt(b.replace(/[ap]m/, ''));
+      const aIsPM = a.includes('pm');
+      const bIsPM = b.includes('pm');
+      
+      // Compare AM/PM first
+      if (aIsPM && !bIsPM) return 1;
+      if (!aIsPM && bIsPM) return -1;
+      
+      // Handle 12 special case
+      if (aHour === 12) return -1;
+      if (bHour === 12) return 1;
+      
+      return aHour - bHour;
+    });
 
+    // If all times are selected (length matches timeSlots), show full day range
+    if (times.length === timeSlots.length) {
+      return [`6am - 9pm`];
+    }
+
+    // Find consecutive ranges
+    const ranges: string[] = [];
+    let rangeStart = sortedTimes[0];
+    let prevHour = parseInt(sortedTimes[0].replace(/[ap]m/, ''));
+    let prevSuffix = sortedTimes[0].includes('pm') ? 'pm' : 'am';
+
+    const addRange = (start: string, end: string) => {
+      const startHour = parseInt(start.replace(/[ap]m/, ''));
+      const endHour = parseInt(end.replace(/[ap]m/, ''));
+      const startSuffix = start.includes('pm') ? 'pm' : 'am';
+      const endSuffix = end.includes('pm') ? 'pm' : 'am';
+
+      // If it's a single hour slot
+      if (startHour === endHour && startSuffix === endSuffix) {
+        ranges.push(start);
+        return;
+      }
+
+      // Calculate end time
+      let endTime;
+      if (endHour === 11) {
+        endTime = `12${endSuffix === 'am' ? 'pm' : 'am'}`;
+      } else if (endHour === 12) {
+        endTime = `1${endSuffix}`;
+      } else if (endHour === 8 && endSuffix === 'pm') {
+        endTime = '9pm';
+      } else {
+        endTime = `${endHour + 1}${endSuffix}`;
+      }
+
+      ranges.push(`${start} - ${endTime}`);
+    };
+
+    for (let i = 1; i < sortedTimes.length; i++) {
+      const currentTime = sortedTimes[i];
+      const currentHour = parseInt(currentTime.replace(/[ap]m/, ''));
+      const currentSuffix = currentTime.includes('pm') ? 'pm' : 'am';
+      
+      const isConsecutive = (
+        (prevHour === 11 && currentHour === 12) ||
+        (prevHour === 12 && currentHour === 1) ||
+        (currentHour === prevHour + 1 && currentSuffix === prevSuffix)
+      );
+      
+      if (!isConsecutive) {
+        // End current range
+        addRange(rangeStart, sortedTimes[i - 1]);
+        rangeStart = currentTime;
+      }
+      
+      // If this is the last time, add the final range
+      if (i === sortedTimes.length - 1) {
+        addRange(rangeStart, currentTime);
+      }
+      
+      prevHour = currentHour;
+      prevSuffix = currentSuffix;
+    }
+
+    // If only one time was selected
+    if (sortedTimes.length === 1) {
+      addRange(sortedTimes[0], sortedTimes[0]);
+    }
+    
+    return ranges;
+  };
+
+  const fetchSchedule = async () => {
     if (accountType == "Barber") {
       const data = await getScheduleByUsername(username);
       if (data != undefined) setUserSchedule(data);
@@ -96,6 +188,7 @@ const SchedulingComponent = () => {
       findLocation(data2);
     }
   };
+
   const findLocation = async (data: IRequest[]) => {
     const locations: ILocation[] = [];
     if (data.length != 0) {
@@ -118,6 +211,21 @@ const SchedulingComponent = () => {
   useEffect(() => {
     fetchSchedule();
   }, [username, accountType]);
+
+  // Add click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[id^="dropdown-"]') && !target.closest('button')) {
+        document.querySelectorAll('[id^="dropdown-"]').forEach(el => el.classList.add('hidden'));
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const accept = async (id: number) => {
     await acceptRequest(id);
@@ -195,320 +303,257 @@ const SchedulingComponent = () => {
   };
 
   const gotoProfile = (username: string) => {
+    // Close the navbar by dispatching a custom event
+    window.dispatchEvent(new Event('closeNavbar'));
+    
     const queryParams = new URLSearchParams({
       u: username,
     }).toString();
     router.push(`/user-profile?${queryParams}`);
   };
 
-  // FindRequestsByUsername
   return (
-    <div className="h-[85vh] overflow-y-scroll flex flex-col gap-2">
+    <div className="h-[85vh] overflow-y-auto flex flex-col gap-6 px-2">
       {accountType == "Barber" &&
         (schedule == undefined && !edit ? (
-          <p>No schedule found...</p>
+          <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+            <CalendarRange className="w-12 h-12 mb-4" />
+            <p className="font-[NeueMontreal-Medium] text-lg">No schedule found</p>
+            <p className="text-sm text-gray-400">Set up your availability to start accepting appointments</p>
+          </div>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-6">
             {!edit && schedule && (
-              <div className="flex flex-col gap-2">
-                <p className="font-bold">My Schedule</p>
-                {schedule.mondayTimes.length > 0 && (
-                  <div>
-                    <p>Monday</p>
-                    <div className="flex gap-2">
-                      {schedule.mondayTimes.map((time, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-200 p-2 rounded text-sm"
-                        >
-                          {time}
-                        </div>
-                      ))}
-                    </div>
+              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-gray-600" />
+                    <h2 className="font-[NeueMontreal-Medium] text-xl">My Schedule</h2>
                   </div>
-                )}
-                {schedule.tuesdayTimes.length > 0 && (
-                  <div>
-                    <p>Tuesday</p>
-                    <div className="flex gap-2">
-                      {schedule.tuesdayTimes.map((time, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-200 p-2 rounded text-sm"
-                        >
-                          {time}
+                  <button
+                    onClick={() => setEdit(true)}
+                    className="group relative w-10 h-10 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
+                  >
+                    <SquarePen className="w-5 h-5" />
+                    <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Edit Schedule
+                    </span>
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {[
+                    { day: "Monday", times: schedule.mondayTimes },
+                    { day: "Tuesday", times: schedule.tuesdayTimes },
+                    { day: "Wednesday", times: schedule.wednesdayTimes },
+                    { day: "Thursday", times: schedule.thursdayTimes },
+                    { day: "Friday", times: schedule.fridayTimes },
+                    { day: "Saturday", times: schedule.saturdayTimes },
+                    { day: "Sunday", times: schedule.sundayTimes },
+                  ].map(({ day, times }) => times.length > 0 && (
+                    <div key={day} className="space-y-2">
+                      <h3 className="font-[NeueMontreal-Medium] text-gray-700">{day}</h3>
+                      <div className="bg-gray-100 rounded-xl p-4">
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {formatDayTimeRange(times).map((range, index) => (
+                            <div
+                              key={index}
+                              className="px-4 py-2 bg-white shadow-sm rounded-lg text-sm font-[NeueMontreal-Medium] text-gray-700"
+                            >
+                              {range}
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {schedule.wednesdayTimes.length > 0 && (
-                  <div>
-                    <p>Wednesday</p>
-                    <div className="flex gap-2">
-                      {schedule.wednesdayTimes.map((time, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-200 p-2 rounded text-sm"
-                        >
-                          {time}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {schedule.thursdayTimes.length > 0 && (
-                  <div>
-                    <p>Thursday</p>
-                    <div className="flex gap-2">
-                      {schedule.thursdayTimes.map((time, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-200 p-2 rounded text-sm"
-                        >
-                          {time}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {schedule.fridayTimes.length > 0 && (
-                  <div>
-                    <p>Friday</p>
-                    <div className="flex gap-2">
-                      {schedule.fridayTimes.map((time, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-200 p-2 rounded text-sm"
-                        >
-                          {time}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {schedule.saturdayTimes.length > 0 && (
-                  <div>
-                    <p>Saturday</p>
-                    <div className="flex gap-2">
-                      {schedule.saturdayTimes.map((time, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-200 p-2 rounded text-sm"
-                        >
-                          {time}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {schedule.sundayTimes.length > 0 && (
-                  <div>
-                    <p>Sunday</p>
-                    <div className="flex gap-2">
-                      {schedule.sundayTimes.map((time, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-200 p-2 rounded text-sm"
-                        >
-                          {time}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
             )}
           </div>
         ))}
+
       {edit && (
-        <div className="flex  flex-col gap-2">
-          <div className="flex justify-between">
-            <p className="font-bold">
-              {" "}
-              {!schedule ? "Set Schedule" : "Edit Schedule"}
-            </p>
-            <p
-              className="text-slate-400 hover:text-black cursor-pointer p-2 text-2xl"
+        <div className="bg-white rounded-2xl p-6 border border-gray-200">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <CalendarClock className="w-5 h-5 text-gray-600" />
+              <h2 className="font-[NeueMontreal-Medium] text-xl">
+                {!schedule ? "Set Schedule" : "Edit Schedule"}
+              </h2>
+            </div>
+            <button
               onClick={() => setEdit(false)}
+              className="w-10 h-10 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
             >
-              X
-            </p>
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          <div className="flex flex-col">
-            <p>Monday</p>
-            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 ">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => toggleMondayTime(time)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium border transition cursor-pointer hover:bg-black hover:text-white ${
-                    newMondayTimes.includes(time)
-                      ? "bg-black text-white animate-[bounce_1s_ease-in-out]"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
+          <div className="space-y-6">
+            {[
+              { day: "Monday", times: newMondayTimes, toggle: toggleMondayTime },
+              { day: "Tuesday", times: newTuesdayTimes, toggle: toggleTuesdayTime },
+              { day: "Wednesday", times: newWednesdayTimes, toggle: toggleWednesdayTime },
+              { day: "Thursday", times: newThursdayTimes, toggle: toggleThursdayTime },
+              { day: "Friday", times: newFridayTimes, toggle: toggleFridayTime },
+              { day: "Saturday", times: newSaturdayTimes, toggle: toggleSaturdayTime },
+              { day: "Sunday", times: newSundayTimes, toggle: toggleSundayTime },
+            ].map(({ day, times, toggle }) => (
+              <div key={day} className="space-y-3">
+                <h3 className="font-[NeueMontreal-Medium] text-gray-700">{day}</h3>
+                <div className="relative">
+                  <button
+                    onClick={() => {
+                      const dropdownId = `dropdown-${day}`;
+                      const currentState = document.getElementById(dropdownId)?.classList.contains('hidden');
+                      // Hide all dropdowns first
+                      document.querySelectorAll('[id^="dropdown-"]').forEach(el => el.classList.add('hidden'));
+                      // Then toggle the clicked one
+                      if (currentState) {
+                        document.getElementById(dropdownId)?.classList.remove('hidden');
+                      }
+                    }}
+                    type="button"
+                    className="w-full bg-white border border-gray-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 transition-shadow text-sm font-[NeueMontreal-Medium] cursor-pointer pr-10 text-left relative"
+                  >
+                    {times.length === 0 ? (
+                      <span className="text-gray-500">Not Available</span>
+                    ) : times.length === timeSlots.length ? (
+                      <span className="text-gray-700">All Times</span>
+                    ) : (
+                      <span className="text-gray-700">
+                        {times.length} time{times.length !== 1 ? 's' : ''} selected
+                      </span>
+                    )}
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                      </svg>
+                    </div>
+                  </button>
+                  <div
+                    id={`dropdown-${day}`}
+                    className="hidden absolute z-10 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+                  >
+                    <div className="p-2 space-y-1">
+                      {/* Quick selection options */}
+                      <button
+                        onClick={() => {
+                          const setter = day === "Monday" ? setNewMondayTimes :
+                                       day === "Tuesday" ? setNewTuesdayTimes :
+                                       day === "Wednesday" ? setNewWednesdayTimes :
+                                       day === "Thursday" ? setNewThursdayTimes :
+                                       day === "Friday" ? setNewFridayTimes :
+                                       day === "Saturday" ? setNewSaturdayTimes :
+                                       setNewSundayTimes;
+                          setter([]);
+                          document.getElementById(`dropdown-${day}`)?.classList.add('hidden');
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm font-[NeueMontreal-Medium] text-gray-700"
+                      >
+                        Not Available
+                      </button>
+                      <button
+                        onClick={() => {
+                          const setter = day === "Monday" ? setNewMondayTimes :
+                                       day === "Tuesday" ? setNewTuesdayTimes :
+                                       day === "Wednesday" ? setNewWednesdayTimes :
+                                       day === "Thursday" ? setNewThursdayTimes :
+                                       day === "Friday" ? setNewFridayTimes :
+                                       day === "Saturday" ? setNewSaturdayTimes :
+                                       setNewSundayTimes;
+                          setter([...timeSlots]);
+                          document.getElementById(`dropdown-${day}`)?.classList.add('hidden');
+                        }}
+                        className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm font-[NeueMontreal-Medium] text-gray-700"
+                      >
+                        All Times
+                      </button>
+                      <div className="relative py-2">
+                        <div className="absolute inset-0 flex items-center px-3">
+                          <div className="w-full border-t border-gray-200"></div>
+                        </div>
+                      </div>
+                      {/* Individual time slots */}
+                      {timeSlots.map((time) => (
+                        <label
+                          key={time}
+                          className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={times.includes(time)}
+                            onChange={() => toggle(time)}
+                            className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          />
+                          <span className="ml-3 text-sm font-[NeueMontreal-Medium] text-gray-700">
+                            {time}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex flex-col">
-            <p>Tuesday</p>
-            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 ">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => toggleTuesdayTime(time)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium border transition cursor-pointer hover:bg-black hover:text-white ${
-                    newTuesdayTimes.includes(time)
-                      ? "bg-black text-white animate-[bounce_1s_ease-in-out]"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
+
+          <div className="mt-8">
+            <button
+              className="w-full bg-black text-white font-[NeueMontreal-Medium] py-3 rounded-xl hover:bg-gray-800 active:transform active:scale-[0.98] transition-all duration-200"
+              onClick={saveSchedule}
+            >
+              Save Changes
+            </button>
           </div>
-          <div className="flex flex-col">
-            <p>Wednesday</p>
-            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 ">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => toggleWednesdayTime(time)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium border transition cursor-pointer hover:bg-black hover:text-white ${
-                    newWednesdayTimes.includes(time)
-                      ? "bg-black text-white animate-[bounce_1s_ease-in-out]"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <p>Thursday</p>
-            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 ">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => toggleThursdayTime(time)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium border transition cursor-pointer hover:bg-black hover:text-white ${
-                    newThursdayTimes.includes(time)
-                      ? "bg-black text-white animate-[bounce_1s_ease-in-out]"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <p>Friday</p>
-            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 ">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => toggleFridayTime(time)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium border transition cursor-pointer hover:bg-black hover:text-white ${
-                    newFridayTimes.includes(time)
-                      ? "bg-black text-white animate-[bounce_1s_ease-in-out]"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <p>Saturday</p>
-            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 ">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => toggleSaturdayTime(time)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium border transition cursor-pointer hover:bg-black hover:text-white ${
-                    newSaturdayTimes.includes(time)
-                      ? "bg-black text-white animate-[bounce_1s_ease-in-out]"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <p>Sunday</p>
-            <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-3 ">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => toggleSundayTime(time)}
-                  className={`px-3 py-1 rounded-lg text-sm font-medium border transition cursor-pointer hover:bg-black hover:text-white ${
-                    newSundayTimes.includes(time)
-                      ? "bg-black text-white animate-[bounce_1s_ease-in-out]"
-                      : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-          <button
-            className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-            onClick={saveSchedule}
-          >
-            Save Changes
-          </button>
-        </div>
-      )}
-      {accountType == "Barber" && !edit && (
-        <div className="flex justify-end">
-          <button
-            className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-            onClick={() => setEdit(true)}
-          >
-            {!schedule ? "Set Schedule" : "Edit Schedule"}
-          </button>
         </div>
       )}
 
       {accountType == "Barber" &&
         (appointments?.length == 0 || appointments == undefined ? (
-          <p>No scheduled appointments yet...</p>
+          <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+            <CalendarClock className="w-12 h-12 mb-4" />
+            <p className="font-[NeueMontreal-Medium] text-lg">No scheduled appointments</p>
+            <p className="text-sm text-gray-400">Your upcoming appointments will appear here</p>
+          </div>
         ) : (
-          <div className="flex flex-col gap-2">
-            <p className="font-bold">My Scheduled Appointments</p>
-            <div className="flex flex-col gap-2">
+          <div className="bg-white rounded-2xl p-6 border border-gray-200">
+            <div className="flex items-center gap-2 mb-6">
+              <CalendarDays className="w-5 h-5 text-gray-600" />
+              <h2 className="font-[NeueMontreal-Medium] text-xl">Scheduled Appointments</h2>
+            </div>
+            <div className="space-y-4">
               {appointments?.map((request, index) => (
                 <div
                   key={index}
-                  className="bg-gray-200 p-2 rounded flex justify-between text-sm"
+                  className="bg-gray-50 rounded-xl p-4 border border-gray-100"
                 >
-                  <div>
-                    <p
-                      className="font-bold text-lg cursor-pointer hover:text-slate-700"
-                      onClick={() => gotoProfile(request.username)}
-                    >
-                      {request.username}
-                    </p>
-                    <p>{request.day}</p>
-                    <p>{request.time}</p>
-                  </div>
-                  <div className="flex place-items-center gap-2">
+                  <div className="flex justify-between items-center">
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => gotoProfile(request.username)}
+                        className="text-lg font-[NeueMontreal-Medium] hover:text-gray-600 transition-colors"
+                      >
+                        {request.username}
+                      </button>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Calendar className="w-4 h-4" />
+                          <span className="text-sm">{request.day}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">{request.time}</span>
+                        </div>
+                      </div>
+                    </div>
                     <button
-                      className="bg-black w-fit h-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
+                      className="w-10 h-10 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
                       onClick={() => complete(request.id)}
+                      title="Complete Appointment"
                     >
-                      Mark as Complete
+                      <UserRoundCheck className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
@@ -518,34 +563,56 @@ const SchedulingComponent = () => {
         ))}
 
       {upcoming?.length == 0 || upcoming == undefined ? (
-        <p>No upcoming appointments yet...</p>
+        <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+          <CalendarClock className="w-12 h-12 mb-4" />
+          <p className="font-[NeueMontreal-Medium] text-lg">No upcoming appointments</p>
+          <p className="text-sm text-gray-400">Your future appointments will appear here</p>
+        </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          <p className="font-bold">My Upcoming Appointments</p>
-          <div className="flex flex-col gap-2">
+        <div className="bg-white rounded-2xl p-6 border border-gray-200">
+          <div className="flex items-center gap-2 mb-6">
+            <CalendarDays className="w-5 h-5 text-gray-600" />
+            <h2 className="font-[NeueMontreal-Medium] text-xl">Upcoming Appointments</h2>
+          </div>
+          <div className="space-y-4">
             {upcoming?.map((request, index) => (
-              <div key={index} className="bg-gray-200 p-2 rounded text-sm">
-                <div className="flex justify-between">
+              <div key={index} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <div className="flex flex-col gap-4">
                   <div>
-                    <p
-                      className="font-bold text-lg hover:text-slate-700 cursor-pointer"
+                    <button
                       onClick={() => gotoProfile(request.barberName)}
+                      className="text-lg font-[NeueMontreal-Medium] text-blue-600 hover:text-blue-700 active:text-blue-800 cursor-pointer transition-colors"
                     >
                       {request.barberName}
-                    </p>
-                    <p>{request.day}</p>
-                    <p>{request.time}</p>
+                    </button>
+                    <div className="space-y-1 mt-2">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Calendar className="w-4 h-4" />
+                        <span className="text-sm">{request.day}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Clock className="w-4 h-4" />
+                        <span className="text-sm">{request.time}</span>
+                      </div>
+                    </div>
                   </div>
                   {barberLocations.length != 0 && (
-                    <div className="text-right">
-                      <p className="text-xs">location:</p>
-                      <p>{barberLocations[index].shopName}</p>
-                      <p>{barberLocations[index].address}</p>
-                      <p>
-                        {barberLocations[index].city},{" "}
-                        {barberLocations[index].state}
-                      </p>
-                      <p>{barberLocations[index].zip}</p>
+                    <div className="bg-white rounded-lg p-3 border border-gray-100">
+                      <div className="space-y-1.5">
+                        <p className="text-sm text-gray-500 flex items-center gap-1.5">
+                          <MapPin className="w-4 h-4" />
+                          Location
+                        </p>
+                        <p className="font-[NeueMontreal-Medium] text-gray-900">
+                          {barberLocations[index].shopName}
+                        </p>
+                        <div className="text-sm text-gray-600 space-y-0.5">
+                          <p>{barberLocations[index].address}</p>
+                          <p>
+                            {barberLocations[index].city}, {barberLocations[index].state} {barberLocations[index].zip}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -556,96 +623,123 @@ const SchedulingComponent = () => {
       )}
 
       {requests?.length == 0 || requests == undefined ? (
-        <p>No requests yet...</p>
+        <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+          <CalendarClock className="w-12 h-12 mb-4" />
+          <p className="font-[NeueMontreal-Medium] text-lg">No pending requests</p>
+          <p className="text-sm text-gray-400">New appointment requests will appear here</p>
+        </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          <p className="font-bold">My Requests</p>
-          <div className="flex flex-col gap-2">
+        <div className="bg-white rounded-2xl p-6 border border-gray-200">
+          <div className="flex items-center gap-2 mb-6">
+            <CalendarRange className="w-5 h-5 text-gray-600" />
+            <h2 className="font-[NeueMontreal-Medium] text-xl">Pending Requests</h2>
+          </div>
+          <div className="space-y-4">
             {accountType == "Barber"
               ? requests?.map((request, index) => (
                   <div
                     key={index}
-                    className="bg-gray-200 flex justify-between p-2 rounded text-sm"
+                    className="bg-gray-50 rounded-xl p-4 border border-gray-100"
                   >
-                    <div>
-                      <p
-                        className="font-bold text-lg cursor-pointer hover:text-slate-700"
-                        onClick={() => gotoProfile(request.username)}
-                      >
-                        {request.username}
-                      </p>
-                      <p>{request.day}</p>
-                      <p>{request.time}</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <button
-                        className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-                        onClick={() => accept(request.id)}
-                      >
-                        Accept
-                      </button>
-                      <button
-                        className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-                        onClick={() => deny(request.id)}
-                      >
-                        Decline
-                      </button>
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-2">
+                        <button
+                          onClick={() => gotoProfile(request.username)}
+                          className="text-lg font-[NeueMontreal-Medium] hover:text-gray-600 transition-colors"
+                        >
+                          {request.username}
+                        </button>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Calendar className="w-4 h-4" />
+                            <span className="text-sm">{request.day}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Clock className="w-4 h-4" />
+                            <span className="text-sm">{request.time}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          className="w-10 h-10 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
+                          onClick={() => accept(request.id)}
+                          title="Accept"
+                        >
+                          <Check className="w-5 h-5" />
+                        </button>
+                        <button
+                          className="w-10 h-10 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
+                          onClick={() => deny(request.id)}
+                          title="Decline"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))
-              : requests?.map(
-                  (request, index) =>
-                    // .filter((request) => request.isAccepted == false && request.time !== "404")
-
-                    (request.isAccepted == false && request.time !== "404" && (
-                      <div
-                        key={index}
-                        className="bg-gray-200 p-2 rounded text-sm"
-                      >
-                        <p className="text-sm">appointment with:</p>
-                        <p
-                          className="font-bold text-lg cursor-pointer hover:text-slate-700"
-                          onClick={() => gotoProfile(request.barberName)}
-                        >
-                          {request.barberName}
-                        </p>
-                        <p className="text-sm">day:</p>
-                        <p className="font-bold">{request.day}</p>
-                        <p className="text-sm">time:</p>
-                        <p className="font-bold">{request.time}</p>
-                        <div className="flex justify-center gap-2 animate-bounce">
-                          <p>waiting on approval...</p>
-                        </div>
-                      </div>
-                    )) ||
-                    (request.time == "404" && (
-                      <div
-                        key={index}
-                        className="bg-red-200 p-2 rounded text-sm flex justify-between"
-                      >
+              : requests
+                  ?.filter((request) => request.isAccepted == false && request.time !== "404")
+                  .map((request, index) => (
+                    <div key={index} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                      <div className="space-y-4">
                         <div>
-                          <p className="text-sm">appointment with:</p>
-                          <p
-                            className="font-bold text-lg cursor-pointer hover:text-slate-700"
+                          <p className="text-sm text-gray-500 mb-1">Appointment with</p>
+                          <button
                             onClick={() => gotoProfile(request.barberName)}
+                            className="text-lg font-[NeueMontreal-Medium] text-blue-600 hover:text-blue-700 active:text-blue-800 cursor-pointer transition-colors"
                           >
                             {request.barberName}
-                          </p>
-
-                          <p className="font-bold">on {request.day}</p>
-                          <p>has been declined</p>
-                        </div>
-                        <div className="flex gap-2 place-items-center">
-                          <button
-                            className="bg-black w-fit text-white font-[NeueMontreal-Regular] p-2 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm"
-                            onClick={() => complete(request.id)}
-                          >
-                            Delete
                           </button>
                         </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Calendar className="w-4 h-4" />
+                            <span className="text-sm">{request.day}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Clock className="w-4 h-4" />
+                            <span className="text-sm">{request.time}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-center gap-2 text-gray-500">
+                          <div className="animate-pulse flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4" />
+                            <span className="text-sm">Awaiting approval...</span>
+                          </div>
+                        </div>
                       </div>
-                    ))
-                )}
+                    </div>
+                  ))}
+            {requests
+              ?.filter((request) => request.time == "404")
+              .map((request, index) => (
+                <div key={index} className="bg-red-50 rounded-xl p-4 border border-red-100">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-sm text-red-500 mb-1">Declined appointment with</p>
+                        <button
+                          onClick={() => gotoProfile(request.barberName)}
+                          className="text-lg font-[NeueMontreal-Medium] hover:text-red-600 transition-colors text-red-500"
+                        >
+                          {request.barberName}
+                        </button>
+                      </div>
+                      <p className="text-sm text-red-500">
+                        Your appointment request for {request.day} was declined
+                      </p>
+                    </div>
+                    <button
+                      className="w-10 h-10 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
+                      onClick={() => complete(request.id)}
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       )}

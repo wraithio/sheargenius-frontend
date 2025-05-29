@@ -11,15 +11,17 @@ import {
 import AddPostComponent from "./AddPostComponent";
 import { CircleUserRound, Plus, Search, X } from "lucide-react";
 import SchedulingComponent from "./SchedulingComponent";
+import SearchModal from "./SearchModal";
 
 interface NavbarProps {
   setSearchActive: (active: boolean) => void;
+  hasHeader?: boolean;
 }
 
-const Navbar = ({ setSearchActive }: NavbarProps) => {
+const Navbar = ({ setSearchActive, hasHeader = false }: NavbarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [addPost, setAddPost] = useState(false);
-  const [popUp, setPopUp] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
   const [error] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState<{ username: string; pfp: string } | null>(null);
@@ -53,9 +55,12 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
   };
 
   const handleSearchClick = () => {
-    setSearchActive(true);
+    if (hasHeader) {
+      setSearchActive(true);
+    } else {
+      setShowSearchModal(true);
+    }
     if (isSidebarOpen) closeSidebar();
-    if (path !== "/") setPopUp(true);
   };
 
   const handleHaircutLinkClick = (haircutName: string) => {
@@ -132,7 +137,22 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
     };
     
     checkUserLogin();
-  }, []);
+
+    // Add event listener for storage changes
+    const handleStorageChange = () => {
+      checkUserLogin();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check when component mounts and when path changes
+    const interval = setInterval(checkUserLogin, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [path]);
 
   const handleSearch = async (q: string) => {
     console.log("Search..", query);
@@ -141,7 +161,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
       const queryParams = new URLSearchParams({
         h: q,
       }).toString();
-      setPopUp(false);
+      setShowSearchModal(false);
       router.push(`/directory?${queryParams}`);
     } else {
       const profileData = await getProfileUserData(q);
@@ -149,7 +169,7 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
         const queryParams = new URLSearchParams({
           u: q,
         }).toString();
-        setPopUp(false);
+        setShowSearchModal(false);
         router.push(`/user-profile?${queryParams}`);
       } else {
         const queryParams = new URLSearchParams({
@@ -211,39 +231,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                   >
                     <Search size={22} />
                   </button>
-                  {popUp && (
-                    <div className="absolute right-10 top-15">
-                      <div className="bg-white p-1 flex gap-1">
-                        <div className="flex flex-col gap-1">
-                          <input
-                            type="text"
-                            placeholder="Search.."
-                            onChange={(e) =>
-                              setQuery(e.target.value.toLowerCase())
-                            }
-                            onKeyDown={handleKeyDown}
-                            className="bg-white font-[NeueMontreal-Medium] flex-grow w-full px-2 py-1 rounded-md border-1 outline-none text-sm"
-                          />
-                          {error && (
-                            <p className="font-[NeueMontreal-Medium] text-white text-xs sm:text-sm mt-1">
-                              Invalid Search...
-                            </p>
-                          )}
-                        </div>
-                        <button
-                          className="p-1 rounded-full text-slate-600 hover:text-black hover:bg-gray-100 cursor-pointer transition-colors"
-                          onClick={() => setPopUp(false)}
-                          aria-label="Close Search Modal"
-                        >
-                          <img
-                            className="w-5 h-5 sm:w-6 sm:h-6"
-                            src="/icons/cross-small.png"
-                            alt="Close"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  )}
                   <button className="cursor-pointer" onClick={profileClick}>
                     {isLoggedIn && userProfile?.pfp ? (
                       <img 
@@ -284,6 +271,11 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
         </div>
       </nav>
       <div className="h-16"></div>
+
+      <SearchModal 
+        isOpen={showSearchModal} 
+        onClose={() => setShowSearchModal(false)} 
+      />
 
       {addPost && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
@@ -347,13 +339,11 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                     <Search size={22} />
                   </button>
                   <button className="cursor-pointer" onClick={profileClick}>
-
                     {isLoggedIn && userProfile?.pfp ? (
                       <img 
                         src={userProfile.pfp} 
                         alt="Profile" 
                         className="w-[22px] h-[22px] rounded-full object-cover"
-
                       />
                     ) : (
                       <CircleUserRound size={22} />
@@ -615,7 +605,6 @@ const Navbar = ({ setSearchActive }: NavbarProps) => {
                         Barber Shop Etiquette
                       </Link>
                       <Link
-
                         href="/generalknowledge#beard-care-essentials"
                         onClick={closeSidebar}
                         className="font-[NeueMontreal-Medium] block text-md hover:text-gray-600"

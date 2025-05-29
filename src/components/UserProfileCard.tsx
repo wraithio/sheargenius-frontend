@@ -29,6 +29,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   const [data, setData] = useState<IUserProfileInfo>({ ...info });
   const router = useRouter();
   const [showFollowModal, setShowFollowModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const setRatingNum = () => {
     const division_result = data.rating / data.ratingCount.length;
@@ -62,7 +63,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
 
   const handlePicSubmit = async () => {
     if (!file) {
-      return null;
+      return data.pfp;
     }
     const uniqueFileName = `${Date.now()}-${file.name}`;
 
@@ -74,8 +75,9 @@ const UserProfileCard = (info: IUserProfileInfo) => {
 
     if (uploadedUrl) {
       console.log("File uploaded at:", uploadedUrl);
+      return uploadedUrl;
     }
-    return uploadedUrl;
+    return data.pfp;
   };
 
   const saveEdits = async () => {
@@ -106,13 +108,11 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     };
 
     const result = await editAccount(newEditedUser);
-    console.log(newEditedUser);
     if (result) {
-      console.log("Editing Success");
       sessionStorage.setItem("AccountInfo", JSON.stringify(newEditedUser));
-      router.push("/user-profile");
-      cancelEdit();
       setData(newEditedUser);
+      cancelEdit();
+      window.dispatchEvent(new Event('storage'));
     } else {
       alert("Editing Failed");
     }
@@ -125,14 +125,24 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   };
 
   const deleteAccount = async (model: IUserProfileInfo) => {
-    model.isDeleted = true;
-    const result = await editAccount(model);
-    if (result) {
-      sessionStorage.removeItem("AccountInfo");
-      localStorage.removeItem("token");
-      redirect("/login");
-    } else {
-      alert("deletion failed");
+    if (isDeleting) return;
+    
+    try {
+      setIsDeleting(true);
+      const { deleteAccount: deleteAccountService } = await import('@/utils/DataServices');
+      
+      const result = await deleteAccountService(model.username);
+      if (result) {
+        sessionStorage.clear();
+        localStorage.clear();
+        router.push('/login');
+      } else {
+        router.push('/login');
+      }
+    } catch (error) {
+      router.push('/login');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -239,7 +249,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                   <Image
                     width={300}
                     height={300}
-                    src={pfp == pfpPreview ? data.pfp : pfpPreview}
+                    src={pfpPreview.startsWith('data:') ? pfpPreview : (pfp || "/default-pfp.jpeg")}
                     alt={`${data.username} profile pic`}
                     className="w-32 h-32 rounded-full object-cover ring-4 ring-black/5"
                   />
@@ -486,7 +496,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                       <Image
                         width={300}
                         height={300}
-                        src={data.pfp !== "" ? data.pfp : "/nofileselected.png"}
+                        src={data.pfp || "/default-pfp.jpeg"}
                         alt={`${data.username} profile pic`}
                         className="w-36 h-36 rounded-full object-cover ring-4 ring-black/5"
                         priority
@@ -588,12 +598,18 @@ const UserProfileCard = (info: IUserProfileInfo) => {
               <div className="flex flex-col w-full gap-3">
                 <button
                   onClick={() => deleteAccount(data)}
-                  className="w-full bg-red-500 text-white py-4 rounded-xl hover:bg-red-600 active:bg-red-500 transition-colors font-[NeueMontreal-Medium]"
+                  disabled={isDeleting}
+                  className={`w-full py-4 rounded-xl font-[NeueMontreal-Medium] transition-colors ${
+                    isDeleting 
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : 'bg-red-500 text-white hover:bg-red-600 active:bg-red-500'
+                  }`}
                 >
-                  Yes, delete my account
+                  {isDeleting ? 'Deleting account...' : 'Yes, delete my account'}
                 </button>
                 <button
                   onClick={() => setOpenState(false)}
+                  disabled={isDeleting}
                   className="w-full bg-gray-100 text-gray-600 py-4 rounded-xl hover:bg-gray-200 active:bg-gray-100 transition-colors font-[NeueMontreal-Medium]"
                 >
                   No, keep my account

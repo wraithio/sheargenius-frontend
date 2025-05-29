@@ -93,21 +93,36 @@ export const getRequestsbyUsername = async (username: string) => {
 };
 
 export const FilterScheduleByRequest = async (username: string) => {
-  const res = await fetch(
-    `${BASE_URL}Schedule/FilterScheduleByRequest/${username}`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+  try {
+    const res = await fetch(
+      `${BASE_URL}Schedule/FilterScheduleByRequest/${username}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    const responseText = await res.text();
+    if (!responseText) {
+      console.error("Empty response from FilterScheduleByRequest");
+      return null;
     }
-  );
-  if (!res.ok) {
-    const data = await res.json();
-    const message = data.message;
-    console.log(message);
-    return data.success;
+
+    try {
+      const data = JSON.parse(responseText);
+      if (!res.ok) {
+        console.error("Error in FilterScheduleByRequest:", data.message || "Unknown error");
+        return null;
+      }
+      return data;
+    } catch (parseError) {
+      console.error("Invalid JSON response:", responseText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Network error in FilterScheduleByRequest:", error);
+    return null;
   }
-  const data = await res.json();
-  return data;
 };
 
 
@@ -189,21 +204,41 @@ export const deleteRequest = async (id: number) => {
 };
 
 export const sendRequest = async (request: IRequest) => {
-  const res = await fetch(
-    `${BASE_URL}Schedule/SendRequest`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request),
+  try {
+    const res = await fetch(
+      `${BASE_URL}Schedule/SendRequest`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request),
+      }
+    );
+
+    const responseText = await res.text();
+    if (!responseText) {
+      if (res.ok) {
+        return true;
+      }
+      console.error("Empty error response");
+      return false;
     }
-  );
-  if (!res.ok) {
-    console.log("Error in sendRequest");
-    const data = await res.json();
-    const message = data.message;
-    console.log(message);
-    return data.success;
+
+    try {
+      const data = JSON.parse(responseText);
+      if (!res.ok) {
+        console.error("Error in sendRequest:", data.message || "Unknown error");
+        return false;
+      }
+      return data.success;
+    } catch (parseError) {
+      if (responseText.includes("successfully")) {
+        return true;
+      }
+      console.error("Invalid response format:", responseText);
+      return false;
+    }
+  } catch (error) {
+    console.error("Network error in sendRequest:", error);
+    return false;
   }
-  const data = await res.json();
-  return data.success;
 };
