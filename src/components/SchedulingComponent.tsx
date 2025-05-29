@@ -50,30 +50,25 @@ const SchedulingComponent = () => {
   const formatDayTimeRange = (times: string[]) => {
     if (times.length === 0) return [];
     
-    // Sort times chronologically
     const sortedTimes = [...times].sort((a, b) => {
       const aHour = parseInt(a.replace(/[ap]m/, ''));
       const bHour = parseInt(b.replace(/[ap]m/, ''));
       const aIsPM = a.includes('pm');
       const bIsPM = b.includes('pm');
       
-      // Compare AM/PM first
       if (aIsPM && !bIsPM) return 1;
       if (!aIsPM && bIsPM) return -1;
       
-      // Handle 12 special case
       if (aHour === 12) return -1;
       if (bHour === 12) return 1;
       
       return aHour - bHour;
     });
 
-    // If all times are selected (length matches timeSlots), show full day range
     if (times.length === timeSlots.length) {
       return [`6am - 9pm`];
     }
 
-    // Find consecutive ranges
     const ranges: string[] = [];
     let rangeStart = sortedTimes[0];
     let prevHour = parseInt(sortedTimes[0].replace(/[ap]m/, ''));
@@ -85,13 +80,11 @@ const SchedulingComponent = () => {
       const startSuffix = start.includes('pm') ? 'pm' : 'am';
       const endSuffix = end.includes('pm') ? 'pm' : 'am';
 
-      // If it's a single hour slot
       if (startHour === endHour && startSuffix === endSuffix) {
         ranges.push(start);
         return;
       }
 
-      // Calculate end time
       let endTime;
       if (endHour === 11) {
         endTime = `12${endSuffix === 'am' ? 'pm' : 'am'}`;
@@ -118,12 +111,10 @@ const SchedulingComponent = () => {
       );
       
       if (!isConsecutive) {
-        // End current range
         addRange(rangeStart, sortedTimes[i - 1]);
         rangeStart = currentTime;
       }
       
-      // If this is the last time, add the final range
       if (i === sortedTimes.length - 1) {
         addRange(rangeStart, currentTime);
       }
@@ -132,7 +123,6 @@ const SchedulingComponent = () => {
       prevSuffix = currentSuffix;
     }
 
-    // If only one time was selected
     if (sortedTimes.length === 1) {
       addRange(sortedTimes[0], sortedTimes[0]);
     }
@@ -212,7 +202,6 @@ const SchedulingComponent = () => {
     fetchSchedule();
   }, [username, accountType]);
 
-  // Add click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -303,7 +292,6 @@ const SchedulingComponent = () => {
   };
 
   const gotoProfile = (username: string) => {
-    // Close the navbar by dispatching a custom event
     window.dispatchEvent(new Event('closeNavbar'));
     
     const queryParams = new URLSearchParams({
@@ -407,9 +395,7 @@ const SchedulingComponent = () => {
                     onClick={() => {
                       const dropdownId = `dropdown-${day}`;
                       const currentState = document.getElementById(dropdownId)?.classList.contains('hidden');
-                      // Hide all dropdowns first
                       document.querySelectorAll('[id^="dropdown-"]').forEach(el => el.classList.add('hidden'));
-                      // Then toggle the clicked one
                       if (currentState) {
                         document.getElementById(dropdownId)?.classList.remove('hidden');
                       }
@@ -437,7 +423,6 @@ const SchedulingComponent = () => {
                     className="hidden absolute z-10 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
                   >
                     <div className="p-2 space-y-1">
-                      {/* Quick selection options */}
                       <button
                         onClick={() => {
                           const setter = day === "Monday" ? setNewMondayTimes :
@@ -475,7 +460,6 @@ const SchedulingComponent = () => {
                           <div className="w-full border-t border-gray-200"></div>
                         </div>
                       </div>
-                      {/* Individual time slots */}
                       {timeSlots.map((time) => (
                         <label
                           key={time}
@@ -533,7 +517,7 @@ const SchedulingComponent = () => {
                     <div className="space-y-2">
                       <button
                         onClick={() => gotoProfile(request.username)}
-                        className="text-lg font-[NeueMontreal-Medium] hover:text-gray-600 transition-colors"
+                        className="text-lg font-[NeueMontreal-Medium] text-blue-600 hover:text-blue-700 active:text-blue-800 cursor-pointer transition-colors"
                       >
                         {request.username}
                       </button>
@@ -645,7 +629,7 @@ const SchedulingComponent = () => {
                       <div className="space-y-2">
                         <button
                           onClick={() => gotoProfile(request.username)}
-                          className="text-lg font-[NeueMontreal-Medium] hover:text-gray-600 transition-colors"
+                          className="text-lg font-[NeueMontreal-Medium] text-blue-600 hover:text-blue-700 active:text-blue-800 cursor-pointer transition-colors"
                         >
                           {request.username}
                         </button>
@@ -722,7 +706,7 @@ const SchedulingComponent = () => {
                         <p className="text-sm text-red-500 mb-1">Declined appointment with</p>
                         <button
                           onClick={() => gotoProfile(request.barberName)}
-                          className="text-lg font-[NeueMontreal-Medium] hover:text-red-600 transition-colors text-red-500"
+                          className="text-lg font-[NeueMontreal-Medium] text-blue-600 hover:text-blue-700 active:text-blue-800 cursor-pointer transition-colors"
                         >
                           {request.barberName}
                         </button>
