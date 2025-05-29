@@ -94,8 +94,9 @@ const ProfileCard = (data: IUserProfileInfo) => {
             className="bg-white rounded-full w-[75px] h-[75px] text-xs flex justify-center items-center text-center object-cover"
             width={100}
             height={100}
-            src={data.pfp ? (data.pfp.startsWith('/') ? data.pfp : `/${data.pfp}`) : '/default-pfp.jpeg'}
+            src={data.pfp && data.pfp !== '#' ? data.pfp : '/default-pfp.jpeg'}
             alt={`${data.username || 'User'}'s profile pic`}
+            priority
           />
           <div className="mt-3">
             <p className="font-[NeueMontreal-Medium] text-xl">
