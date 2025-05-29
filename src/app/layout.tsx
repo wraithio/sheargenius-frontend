@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-// import Footer from "@/components/ui/Footer";
+import { Suspense } from "react";
+import BuzzbyComponent from "@/components/BuzzbyComponent";
 
 export const metadata: Metadata = {
   title: "ShearGenius",
@@ -14,17 +15,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head><link
-  rel="icon"
-  href="/sheargeniuspng.png"
-  type="image/png"
-  sizes="32x32"
-/></head>
-      <body
-        className={`antialiased`}
-      >
+      <head>
+        <link
+          rel="icon"
+          href="/sheargeniuspng.png"
+          type="image/png"
+          sizes="32x32"
+        />
+      </head>
+      <body className={`antialiased`}>
+        <Suspense>
         {children}
-      </body>
+          <BuzzbyComponent/>
+        </Suspense>
+        </body>
     </html>
   );
-};
+}

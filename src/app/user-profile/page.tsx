@@ -5,6 +5,9 @@ import UserProfileCard from "@/components/UserProfileCard";
 import { IUserProfileInfo } from "@/utils/Interfaces";
 import PostFeed from "@/components/PostFeed";
 import Footer from "@/components/Footer";
+import { useSearchParams } from "next/navigation";
+import { fetchInfo, getUserData } from "@/utils/DataServices";
+import SearchProfileCard from "@/components/SearchProfileCard";
 
 const UserProfile = () => {
   const [searchActive, setSearchActive] = useState(false);
@@ -17,10 +20,10 @@ const UserProfile = () => {
     accountType: "",
     name: "",
     rating: 0,
-    ratingCount: [""],
-    followers: [""],
-    following: [""],
-    likes: [""],
+    ratingCount: [],
+    followers: [],
+    following: [],
+    likes: [],
     securityQuestion: "",
     securityAnswer: "",
     bio: "",
@@ -30,35 +33,59 @@ const UserProfile = () => {
     city: "",
     state: "",
     zip: "",
-    pfp: "",
+    pfp: "/nofileselected.png",
     isDeleted: false,
   });
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      sessionStorage.getItem("AccountInfo")
-    ) {
-      setAccountData(JSON.parse(sessionStorage.getItem("AccountInfo") || "{}"));
-    }
-  }, [searchActive]);
+    const getInfo = async () => {
+      const username = searchParams.get("u") || fetchInfo().username;
+      if (username) {
+        const userData = await getUserData(username);
+        if (userData) {
+          setAccountData(userData);
+        }
+      }
+    };
+    getInfo();
 
-  // console.log(accountData);
-  console.log(searchActive);
+    // Add event listener for storage changes
+    const handleStorageChange = () => {
+      getInfo();
+    };
 
-  // const router = useRouter();
+    window.addEventListener('storage', handleStorageChange);
 
-  // account checking
-  // if(!checkFToken) router.push("/login")
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [searchActive, searchParams]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar setSearchActive={setSearchActive} />
-      <div className="flex min-h-screen flex-col gap-2 font-[NeueMontreal-Medium] mx-5">
-        <UserProfileCard {...accountData} />
-        <PostFeed {...accountData} />
+      
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col gap-8">
+          {accountData.username == fetchInfo().username ? (
+            <UserProfileCard {...accountData} />
+          ) : (
+            <SearchProfileCard {...accountData} />
+          )}
+
+          <div className="w-full">
+            <PostFeed {...accountData} />
+          </div>
+        </div>
+      </main>
+
+      <div className="mt-16 sm:mt-20 lg:mt-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50"></div>
+        <div className="relative">
+          <Footer />
+        </div>
       </div>
-      <Footer />
     </div>
   );
 };

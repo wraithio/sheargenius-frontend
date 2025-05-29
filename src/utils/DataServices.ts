@@ -3,18 +3,19 @@ import {
   IHaircutInterface,
   INewUser,
   IPostItems,
+  IRatingInterface,
   IUserInfo,
   IUserProfileInfo,
 } from "./Interfaces";
 
+const APIKEY = process.env.NEXT_PUBLIC_API_KEY
+
 const url = "https://sheargenius-awakhjcph2deb6b9.westus-01.azurewebsites.net/";
-// this variable will be used in our getPost by user id fetch when we set them up
 const blobURL = "https://aaronsblob123.blob.core.windows.net/aaronsblob"
 
 let userData: IUserProfileInfo;
 let profileData: INewUser;
 
-// Create account fetch
 export const createAccount = async (user: INewUser) => {
   const res = await fetch(`${url}User/CreateUser`, {
     method: "POST",
@@ -24,7 +25,6 @@ export const createAccount = async (user: INewUser) => {
     body: JSON.stringify(user),
   });
 
-  // if our response is not ok, we will run this block
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
@@ -36,7 +36,6 @@ export const createAccount = async (user: INewUser) => {
   return data.success;
 };
 
-// Edit account fetch
 export const editAccount = async (newUser: IUserProfileInfo) => {
   const res = await fetch(`${url}User/EditAccount`, {
     method: "PUT",
@@ -45,7 +44,7 @@ export const editAccount = async (newUser: IUserProfileInfo) => {
     },
     body: JSON.stringify(newUser),
   });
-  // if our response is not ok, we will run this block
+
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
@@ -65,7 +64,27 @@ export const addCommentToPost = async (comment:ICommentInfo) => {
     },
     body: JSON.stringify(comment),
   });
-  // if our response is not ok, we will run this block
+
+  if (!res.ok) {
+    const data = await res.json();
+    const message = data.message;
+    console.log(message);
+    return data.success;
+  }
+
+  const data = await res.json();
+  return data.success;
+};
+
+export const addRating = async (rating:IRatingInterface) => {
+  const res = await fetch(`${url}/User/AddRating`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(rating),
+  });
+
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
@@ -89,7 +108,6 @@ export const getCommentsbyId = async (id: number) => {
   return data;
 };
 
-//Login fetch
 export const login = async (user: IUserInfo) => {
   const res = await fetch(`${url}User/Login`, {
     method: "POST",
@@ -109,7 +127,7 @@ export const login = async (user: IUserInfo) => {
   const data = await res.json();
   return data;
 };
-//get Logged in data fetch
+
 export const getLoggedInUserData = async (username: string) => {
   const res = await fetch(`${url}User/GetUserInfoByUsername/${username}`);
   if (!res.ok) {
@@ -119,11 +137,9 @@ export const getLoggedInUserData = async (username: string) => {
     return null;
   }
   userData = await res.json();
-  //we are going to use this data inside of a variable we will make a separate function for implementation
   return userData;
 };
 
-//get Profile Info in data fetch
 export const getProfileUserData = async (username: string) => {
   try {
     const res = await fetch(
@@ -137,11 +153,9 @@ export const getProfileUserData = async (username: string) => {
       return null;
     }
     profileData = await res.json();
-    // console.log(profileData)
-    //we are going to use this data inside of a variable we will make a separate function for implementation
     return profileData;
   } catch (error) {
-    console.error("Error fetching profile user data:", error as Error); // Handle network errors
+    console.error("Error fetching profile user data:", error as Error);
     return null;
   }
 };
@@ -151,12 +165,9 @@ export const getUserData = async (username: string) => {
     `${url}User/GetUserInfoByUsername/${username.toLowerCase()}`
   );
   userData = await res.json();
-  // console.log(profileData)
-  //we are going to use this data inside of a variable we will make a separate function for implementation
   return userData;
 };
 
-//get the user's data
 export const loggedInData = () => {
   return userData;
 };
@@ -168,7 +179,6 @@ export const fetchInfo = () => {
   return {};
 };
 
-//we are checking if the token is in our storage (see if were logged in)
 export const checkToken = () => {
   let result = false;
 
@@ -183,7 +193,6 @@ export const getToken = () => {
   return localStorage.getItem("Token") ?? "";
 };
 
-//format the days date when creating new User
 export function getFormattedDate(): string {
   const today = new Date();
 
@@ -209,8 +218,6 @@ export function getFormattedDate(): string {
   return `${month} ${day}, ${year}`;
 }
 
-// --------------POST ENDPOINTS----------------
-
 export const getAllPosts = async () => {
   const res = await fetch(`${url}Post/GetAllPosts`);
   if (!res.ok) {
@@ -220,7 +227,6 @@ export const getAllPosts = async () => {
     return [];
   }
   const data = await res.json();
-  // console.log(data)
   return data;
 };
 
@@ -233,36 +239,23 @@ export const getUserPosts = async (id: number) => {
     return [];
   }
   const data = await res.json();
-  // console.log(data)
   return data;
 };
-// export const getAllPosts = async (token: string) => {
-//   const res = await fetch(`${url}Post/GetAllPosts`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: "Bearer " + token,
-//     },
-//   });
-//   if (!res.ok) {
-//     const errorData = await res.json();
-//     const message = errorData.message;
-//     console.log(message);
-//     return [];
-//   }
 
-//   const data = await res.json();
-//   return data;
-// };
+export const getAllBarbers = async () => {
+  const res = await fetch(`${url}User/GetAllBarbers`)
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.log(message);
+    return [];
+  }
+  const data = await res.json();
+  return data;
+};
 
-export const getPostItemsByUserId = async (userId: number, token: string) => {
-  const res = await fetch(`${url}Post/GetPostsByUserId/${userId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-  });
+export const getPostItemsByUserId = async (userId: number) => {
+  const res = await fetch(`${url}Post/GetPostsByUserId/${userId}`)
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
@@ -274,14 +267,21 @@ export const getPostItemsByUserId = async (userId: number, token: string) => {
   return data;
 };
 
-export const getPostItemsByCategory = async (category: string, token: string) => {
-  const res = await fetch(`${url}Post/GetPostsbyCategory/${category}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-  });
+export const getPostbyPostId = async (postId: number) => {
+  const res = await fetch(`${url}Post/GetPostByPostId/${postId}`)
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.log(message);
+    return null;
+  }
+
+  const data = await res.json();
+  return data;
+};
+
+export const getPostItemsByCategory = async (category: string) => {
+  const res = await fetch(`${url}Post/GetPostsbyCategory/${category}`)
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
@@ -309,7 +309,6 @@ export const addPostItem = async (post: IPostItems, token: string) => {
     return false;
   }
   const data = await res.json();
-  //returns true and successfully added post to backend
   return data.success;
 };
 
@@ -329,7 +328,64 @@ export const updatePostItem = async (post: IPostItems, token: string) => {
     return false;
   }
   const data = await res.json();
-  //returns true and successfully added post to backend
+  return data.success;
+};
+
+export const toggleFollowers = async (userFollowing: string, userFollowed: string, token: string) => {
+  const res = await fetch(`${url}User/ToggleFollowers?followingUser=${userFollowing}&followedUser=${userFollowed}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify({ userFollowing, userFollowed }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.log(message);
+    return false;
+  }
+  const data = await res.json();
+  return data.success;
+};
+
+export const toggleLikes = async (postId: number, username: string, token: string) => {
+  const res = await fetch(`${url}Post/ToggleLikes?postId=${postId}&username=${username}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify({ postId, username }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.log(message);
+    return false;
+  }
+  const data = await res.json();
+  return data.success;
+};
+
+export const changePassword = async (payload:IUserInfo,token:string ) => {
+  const res = await fetch(`${url}User/UpdatePassword`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.log(message);
+    return false;
+  }
+  const data = await res.json();
+  //returns true and successfully changed password
   return data.success;
 };
 
@@ -356,20 +412,108 @@ export const getCategory = () => {
 export const blobUpload = async (params: FormData)=> {
   const response = await fetch(url + 'Blob/Upload', {
       method: 'POST',
-      // The browser automatically sets the correct Content-Type header to multipart/form-data
-      body: params, //becuase params is FormData we do NOT need to stringify it
+      body: params,
   });
 
   if (response.ok) {
-      // Extract the filename from FormData
       const fileName = params.get('fileName') as string;
-      
-      // Construct the Blob Storage URL
       const uploadedFileUrl = `${blobURL}/${fileName}`;
-      
       return uploadedFileUrl;
   } else {
       console.log('Failed to upload file.');
       return null;
   }
 };
+
+export const chatBot = async(prompt:string) =>{
+  try{
+  const response: Response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${APIKEY}`,
+    "HTTP-Referer": "https://sheargenius.vercel.app/",
+    "X-Title": "ShearGenius",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    "model": "deepseek/deepseek-r1:free",
+    "messages": [
+      {
+        role: "user",
+        content: prompt
+      }
+    ]
+  })
+});
+  const data = await response.json();
+  console.log(data)
+  return data.choices?.[0]?.message.content;
+} catch (error) {
+  console.error("Error in chatBot function:", error);
+  return "Error in chatBot function:"+ error;
+}
+};
+
+export const getPostsByLocation = async (location: string, token: string) => {
+  const res = await fetch(`${url}Post/GetPostsByLocation/${location}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.error(message);
+    return [];
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+export const findLikesByUsername = async (username:string) => {
+  const res = await fetch(`${url}Post/FindLikesByUsername/${username}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    const message = errorData.message;
+    console.error(message);
+    return [];
+  }
+  const data = await res.json();
+  return data;
+};
+
+export const deleteAccount = async (username: string) => {
+  try {
+    const token = getToken();
+    if (!token) {
+      return false;
+    }
+
+    const res = await fetch(`${url}User/DeleteUser/${username}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+

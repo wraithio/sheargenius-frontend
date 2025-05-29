@@ -8,7 +8,7 @@ export function QuickLinks() {
     <Sidebar variant="inset">
       <SidebarContent>
         <SidebarGroup>
-          <a className="hover:text-[#FF4649]" href="#clipper-crash-course">
+          <a className="hover:text-[#FF4649]" href="#">
             Clipper Crash Course
           </a>
         </SidebarGroup>
@@ -34,7 +34,7 @@ export function QuickLinks() {
         </SidebarGroup>
         <SidebarGroup>
           <a className="hover:text-[#FF4649]" href="#haircuts-for-face-shapes">
-            Haircuts for different face shapes
+            Haircuts for Different Face Shapes
           </a>
         </SidebarGroup>
         <SidebarGroup>

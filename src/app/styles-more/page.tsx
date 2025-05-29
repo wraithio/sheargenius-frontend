@@ -12,13 +12,16 @@ const StylesMore = () => {
 
   const handleStyleClick = (styleName: string) => {
     setCategory(styleName);
-    router.push("/directory");
+          const queryParams = new URLSearchParams({
+            h: styleName,
+          }).toString();
+          router.push(`/directory?${queryParams}`)
   };
 
   return (
     <div>
         <nav>
-            <Navbar setSearchActive={setSearchActive} />
+            <Navbar setSearchActive={setSearchActive} hasHeader={true} />
         </nav>
         <header>
             <Header

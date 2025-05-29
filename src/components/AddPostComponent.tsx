@@ -7,34 +7,42 @@ import {
   getToken,
 } from "@/utils/DataServices";
 import { IHaircutInterface, IPostItems } from "@/utils/Interfaces";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-const categoryTitles = async () => {
-  const response = await fetch("/Haircuts.json");
-  const data = await response.json();
-  const titles: string[] = [];
-  data.haircuts.map((haircut: IHaircutInterface) => {
-    titles.push(haircut.name);
-  });
-  return titles;
-};
 
 const AddPostComponent = () => {
   const [dropDown, toggleDropDown] = useState(false);
-  const [style, setStyle] = useState<string>("Drop Fade");
+  const [style, setStyle] = useState<string>("");
   const [caption, setCaption] = useState<string>("");
   const [imagePreview, setImagePreview] = useState<string>(
     "/nofileselected.png"
   );
   const [haircuts, setHaircuts] = useState<string[]>([]);
   const [file, setFile] = useState<File | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchTitles = async () => {
-      setHaircuts(await categoryTitles());
+    const fetchCategoryTitles = async () => {
+      try {
+        const response = await fetch("/Haircuts.json");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const titles: string[] = data.haircuts.map(
+          (haircut: IHaircutInterface) => haircut.name
+        );
+        setHaircuts(titles);
+        if (titles.length > 0 && style === "") {
+          setStyle(titles[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch haircut titles:", error);
+      }
     };
-    fetchTitles();
-  }, [dropDown]);
+
+    fetchCategoryTitles();
+  }, []);
 
   const handleStyle = (cut: string) => {
     setStyle(cut);
@@ -42,32 +50,37 @@ const AddPostComponent = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleImage(e);
     if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(String(reader.result));
+      };
+      reader.readAsDataURL(selectedFile);
     }
   };
 
-  //A Function that Handles the submitting of file to our backend
   const handleSubmit = async () => {
-    //Check if the file is inside of our state Variable
+    console.log(file);
     if (!file) {
-      alert("Please select a file to upload.");
+      alert("Please select an image to upload.");
       return;
     }
-    //A Unique file name so data isn't being overwritten in our blob
-    const uniqueFileName = `${Date.now()}-${file.name}`;
+    if (!style) {
+      alert("Please select a category/style.");
+      return;
+    }
 
-    //New Form Data Object to append our file and file name
+    const uniqueFileName = `${Date.now()}-${file.name}`;
     const formData = new FormData();
     formData.append("file", file);
     formData.append("fileName", uniqueFileName);
 
-    //Finally passing that formData into our Backend
     const uploadedUrl = await blobUpload(formData);
 
     if (uploadedUrl) {
-      const newPost:IPostItems = {
+      const newPost: IPostItems = {
         id: 0,
         userId: fetchInfo().id,
         publisherName: fetchInfo().username,
@@ -78,118 +91,140 @@ const AddPostComponent = () => {
         category: style,
         isPublished: true,
         isDeleted: false,
-        comments: []
+        comments: [],
       };
       console.log(newPost);
       await addPostItem(newPost, getToken());
-      // console.log(await getAllPosts());
+      console.log("Post added successfully!");
+      const queryParams = new URLSearchParams({
+        u: newPost.publisherName,
+      }).toString();
+      router.push(`/user-profile?${queryParams}`);
       window.location.reload();
-      // You can now store this URL in your component state or send it to your backend
-    }
-  };
-
-  //normal file reader for image preview NOT added to DB
-  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const reader = new FileReader();
-    const file = e.target.files?.[0];
-
-    if (file) {
-      //when this files if turned into a string this on load function will run
-      reader.onload = () => {
-        setImagePreview(String(reader.result)); //once the file is read we will store the result into our setter function
-      };
-      reader.readAsDataURL(file); //this converts the file into a bas64-encoded string
     }
   };
 
   return (
-    <div>
-      <h2 className="text-center text-2xl">Create Post</h2>
-      <div className="flex justify-center place-items-center h-[50vh]">
-        <div className="flex w-[70%] flex-col gap-3">
-          <div className="flex gap-3 min-h-[15vh]">
-            <div className="w-[40%]">
-              <h4>Image</h4>
+    <div className="px-3 sm:px-4 md:px-6 py-4 sm:py-5 md:py-6 w-full max-h-[90vh] overflow-y-auto">
+      <h2 className="font-[NeueMontreal-Medium] text-center text-lg sm:text-xl md:text-2xl mb-4 sm:mb-5">
+        Create Post
+      </h2>
+
+      <div className="mx-auto flex flex-col gap-4 sm:gap-5">
+        <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-5">
+          <div className="w-full md:w-2/5 flex flex-col gap-1 sm:gap-1.5">
+            <label
+              htmlFor="pictureSelect"
+              className="font-[NeueMontreal-Medium] text-xs sm:text-sm"
+            >
+              Image
+            </label>
+            <div className="aspect-square w-full bg-gray-100 rounded-md overflow-hidden border border-gray-300 flex items-center justify-center">
               <img
                 src={imagePreview}
-                alt="new post picture"
-                className="aspect-square border border-slate-300"
+                alt="New post preview"
+                className={`w-full h-full ${
+                  imagePreview === "/nofileselected.png"
+                    ? "object-scale-down p-4 sm:p-6 md:p-8 opacity-50"
+                    : "object-cover"
+                }`}
               />
-            </div>
-            <div className="w-[60%]">
-              <div className="flex justify-between">
-                <h4>Caption</h4>
-                <h5 className="text-sm">300 characters max</h5>
-              </div>
-
-              <textarea
-                name="caption"
-                id="postCaption"
-                maxLength={300}
-                placeholder="Caption..."
-                className="bg-[#f5f5f5] p-2 w-full h-[30%]"
-                onChange={(e) => setCaption(e.target.value)}
-              ></textarea>
             </div>
           </div>
 
-          <label htmlFor="pictureSelect" className="cursor-pointer">
-            <div className="bg-black w-full text-white font-[NeueMontreal-Regular] py-1 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-center">
-              Upload Image
+          <div className="w-full md:w-3/5 flex flex-col gap-1 sm:gap-1.5">
+            <div className="flex justify-between items-center">
+              <label
+                htmlFor="postCaption"
+                className="font-[NeueMontreal-Medium] text-xs sm:text-sm"
+              >
+                Caption
+              </label>
+              <span className="font-[NeueMontreal-Medium] text-gray-500 text-xs">
+                300 characters
+              </span>
             </div>
-          </label>
+            <textarea
+              name="caption"
+              id="postCaption"
+              maxLength={300}
+              placeholder="Write a caption..."
+              className="bg-white border border-gray-300 p-2 sm:p-3 w-full min-h-[100px] sm:min-h-[120px] md:h-full resize-none rounded-md font-[NeueMontreal-Medium] text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
+              onChange={(e) => setCaption(e.target.value)}
+              value={caption}
+            />
+          </div>
+        </div>
 
+        <div>
+          <label
+            htmlFor="pictureSelect"
+            className="block text-center bg-black w-full text-white font-[NeueMontreal-Medium] py-2.5 sm:py-3 rounded-lg hover:bg-gray-200 hover:outline-2 hover:text-black active:bg-black active:text-white active:outline-0 cursor-pointer transition-all duration-75 text-sm sm:text-base"
+          >
+            Upload Image
+          </label>
           <input
             type="file"
             id="pictureSelect"
-            accept="image/*,.pdf"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             className="hidden"
             onChange={handleFileChange}
           />
+        </div>
 
-          <div>
-            <h4>Category/Style</h4>
-
-            <div
+        <div className="flex flex-col gap-1 sm:gap-1.5">
+          <label
+            htmlFor="categoryStyle"
+            className="font-[NeueMontreal-Medium] text-xs sm:text-sm"
+          >
+            Category / Style
+          </label>
+          <div className="relative">
+            <button
+              type="button"
+              id="categoryStyle"
               onClick={() => toggleDropDown(!dropDown)}
-              className="bg-[#f5f5f5] flex justify-between items-center rounded-md px-4 py-2 cursor-pointer text-black"
+              className="bg-white border border-gray-300 flex justify-between items-center rounded-md px-2 sm:px-3 py-2 sm:py-2.5 cursor-pointer text-black w-full text-left font-[NeueMontreal-Medium] text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
             >
-              {style}
+              <span className={style ? "text-black" : "text-gray-500"}>
+                {style || "Select a style"}
+              </span>
               <img
-                className={`w-[25px] m-0 p-0 transition-transform duration-500 ${
+                className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 transform ${
                   dropDown ? "rotate-180" : "rotate-0"
                 }`}
-                src="./icons/dropdown.png"
-                alt="Drop Down Icon"
+                src="/icons/dropdown.png"
+                alt="Dropdown arrow"
               />
-            </div>
+            </button>
             {dropDown && (
-              <div
-                className={`rounded-md border-gray-300 bg-white p-3 absolute z-30 shadow-md transition-all duration-700 h-64 overflow-y-scroll w-[50%] ${
-                  dropDown ? "opacity-100 visible" : "opacity-0 invisible"
-                }`}
-              >
-                <div>
-                  {haircuts.map((cut) => (
+              <div className="rounded-md border border-gray-300 bg-white p-1 sm:p-2 absolute z-10 shadow-lg mt-1 w-full max-h-36 sm:max-h-44 md:max-h-52 overflow-y-auto transition-opacity duration-150 ease-in-out">
+                {haircuts.length > 0 ? (
+                  haircuts.map((cut) => (
                     <div
                       key={cut}
                       onClick={() => handleStyle(cut)}
-                      className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
+                      className="cursor-pointer hover:bg-gray-100 p-1.5 sm:p-2 rounded-sm font-[NeueMontreal-Medium] text-xs sm:text-sm"
                     >
                       {cut}
                     </div>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <div className="p-2 text-xs sm:text-sm text-gray-500 font-[NeueMontreal-Medium]">
+                    Loading styles...
+                  </div>
+                )}
               </div>
             )}
           </div>
-          <button
-            className="bg-[#1500FF] text-white py-2 mt-2 rounded-md font-[NeueMontreal-Medium] text-sm hover:bg-black active:bg-[#1500FF] cursor-pointer"
-            onClick={handleSubmit}
-          >
-            POST
-          </button>
         </div>
+
+        <button
+          className="bg-[#1500FF] text-white py-2.5 sm:py-3 px-4 mt-1 sm:mt-2 rounded-md font-[NeueMontreal-Medium] text-sm sm:text-base hover:bg-white hover:outline-2 hover:text-[#1500FF] active:bg-[#1500FF] active:text-white active:outline-none transition-colors duration-150 w-full"
+          onClick={handleSubmit}
+        >
+          POST
+        </button>
       </div>
     </div>
   );
