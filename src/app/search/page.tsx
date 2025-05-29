@@ -98,7 +98,7 @@ const SearchResults = () => {
   return (
     <div>
       <nav>
-        <Navbar setSearchActive={setSearchActive} />
+        <Navbar setSearchActive={setSearchActive} hasHeader={false} />
       </nav>
       <div className="mx-[10%] mt-5">
         <div className="flex gap-1">

@@ -8,7 +8,7 @@ const Explore = () => {
   console.log(searchActive);
   return (
     <div className="min-h-screen">
-      <Navbar setSearchActive={setSearchActive} />
+      <Navbar setSearchActive={setSearchActive} hasHeader={false} />
       <div className="flex justify-center">PAGE IN PROGRESS...</div>
       <StylistAIComponent />
       <div className="absolute bottom-2 right-2 flex gap-1 text-sm">

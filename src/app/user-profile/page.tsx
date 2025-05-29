@@ -40,10 +40,26 @@ const UserProfile = () => {
 
   useEffect(() => {
     const getInfo = async () => {
-      if (searchParams.get("u"))
-        setAccountData(await getUserData(searchParams.get("u") || ""));
+      const username = searchParams.get("u") || fetchInfo().username;
+      if (username) {
+        const userData = await getUserData(username);
+        if (userData) {
+          setAccountData(userData);
+        }
+      }
     };
     getInfo();
+
+    // Add event listener for storage changes
+    const handleStorageChange = () => {
+      getInfo();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [searchActive, searchParams]);
 
   return (

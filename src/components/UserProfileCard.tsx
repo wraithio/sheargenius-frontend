@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { X, Camera, MapPin, Mail, User, Calendar, AlignLeft, Smile, TextSelect, Settings, LogOut, Trash2, Type } from "lucide-react";
+import FollowModal from "./FollowModal";
 
 const UserProfileCard = (info: IUserProfileInfo) => {
   const [isDropDownOpen, setDropDownOpen] = useState(false);
@@ -25,9 +26,10 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   const [zip, setZip] = useState<string>(info.zip);
   const [bio, setBio] = useState<string>(info.bio);
   const [file, setFile] = useState<File | null>(null);
-  // const [rating, setRating] = useState<string>("");
   const [data, setData] = useState<IUserProfileInfo>({ ...info });
   const router = useRouter();
+  const [showFollowModal, setShowFollowModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const setRatingNum = () => {
     const division_result = data.rating / data.ratingCount.length;
@@ -57,54 +59,28 @@ const UserProfileCard = (info: IUserProfileInfo) => {
 
   const cancelEdit = () => {
     setEdit(false);
-    // reset input fields
   };
 
   const handlePicSubmit = async () => {
-    //Prevent default so our app doesn't reload on submitting
-    // e.preventDefault();
-
-    //Check if the file is inside of our state Variable
     if (!file) {
-      // alert('Please select a file to upload.');
-      return null;
+      return data.pfp;
     }
-    //A Unique file name so data isn't being overwritten in our blob
     const uniqueFileName = `${Date.now()}-${file.name}`;
 
-    //New Form Data Object to append our file and file name
     const formData = new FormData();
     formData.append("file", file);
     formData.append("fileName", uniqueFileName);
 
-    //Finally passing that formData into our Backend
     const uploadedUrl = await blobUpload(formData);
 
     if (uploadedUrl) {
       console.log("File uploaded at:", uploadedUrl);
-      // You can now store this URL in your component state or send it to your backend
+      return uploadedUrl;
     }
-    return uploadedUrl;
+    return data.pfp;
   };
 
   const saveEdits = async () => {
-    // //Check if the file is inside of our state Variable
-    // if (!file) {
-    //   alert("Please select file to upload.");
-    //   return;
-    // }
-    // //A Unique file name so data isn't being overwritten in our blob
-    // const uniqueFileName = `${Date.now()}-${file.name}`;
-
-    // //New Form Data Object to append our file and file name
-    // const formData = new FormData();
-    // formData.append("file", file);
-    // formData.append("fileName", uniqueFileName);
-
-    // //Finally passing that formData into our Backend
-    // const uploadedUrl = await blobUpload(formData);
-
-    // if (uploadedUrl) {
     const newEditedUser: IUserProfileInfo = {
       id: 0,
       username: data.username,
@@ -132,14 +108,11 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     };
 
     const result = await editAccount(newEditedUser);
-    console.log(newEditedUser);
     if (result) {
-      console.log("Editing Success");
       sessionStorage.setItem("AccountInfo", JSON.stringify(newEditedUser));
-      router.push("/user-profile");
-      cancelEdit();
       setData(newEditedUser);
-      // window.location.reload();
+      cancelEdit();
+      window.dispatchEvent(new Event('storage'));
     } else {
       alert("Editing Failed");
     }
@@ -152,14 +125,24 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   };
 
   const deleteAccount = async (model: IUserProfileInfo) => {
-    model.isDeleted = true;
-    const result = await editAccount(model);
-    if (result) {
-      sessionStorage.removeItem("AccountInfo");
-      localStorage.removeItem("token");
-      redirect("/login");
-    } else {
-      alert("deletion failed");
+    if (isDeleting) return;
+    
+    try {
+      setIsDeleting(true);
+      const { deleteAccount: deleteAccountService } = await import('@/utils/DataServices');
+      
+      const result = await deleteAccountService(model.username);
+      if (result) {
+        sessionStorage.clear();
+        localStorage.clear();
+        router.push('/login');
+      } else {
+        router.push('/login');
+      }
+    } catch (error) {
+      router.push('/login');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -176,11 +159,10 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     const file = e.target.files?.[0];
 
     if (file) {
-      //when this files if turned into a string this on load function will run
       reader.onload = () => {
-        setPfpPreview(String(reader.result)); //once the file is read we will store the result into our setter function
+        setPfpPreview(String(reader.result));
       };
-      reader.readAsDataURL(file); //this converts the file into a bas64-encoded string
+      reader.readAsDataURL(file);
     }
   };
 
@@ -189,21 +171,6 @@ const UserProfileCard = (info: IUserProfileInfo) => {
       u: name,
     }).toString();
     router.push(`/user-profile?${queryParams}`);
-  };
-
-  const closeMenus = (b: boolean) => {
-    setOpenFollowers(b);
-    setOpenFollowing(b);
-  };
-
-  const setFollowers = () => {
-    setOpenFollowers(true);
-    setOpenFollowing(false);
-  };
-
-  const setFollowing = () => {
-    setOpenFollowers(false);
-    setOpenFollowing(true);
   };
 
   const states = [
@@ -260,10 +227,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   ];
 
   return (
-    <section 
-      className="font-[NeueMontreal-Medium]" 
-      onClick={openFollowers || openFollowing ? () => closeMenus(false) : undefined}
-    >
+    <section className="font-[NeueMontreal-Medium]">
       {edit ? (
         <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
           <div className="flex flex-col gap-6 p-6">
@@ -285,7 +249,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                   <Image
                     width={300}
                     height={300}
-                    src={pfp == pfpPreview ? data.pfp : pfpPreview}
+                    src={pfpPreview.startsWith('data:') ? pfpPreview : (pfp || "/default-pfp.jpeg")}
                     alt={`${data.username} profile pic`}
                     className="w-32 h-32 rounded-full object-cover ring-4 ring-black/5"
                   />
@@ -533,7 +497,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                       <Image
                         width={300}
                         height={300}
-                        src={data.pfp !== "" ? data.pfp : "/nofileselected.png"}
+                        src={data.pfp || "/default-pfp.jpeg"}
                         alt={`${data.username} profile pic`}
                         className="w-36 h-36 rounded-full object-cover ring-4 ring-black/5"
                         priority
@@ -561,54 +525,20 @@ const UserProfileCard = (info: IUserProfileInfo) => {
                       </div>
                       
                       <div className="flex gap-6 text-sm">
-                        <div className="relative">
-                          <button 
-                            onClick={() => setFollowers()} 
-                            className="text-gray-600 hover:text-black transition-colors"
-                          >
-                            {data.followers.length === 1
-                              ? `${data.followers.length} Follower`
-                              : `${data.followers.length} Followers`}
-                          </button>
-                          {openFollowers && data.followers.length !== 0 && (
-                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
-                              {data.followers.map((user, index) => (
-                                <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
-                                  <span className="font-medium">{user}</span>
-                                  <button
-                                    onClick={() => goToProfile(user)}
-                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-                                  >
-                                    View Profile
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <div className="relative">
-                          <button 
-                            onClick={() => setFollowing()} 
-                            className="text-gray-600 hover:text-black transition-colors"
-                          >
-                            {data.following.length} Following
-                          </button>
-                          {openFollowing && data.following.length !== 0 && (
-                            <div className="absolute z-10 mt-2 w-72 bg-white rounded-2xl border border-gray-100 p-2">
-                              {data.following.map((user, index) => (
-                                <div key={index} className="flex justify-between items-center p-3 hover:bg-gray-50 rounded-xl">
-                                  <span className="font-medium">{user}</span>
-                                  <button
-                                    onClick={() => goToProfile(user)}
-                                    className="text-sm px-4 py-1.5 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-                                  >
-                                    View Profile
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                        <button
+                          onClick={() => setShowFollowModal(true)}
+                          className="text-gray-600 hover:text-black transition-colors"
+                        >
+                          {data.followers.length === 1
+                            ? `${data.followers.length} Follower`
+                            : `${data.followers.length} Followers`}
+                        </button>
+                        <button
+                          onClick={() => setShowFollowModal(true)}
+                          className="text-gray-600 hover:text-black transition-colors"
+                        >
+                          {data.following.length} Following
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -639,6 +569,15 @@ const UserProfileCard = (info: IUserProfileInfo) => {
         </div>
       )}
 
+      <FollowModal
+        isOpen={showFollowModal}
+        onClose={() => setShowFollowModal(false)}
+        followers={data.followers}
+        following={data.following}
+        onViewProfile={goToProfile}
+        isOwnProfile={true}
+      />
+
       {openState && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full animate-in zoom-in-95 relative">
@@ -660,12 +599,18 @@ const UserProfileCard = (info: IUserProfileInfo) => {
               <div className="flex flex-col w-full gap-3">
                 <button
                   onClick={() => deleteAccount(data)}
-                  className="w-full bg-red-500 text-white py-4 rounded-xl hover:bg-red-600 active:bg-red-500 transition-colors font-[NeueMontreal-Medium]"
+                  disabled={isDeleting}
+                  className={`w-full py-4 rounded-xl font-[NeueMontreal-Medium] transition-colors ${
+                    isDeleting 
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : 'bg-red-500 text-white hover:bg-red-600 active:bg-red-500'
+                  }`}
                 >
-                  Yes, delete my account
+                  {isDeleting ? 'Deleting account...' : 'Yes, delete my account'}
                 </button>
                 <button
                   onClick={() => setOpenState(false)}
+                  disabled={isDeleting}
                   className="w-full bg-gray-100 text-gray-600 py-4 rounded-xl hover:bg-gray-200 active:bg-gray-100 transition-colors font-[NeueMontreal-Medium]"
                 >
                   No, keep my account

@@ -21,7 +21,7 @@ const StylesMore = () => {
   return (
     <div>
         <nav>
-            <Navbar setSearchActive={setSearchActive} />
+            <Navbar setSearchActive={setSearchActive} hasHeader={true} />
         </nav>
         <header>
             <Header

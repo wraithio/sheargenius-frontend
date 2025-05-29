@@ -137,7 +137,7 @@ const Register = () => {
       city: city.trim(),
       state: state.trim(),
       zip: zip.trim(),
-      pfp: "/icons/user-white.png",
+      pfp: "/default-pfp.jpeg",
       isDeleted: false,
     };
 

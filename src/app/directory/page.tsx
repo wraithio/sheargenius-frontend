@@ -120,7 +120,7 @@ export default function DirectoryPage() {
     <Suspense>
     <div className="bg-white min-h-screen w-full overflow-x-hidden">
       <nav>
-        <Navbar setSearchActive={setSearchActive} />
+        <Navbar setSearchActive={setSearchActive} hasHeader={true} />
       </nav>
       <header>
         <Header
