@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import PostCard from "@/components/PostCard";
 import { getAllPosts } from "@/utils/DataServices";
 import { IPostItems } from "@/utils/Interfaces";
-import { Search } from "lucide-react";
+import { Filter, Search, X } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -13,35 +13,18 @@ const SearchResults = () => {
   const [heading, setHeading] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const searchParams = useSearchParams();
-  const [isDropDownOpen, setDropDownOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("Most Recent");
-  const [results, setResults] = useState<IPostItems[]>([
-    {
-      id: 0,
-      userId: 0,
-      publisherName: "",
-      date: "",
-      caption: "",
-      image: "/nofileselected.png",
-      likes: [],
-      category: "",
-      isPublished: false,
-      isDeleted: true,
-      comments: null,
-    },
-  ]);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [results, setResults] = useState<IPostItems[]>([]);
 
-  const toggleDropDown = () => {
-    setDropDownOpen(!isDropDownOpen);
-  };
-
-  const selectFilter = (question: string) => {
-    setSelectedFilter(question);
-    setDropDownOpen(false);
-  };
+  const filters = [
+    "Most Recent",
+    "Top Rated",
+    "Category: A-Z",
+    "Category: Z-A"
+  ];
 
   const handleSearch = async (i: string) => {
-    // alert(`searching for ${i}`);
     setHeading(i);
     const allPosts = await getAllPosts();
     const searchResults: IPostItems[] = [];
@@ -58,8 +41,9 @@ const SearchResults = () => {
   };
 
   const loadResults = async (i: string) => {
+    if (!i.trim()) return;
     const queryParams = new URLSearchParams({
-      s: i,
+      s: i.trim(),
     }).toString();
     redirect(`/search?${queryParams}`);
   };
@@ -74,109 +58,129 @@ const SearchResults = () => {
   }, [searchActive, heading, searchParams]);
 
   useEffect(() => {
-    if (selectedFilter === "Top Rated") {
-      setResults((prevPosts) =>
-        [...prevPosts].sort((a, b) => b.likes.length - a.likes.length)
-      );
+    if (selectedFilter === "Most Recent") {
+      setResults(prev => [...prev].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+    } else if (selectedFilter === "Top Rated") {
+      setResults(prev => [...prev].sort((a, b) => b.likes.length - a.likes.length));
     } else if (selectedFilter === "Category: A-Z") {
-      setResults((prevPosts) =>
-        [...prevPosts].sort((a, b) => a.category.localeCompare(b.category))
-      );
+      setResults(prev => [...prev].sort((a, b) => a.category.localeCompare(b.category)));
     } else if (selectedFilter === "Category: Z-A") {
-      setResults((prevPosts) =>
-        [...prevPosts].sort((a, b) => b.category.localeCompare(a.category))
-      );
-    } else {
-      setResults((prevPosts) =>
-        [...prevPosts].sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
-      );
+      setResults(prev => [...prev].sort((a, b) => b.category.localeCompare(a.category)));
     }
   }, [selectedFilter]);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      loadResults(query);
+    }
+  };
+
+  const FiltersContent = () => (
+    <>
+      <h2 className="font-[NeueMontreal-Medium] text-lg mb-6">Sort By</h2>
+      <div className="space-y-2">
+        {filters.map((filter) => (
+          <button
+            key={filter}
+            onClick={() => {
+              setSelectedFilter(filter);
+              if (showMobileFilters) setShowMobileFilters(false);
+            }}
+            className={`block w-full text-left text-sm py-2 px-3 rounded-lg transition-colors ${
+              selectedFilter === filter
+                ? "bg-black text-white"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
+    </>
+  );
+
   return (
-    <div>
+    <div className="min-h-screen bg-white">
       <nav>
         <Navbar setSearchActive={setSearchActive} hasHeader={false} />
       </nav>
-      <div className="mx-[10%] mt-5">
-        <div className="flex gap-1">
-          <input
-            type="text"
-            className="border-2 rounded-sm px-1"
-            placeholder="search"
-            id="searchID"
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button className="cursor-pointer" onClick={() => loadResults(query)}>
-            <Search size={22} />
+
+      <main className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="max-w-2xl mx-auto mb-12">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search styles, barbers, or posts..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="w-full bg-gray-50 pl-5 pr-12 py-4 rounded-xl outline-none focus:ring-2 focus:ring-black/5 transition-shadow text-base"
+            />
+            <button
+              onClick={() => loadResults(query)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-200 rounded-full transition-colors"
+            >
+              <Search className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
+        </div>
+
+        <div className="md:hidden mb-6">
+          <button
+            onClick={() => setShowMobileFilters(true)}
+            className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg text-sm font-[NeueMontreal-Medium]"
+          >
+            <Filter size={16} />
+            Sort Options
           </button>
         </div>
-        <header className="flex justify-between my-2">
-          <h2 className="text-2xl">
-            Search Results for: <b>{heading == "" ? "all posts" : heading}</b>
-          </h2>
-          <div className="flex flex-col">
-            <div className="relative">
-              <div
-                onClick={toggleDropDown}
-                className="bg-[#f5f5f5] flex justify-between items-center rounded-md px-4 py-2 cursor-pointer"
-              >
-                {selectedFilter}
-                <img
-                  className={`w-[25px] m-0 p-0 transition-transform duration-500 ${
-                    isDropDownOpen ? "rotate-180" : "rotate-0"
-                  }`}
-                  src="./icons/dropdown.png"
-                  alt="Drop Down Icon"
-                />
-              </div>
-              {isDropDownOpen && (
-                <div
-                  className={`rounded-md z-50 border-gray-300 bg-white p-3 absolute top-[45px] w-[100%] shadow-md transition-all duration-700 ${
-                    isDropDownOpen
-                      ? "opacity-100 visible"
-                      : "opacity-0 invisible"
-                  }`}
+
+        {showMobileFilters && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden">
+            <div className="absolute right-0 top-0 h-full w-80 max-w-[calc(100%-3rem)] bg-white shadow-xl p-6 overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="font-[NeueMontreal-Medium] text-lg">Sort Options</h2>
+                <button
+                  onClick={() => setShowMobileFilters(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full"
                 >
-                  <div
-                    onClick={() => selectFilter("Top Rated")}
-                    className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                  >
-                    Top Rated
-                  </div>
-                  <div
-                    onClick={() => selectFilter("Category: A-Z")}
-                    className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                  >
-                    Category: A-Z
-                  </div>
-                  <div
-                    onClick={() => selectFilter("Category: Z-A")}
-                    className="cursor-pointer hover:bg-gray-100 p-1 rounded-sm"
-                  >
-                    Category: Z-A
-                  </div>
-                </div>
-              )}
+                  <X size={20} />
+                </button>
+              </div>
+              <FiltersContent />
             </div>
           </div>
-        </header>
-        {searchSuccess || results.length != 0 ? (
-          <div className="grid grid-cols-4 gap-1">
-            {results
-              .filter((post) => post.isDeleted == false && post.isPublished == true)
-              .map((post, idx) => (
-                <PostCard key={idx} {...post} />
-              ))}
-          </div>
-        ) : (
-          <div className="bg-[#F5F5F5] flex justify-center place-items-center h-24 mb-8">
-            <h3>{`No related posts for ${heading}...`}</h3>
-          </div>
         )}
-      </div>
+
+        <div className="flex gap-8">
+          <div className="hidden md:block w-64 flex-shrink-0">
+            <div className="sticky top-24 border-r pr-6">
+              <FiltersContent />
+            </div>
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <h2 className="text-2xl font-[NeueMontreal-Medium] mb-8">
+              Search Results for: <span className="font-[NeueMontreal-Regular]">{heading === "" ? "all posts" : heading}</span>
+            </h2>
+
+            {searchSuccess || results.length !== 0 ? (
+              <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {results
+                  .filter((post) => post.isDeleted === false && post.isPublished === true)
+                  .map((post, idx) => (
+                    <PostCard key={idx} {...post} />
+                  ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                <p className="text-lg font-[NeueMontreal-Medium] mb-2">No results found</p>
+                <p className="text-sm">Try adjusting your search terms</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
