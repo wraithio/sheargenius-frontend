@@ -53,31 +53,31 @@ const SendRequestComponent = ({ barberName, onClose }: SendRequestComponentProps
     }
     switch (day) {
       case "Monday":
-        setTimes(schedule.mondayTimes || []);
+        setTimes(schedule.mondayTimes.reverse() || []);
         setError(!schedule.mondayTimes?.length);
         break;
       case "Tuesday":
-        setTimes(schedule.tuesdayTimes || []);
+        setTimes(schedule.tuesdayTimes.reverse() || []);
         setError(!schedule.tuesdayTimes?.length);
         break;
       case "Wednesday":
-        setTimes(schedule.wednesdayTimes || []);
+        setTimes(schedule.wednesdayTimes.reverse() || []);
         setError(!schedule.wednesdayTimes?.length);
         break;
       case "Thursday":
-        setTimes(schedule.thursdayTimes || []);
+        setTimes(schedule.thursdayTimes.reverse() || []);
         setError(!schedule.thursdayTimes?.length);
         break;
       case "Friday":
-        setTimes(schedule.fridayTimes || []);
+        setTimes(schedule.fridayTimes.reverse() || []);
         setError(!schedule.fridayTimes?.length);
         break;
       case "Saturday":
-        setTimes(schedule.saturdayTimes || []);
+        setTimes(schedule.saturdayTimes.reverse() || []);
         setError(!schedule.saturdayTimes?.length);
         break;
       case "Sunday":
-        setTimes(schedule.sundayTimes || []);
+        setTimes(schedule.sundayTimes.reverse() || []);
         setError(!schedule.sundayTimes?.length);
         break;
     }
@@ -191,7 +191,7 @@ const SendRequestComponent = ({ barberName, onClose }: SendRequestComponentProps
               {isTimeDropdownOpen && (
                 <div className="fixed z-[200] w-[calc(100%-3rem)] sm:w-[460px] mt-2 bg-white rounded-lg shadow-lg border border-gray-100">
                   <div className="py-1 max-h-[200px] overflow-y-auto">
-                    {times.reverse().map((time, idx) => (
+                    {times.map((time, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleTimeSelect(time)}
