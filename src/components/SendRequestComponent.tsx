@@ -53,31 +53,31 @@ const SendRequestComponent = ({ barberName, onClose }: SendRequestComponentProps
     }
     switch (day) {
       case "Monday":
-        setTimes(schedule.mondayTimes || []);
+        setTimes(schedule.mondayTimes.reverse() || []);
         setError(!schedule.mondayTimes?.length);
         break;
       case "Tuesday":
-        setTimes(schedule.tuesdayTimes || []);
+        setTimes(schedule.tuesdayTimes.reverse() || []);
         setError(!schedule.tuesdayTimes?.length);
         break;
       case "Wednesday":
-        setTimes(schedule.wednesdayTimes || []);
+        setTimes(schedule.wednesdayTimes.reverse() || []);
         setError(!schedule.wednesdayTimes?.length);
         break;
       case "Thursday":
-        setTimes(schedule.thursdayTimes || []);
+        setTimes(schedule.thursdayTimes.reverse() || []);
         setError(!schedule.thursdayTimes?.length);
         break;
       case "Friday":
-        setTimes(schedule.fridayTimes || []);
+        setTimes(schedule.fridayTimes.reverse() || []);
         setError(!schedule.fridayTimes?.length);
         break;
       case "Saturday":
-        setTimes(schedule.saturdayTimes || []);
+        setTimes(schedule.saturdayTimes.reverse() || []);
         setError(!schedule.saturdayTimes?.length);
         break;
       case "Sunday":
-        setTimes(schedule.sundayTimes || []);
+        setTimes(schedule.sundayTimes.reverse() || []);
         setError(!schedule.sundayTimes?.length);
         break;
     }

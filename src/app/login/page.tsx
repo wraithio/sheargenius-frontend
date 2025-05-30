@@ -138,7 +138,7 @@ const Login = () => {
                     Sign Up
                   </Link>
                 </p>
-                <p className="font-[NeueMontreal-Medium] text-xs sm:text-sm">
+                {/* <p className="font-[NeueMontreal-Medium] text-xs sm:text-sm">
                   Forgot your password?
                   <Link
                     className="text-[#1500FF] active:text-[#3F5CFF] hover:underline ml-1"
@@ -146,7 +146,7 @@ const Login = () => {
                   >
                     Click Here
                   </Link>
-                </p>
+                </p> */}
               </div>
             </div>
           </div>
