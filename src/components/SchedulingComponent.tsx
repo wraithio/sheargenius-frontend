@@ -318,15 +318,7 @@ const SchedulingComponent = () => {
                     <Calendar className="w-5 h-5 text-gray-600" />
                     <h2 className="font-[NeueMontreal-Medium] text-xl">My Schedule</h2>
                   </div>
-                  <button
-                    onClick={() => setEdit(true)}
-                    className="group relative w-10 h-10 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
-                  >
-                    <SquarePen className="w-5 h-5" />
-                    <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      Edit Schedule
-                    </span>
-                  </button>
+                 
                 </div>
 
                 <div className="space-y-6">
@@ -360,6 +352,18 @@ const SchedulingComponent = () => {
             )}
           </div>
         ))}
+        <div className="flex justify-end">
+
+             <button
+                    onClick={() => setEdit(true)}
+                    className="group relative w-10 h-10 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 active:transform active:scale-[0.98] transition-all duration-200 flex items-center justify-center"
+                    >
+                    <SquarePen className="w-5 h-5" />
+                    <span className="absolute -bottom-8 right-0 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      {schedule? "Edit Schedule" : "Set Schedule"}
+                    </span>
+                  </button>
+                    </div>
 
       {edit && (
         <div className="bg-white rounded-2xl p-6 border border-gray-200">

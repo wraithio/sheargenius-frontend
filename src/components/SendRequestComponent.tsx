@@ -191,7 +191,7 @@ const SendRequestComponent = ({ barberName, onClose }: SendRequestComponentProps
               {isTimeDropdownOpen && (
                 <div className="fixed z-[200] w-[calc(100%-3rem)] sm:w-[460px] mt-2 bg-white rounded-lg shadow-lg border border-gray-100">
                   <div className="py-1 max-h-[200px] overflow-y-auto">
-                    {times.map((time, idx) => (
+                    {times.reverse().map((time, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleTimeSelect(time)}

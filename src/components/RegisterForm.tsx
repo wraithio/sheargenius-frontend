@@ -29,7 +29,7 @@ const RegisterForm = () => {
       <div className="flex flex-col justify-center gap-12 md:gap-16 lg:gap-20">
         <div>
           <p className="font-[NeueMontreal-Medium] text-white text-xl sm:text-2xl lg:text-3xl">
-            Looking to being a career in barbering? Or seeking inspiration to
+            Looking to begin a career in barbering? Or seeking inspiration to
             try something new?
           </p>
           <p className="font-[NeueMontreal-Medium] text-white text-base sm:text-lg lg:text-xl mt-4 sm:mt-6 md:mt-8 lg:mt-10">
