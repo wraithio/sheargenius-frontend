@@ -105,7 +105,7 @@ const SearchResults = () => {
         <Navbar setSearchActive={setSearchActive} hasHeader={false} />
       </nav>
 
-      <main className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <main className="max-w-[2000px] mx-auto  sm:px-6 lg:px-8 pt-8">
         <div className="max-w-2xl mx-auto mb-12">
           <div className="relative">
             <input
@@ -160,18 +160,54 @@ const SearchResults = () => {
           </div>
 
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-[NeueMontreal-Medium] mb-8">
+            <h2 className="text-2xl font-[NeueMontreal-Medium] mb-8 sm:px-0 px-2">
               Search Results for: <span className="font-[NeueMontreal-Regular]">{heading === "" ? "all posts" : heading}</span>
             </h2>
 
             {searchSuccess || results.length !== 0 ? (
-              <div className="grid grid-cols-1 min-[500px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {results
-                  .filter((post) => post.isDeleted === false && post.isPublished === true)
-                  .map((post, idx) => (
-                    <PostCard key={idx} {...post} />
-                  ))}
-              </div>
+
+
+
+
+                <div className="
+      grid
+      grid-cols-3 grid-rows-6 gap-0 min-h-[600px]
+      sm:grid-cols-3 sm:grid-rows-none sm:min-h-0 sm:gap-4
+    ">
+      {results
+        .filter((post) => post.isDeleted === false && post.isPublished === true)
+        .map((post, idx) => {
+          const mobilePositions = [
+            "col-span-2 row-span-2",
+            "col-start-3",
+            "col-start-3 row-start-2",
+            "row-start-3",
+            "row-start-3",
+            "col-span-2 row-span-2 col-start-2 row-start-5",
+            "col-start-1 row-start-4",
+            "col-start-1 row-start-5",
+            "col-start-3 row-start-3",
+            "row-start-6",
+            "col-span-2 row-span-2 row-start-9"
+          ];
+         
+          return (
+            <div
+              key={post.id || idx}
+              className={`
+                ${idx < 11 ? mobilePositions[idx] : ''}
+                 sm:col-span-1 sm:row-span-1
+              `}
+            >
+              <PostCard {...post} />
+            </div>
+          );
+        })}
+    </div>
+
+
+
+
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-gray-500">
                 <p className="text-lg font-[NeueMontreal-Medium] mb-2">No results found</p>

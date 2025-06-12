@@ -74,7 +74,7 @@ const PostCard = (data: IPostItems) => {
       )}
       <div
         onClick={() => setFocus(true)}
-        className="w-full aspect-square rounded-lg relative cursor-pointer overflow-hidden group transition-all duration-300 hover:shadow-lg"
+        className="w-full aspect-square sm:rounded-lg relative cursor-pointer overflow-hidden group transition-all duration-300 hover:shadow-lg"
       >
         <div className="bg-gray-300 text-white w-full aspect-square flex justify-center">
           <Image
@@ -86,7 +86,7 @@ const PostCard = (data: IPostItems) => {
             priority
           />
         </div>
-        <div className="bg-gradient-to-t from-black/70 to-transparent w-full h-20 px-4 py-2 flex items-center absolute bottom-0">
+        <div className="bg-gradient-to-t from-black/70 to-transparent w-full h-20 px-4 py-2 sm:flex hidden items-center absolute bottom-0">
           <div className="w-full text-white">
             <p
               className="font-[NeueMontreal-Medium] text-sm cursor-pointer"
@@ -95,7 +95,7 @@ const PostCard = (data: IPostItems) => {
               {data.publisherName}
             </p>
 
-            <div className="flex justify-between items-center">
+            <div className="justify-between items-center">
               <p
                 className="font-[NeueMontreal-Medium] cursor-pointer"
                 onClick={() => setFocus(true)}

@@ -63,7 +63,7 @@ export default function Home() {
         setPosts(
           fetchedPosts
             .sort((a, b) => b.likes.length - a.likes.length)
-            .slice(0, 3)
+            .slice(0, 6)
         );
       } else {
         console.error("getAllPosts did not return an array:", fetchedPosts);
@@ -135,7 +135,17 @@ export default function Home() {
               Top Posts{" "}
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {/* TABLET/DESKTOP */}
+          <div className="sm:grid hidden grid-cols-3 gap-3 py-[-16px]">
+            {posts.slice(0, 3).map((post, index) => (
+              <div key={post.id && post.id !== 0 ? post.id : `post-${index}`}>
+                <PostCard {...post} />
+              </div>
+            ))}
+          </div>
+          {/* MOBILE */}
+
+          <div className="sm:hidden grid grid-cols-3">
             {posts.map((post, index) => (
               <div key={post.id && post.id !== 0 ? post.id : `post-${index}`}>
                 <PostCard {...post} />

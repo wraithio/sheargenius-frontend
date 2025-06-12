@@ -193,8 +193,8 @@ const PostFeed = (data: IUserProfileInfo) => {
 
     <div>
       {" "}
-      <div className="flex justify-between mt-12 mb-4 place-items-center">
-        <div className="flex gap-8">
+      <div className="flex justify-between sm:mt-12 mb-4 place-items-center">
+        <div className="flex gap-8 px-2">
           <button
                 onClick={() => setShowLikes(false)}
                 className={`px-4 py-2 rounded-full text-sm font-[NeueMontreal-Medium] transition-colors ${
@@ -306,7 +306,7 @@ const PostFeed = (data: IUserProfileInfo) => {
         </div>
       ) : (
         <div>
-          <div className="grid grid-cols-1 max-[860px]:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 sm:gap-3">
             {/* {showLikes ? (
             <div className="grid grid-cols-4 gap-3">
               {likedPosts

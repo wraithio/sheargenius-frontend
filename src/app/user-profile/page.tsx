@@ -66,7 +66,7 @@ const UserProfile = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Navbar setSearchActive={setSearchActive} />
       
-      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <main className="max-w-[1400px] mx-auto sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="flex flex-col gap-8">
           {accountData.username == fetchInfo().username ? (
             <UserProfileCard {...accountData} />
