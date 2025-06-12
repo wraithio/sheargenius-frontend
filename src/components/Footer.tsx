@@ -199,8 +199,7 @@ const Footer = () => {
 
       <div className="flex flex-col items-center gap-1 mt-8 pt-6 border-t border-gray-700 sm:flex-row sm:justify-between sm:mt-10 sm:pt-8">
         <p className="font-[NeueMontreal-Medium] text-gray-400">
-          CodeStack Academy
-        </p>
+          CodeStack</p>
         <p className="font-[NeueMontreal-Medium] text-gray-400">
           © 2025 ShearGenius
         </p>

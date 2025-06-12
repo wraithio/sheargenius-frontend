@@ -1,4 +1,5 @@
 "use client";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PostCard from "@/components/PostCard";
 import { getAllPosts } from "@/utils/DataServices";
@@ -21,7 +22,7 @@ const SearchResults = () => {
     "Most Recent",
     "Top Rated",
     "Category: A-Z",
-    "Category: Z-A"
+    "Category: Z-A",
   ];
 
   const handleSearch = async (i: string) => {
@@ -59,13 +60,23 @@ const SearchResults = () => {
 
   useEffect(() => {
     if (selectedFilter === "Most Recent") {
-      setResults(prev => [...prev].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      setResults((prev) =>
+        [...prev].sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+      );
     } else if (selectedFilter === "Top Rated") {
-      setResults(prev => [...prev].sort((a, b) => b.likes.length - a.likes.length));
+      setResults((prev) =>
+        [...prev].sort((a, b) => b.likes.length - a.likes.length)
+      );
     } else if (selectedFilter === "Category: A-Z") {
-      setResults(prev => [...prev].sort((a, b) => a.category.localeCompare(b.category)));
+      setResults((prev) =>
+        [...prev].sort((a, b) => a.category.localeCompare(b.category))
+      );
     } else if (selectedFilter === "Category: Z-A") {
-      setResults(prev => [...prev].sort((a, b) => b.category.localeCompare(a.category)));
+      setResults((prev) =>
+        [...prev].sort((a, b) => b.category.localeCompare(a.category))
+      );
     }
   }, [selectedFilter]);
 
@@ -105,7 +116,7 @@ const SearchResults = () => {
         <Navbar setSearchActive={setSearchActive} hasHeader={false} />
       </nav>
 
-      <main className="max-w-[2000px] mx-auto  sm:px-6 lg:px-8 pt-8">
+      <main className="max-w-[2000px] mx-auto sm:px-6 lg:px-8 pt-8">
         <div className="max-w-2xl mx-auto mb-12">
           <div className="relative">
             <input
@@ -139,7 +150,9 @@ const SearchResults = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden">
             <div className="absolute right-0 top-0 h-full w-80 max-w-[calc(100%-3rem)] bg-white shadow-xl p-6 overflow-y-auto">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="font-[NeueMontreal-Medium] text-lg">Sort Options</h2>
+                <h2 className="font-[NeueMontreal-Medium] text-lg">
+                  Sort Options
+                </h2>
                 <button
                   onClick={() => setShowMobileFilters(false)}
                   className="p-2 hover:bg-gray-100 rounded-full"
@@ -160,64 +173,80 @@ const SearchResults = () => {
           </div>
 
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-[NeueMontreal-Medium] mb-8 sm:px-0 px-2">
-              Search Results for: <span className="font-[NeueMontreal-Regular]">{heading === "" ? "all posts" : heading}</span>
+           <h2 className="text-2xl font-[NeueMontreal-Medium] sm:px-0 px-2">
+              Search Results for:{" "}
+              <span className="font-[NeueMontreal-Regular]">
+                {heading === "" ? "all posts" : heading}
+              </span>
             </h2>
+            <div className="mb-8">
+              <span className="sm:px-0 px-2 font-[NeueMontreal-Regular]">
+                showing {results.length} results
+              </span>
+            </div>
 
             {searchSuccess || results.length !== 0 ? (
+              <div
+                className="
+      grid 
+       min-h-[600px]
+      grid-cols-3 md:min-h-0 sm:gap-2
+    "
+              >
+                {results
+                  .filter(
+                    (post) =>
+                      post.isDeleted === false && post.isPublished === true
+                  )
+                  .map((post, idx) => {
+                    const mobilePositions = [
+                      "col-span-2 row-span-2",
+                      "col-start-3",
+                      "col-start-3 row-start-2",
+                      "row-start-3",
+                      "row-start-3",
+                      "row-start-3",
+                      "row-start-4",
+                      "row-start-4",
+                      "row-start-4",
+                      "row-start-5",
+                      "col-span-2 row-span-2 col-start-2 row-start-5",
+                      "col-start-1 row-start-6",
+                      "col-start-1 row-start-6",
+                    ];
 
-
-
-
-                <div className="
-      grid
-      grid-cols-3 grid-rows-6 gap-0 min-h-[600px]
-      sm:grid-cols-3 sm:grid-rows-none sm:min-h-0 sm:gap-4
-    ">
-      {results
-        .filter((post) => post.isDeleted === false && post.isPublished === true)
-        .map((post, idx) => {
-          const mobilePositions = [
-            "col-span-2 row-span-2",
-            "col-start-3",
-            "col-start-3 row-start-2",
-            "row-start-3",
-            "row-start-3",
-            "col-span-2 row-span-2 col-start-2 row-start-5",
-            "col-start-1 row-start-4",
-            "col-start-1 row-start-5",
-            "col-start-3 row-start-3",
-            "row-start-6",
-            "col-span-2 row-span-2 row-start-9"
-          ];
-         
-          return (
-            <div
-              key={post.id || idx}
-              className={`
-                ${idx < 11 ? mobilePositions[idx] : ''}
-                 sm:col-span-1 sm:row-span-1
+                    return (
+                      <div
+                        key={post.id || idx}
+                        className={`
+                ${idx < 13 ? mobilePositions[idx] : ""} 
+                sm:col-auto sm:row-auto sm:col-span-1 sm:row-span-1
               `}
-            >
-              <PostCard {...post} />
-            </div>
-          );
-        })}
-    </div>
-
-
-
-
+                      >
+                        <PostCard {...post} />
+                      </div>
+                    );
+                  })}
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                <p className="text-lg font-[NeueMontreal-Medium] mb-2">No results found</p>
+                <p className="text-lg font-[NeueMontreal-Medium] mb-2">
+                  No results found
+                </p>
                 <p className="text-sm">Try adjusting your search terms</p>
               </div>
             )}
           </div>
         </div>
       </main>
+       <div className="sm:mt-20 lg:mt-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50"></div>
+        <div className="relative">
+          <Footer />
+        </div>
+      </div>
     </div>
+  
   );
 };
 
