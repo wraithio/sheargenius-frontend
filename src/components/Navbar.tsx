@@ -345,7 +345,7 @@ const Navbar = ({ setSearchActive, hasHeader = false }: NavbarProps) => {
                     aria-label="Search">
                     <Search size={22} />
                   </button>
-                  <button className="cursor-pointer" onClick={profileClick}>
+                  <button className="cursor-pointer" onClick={profileClick} aria-label="View Profile">
                     {isLoggedIn && userProfile?.pfp ? (
                       <img 
                         src={userProfile.pfp} 
