@@ -28,7 +28,7 @@ export const createAccount = async (user: INewUser) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
 
@@ -48,7 +48,7 @@ export const editAccount = async (newUser: IUserProfileInfo) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
 
@@ -68,7 +68,7 @@ export const addCommentToPost = async (comment:ICommentInfo) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
 
@@ -88,7 +88,7 @@ export const addRating = async (rating:IRatingInterface) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
 
@@ -101,7 +101,7 @@ export const getCommentsbyId = async (id: number) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return null;
   }
   const data = await res.json();
@@ -120,7 +120,7 @@ export const login = async (user: IUserInfo) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return null;
   }
 
@@ -133,7 +133,7 @@ export const getLoggedInUserData = async (username: string) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return null;
   }
   userData = await res.json();
@@ -223,7 +223,7 @@ export const getAllPosts = async () => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return [];
   }
   const data = await res.json();
@@ -235,7 +235,7 @@ export const getUserPosts = async (id: number) => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return [];
   }
   const data = await res.json();
@@ -247,7 +247,7 @@ export const getAllBarbers = async () => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return [];
   }
   const data = await res.json();
@@ -259,7 +259,7 @@ export const getPostItemsByUserId = async (userId: number) => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return [];
   }
 
@@ -272,7 +272,7 @@ export const getPostbyPostId = async (postId: number) => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return null;
   }
 
@@ -285,7 +285,7 @@ export const getPostItemsByCategory = async (category: string) => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return [];
   }
 
@@ -305,7 +305,7 @@ export const addPostItem = async (post: IPostItems, token: string) => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return false;
   }
   const data = await res.json();
@@ -324,7 +324,7 @@ export const updatePostItem = async (post: IPostItems, token: string) => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return false;
   }
   const data = await res.json();
@@ -343,7 +343,7 @@ export const toggleFollowers = async (userFollowing: string, userFollowed: strin
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return false;
   }
   const data = await res.json();
@@ -362,7 +362,7 @@ export const toggleLikes = async (postId: number, username: string, token: strin
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return false;
   }
   const data = await res.json();
@@ -381,7 +381,7 @@ export const changePassword = async (payload:IUserInfo,token:string ) => {
   if (!res.ok) {
     const errorData = await res.json();
     const message = errorData.message;
-    console.log(message);
+    // console.log(message);
     return false;
   }
   const data = await res.json();
@@ -420,7 +420,7 @@ export const blobUpload = async (params: FormData)=> {
       const uploadedFileUrl = `${blobURL}/${fileName}`;
       return uploadedFileUrl;
   } else {
-      console.log('Failed to upload file.');
+      // console.log('Failed to upload file.');
       return null;
   }
 };
@@ -436,7 +436,7 @@ export const chatBot = async(prompt:string) =>{
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
-    "model": "deepseek/deepseek-r1:free",
+    "model": "deepseek/deepseek-r1",
     "messages": [
       {
         role: "user",
@@ -446,7 +446,7 @@ export const chatBot = async(prompt:string) =>{
   })
 });
   const data = await response.json();
-  console.log(data)
+  // console.log(data)
   return data.choices?.[0]?.message.content;
 } catch (error) {
   console.error("Error in chatBot function:", error);

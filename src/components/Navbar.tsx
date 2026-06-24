@@ -155,7 +155,7 @@ const Navbar = ({ setSearchActive, hasHeader = false }: NavbarProps) => {
   }, [path]);
 
   const handleSearch = async (q: string) => {
-    console.log("Search..", query);
+    // console.log("Search..", query);
     const result = await fetchHaircut(q);
     if (result !== undefined) {
       const queryParams = new URLSearchParams({
@@ -222,14 +222,17 @@ const Navbar = ({ setSearchActive, hasHeader = false }: NavbarProps) => {
                   </button>
                 </div>
                 <div className="flex items-center gap-6">
-                  <button className="cursor-pointer" onClick={addPostClick}>
+                  <button 
+                    className="cursor-pointer" 
+                    onClick={addPostClick} 
+                    aria-label="Create Post">
                     <Plus size={24} />
                   </button>
 
                   <button
                     className="cursor-pointer"
                     onClick={handleSearchClick}
-                  >
+                    aria-label="Search">
                     <Search size={22} />
                   </button>
                   <button className="cursor-pointer" onClick={profileClick}>
@@ -330,13 +333,16 @@ const Navbar = ({ setSearchActive, hasHeader = false }: NavbarProps) => {
                   </button>
                 </div>
                 <div className="flex items-center gap-6">
-                  <button className="cursor-pointer" onClick={addPostClick}>
+                  <button 
+                    className="cursor-pointer" 
+                    onClick={addPostClick}
+                    aria-label="Add Post">
                     <Plus size={24} />
                   </button>
                   <button
                     className="cursor-pointer"
                     onClick={handleSearchClick}
-                  >
+                    aria-label="Search">
                     <Search size={22} />
                   </button>
                   <button className="cursor-pointer" onClick={profileClick}>

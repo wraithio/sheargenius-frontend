@@ -4,7 +4,7 @@ const BASE_URL =
   "https://sheargenius-awakhjcph2deb6b9.westus-01.azurewebsites.net/";
 
 export const setSchedule = async (schedule: ISchedule) => {
-  console.log(schedule);
+  // console.log(schedule);
   const res = await fetch(`${BASE_URL}Schedule/SetSchedule`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -13,7 +13,7 @@ export const setSchedule = async (schedule: ISchedule) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
 
@@ -21,7 +21,7 @@ export const setSchedule = async (schedule: ISchedule) => {
   return data;
 };
 export const editSchedule = async (schedule: ISchedule) => {
-  console.log(schedule);
+  // console.log(schedule);
   const res = await fetch(`${BASE_URL}Schedule/EditSchedule`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -30,7 +30,7 @@ export const editSchedule = async (schedule: ISchedule) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
   const data = await res.json();
@@ -66,7 +66,7 @@ export const getRequestsbyBarberName = async (username: string) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return undefined;
   }
   const data = await res.json();
@@ -84,7 +84,7 @@ export const getRequestsbyUsername = async (username: string) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
   const data = await res.json();
@@ -137,7 +137,7 @@ export const acceptRequest = async (id: number) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
   const data = await res.json();
@@ -155,7 +155,7 @@ export const declineRequest = async (id: number) => {
   if (!res.ok) {
     const data = await res.json();
     const message = data.message;
-    console.log(message);
+    // console.log(message);
     return data.success;
   }
   const data = await res.json();
@@ -166,11 +166,11 @@ export const declineRequest = async (id: number) => {
 //   const res = await fetch(
 //     `${BASE_URL}Schedule/DeleteRequest/${id}`
 //   );
-//   console.log(`${BASE_URL}Schedule/DeleteRequest/${id}`)
+//   // console.log(`${BASE_URL}Schedule/DeleteRequest/${id}`)
 //   if (!res.ok) {
 //     const data = await res.json();
 //     const message = data.message;
-//     console.log(1);
+//     // console.log(1);
 //     return data.success;
 //   }
 //   const data = await res.json();
@@ -187,7 +187,7 @@ export const deleteRequest = async (id: number) => {
 
   if (!res.ok) {
     try {
-      console.log(1);
+      // console.log(1);
       const data = await res.json();
       return data.success;
     } catch {
@@ -195,7 +195,7 @@ export const deleteRequest = async (id: number) => {
     }
   }
   try {
-    console.log(2);
+    // console.log(2);
     const data = await res.json();
     return data.success;
   } catch {

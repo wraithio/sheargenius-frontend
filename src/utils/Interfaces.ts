@@ -30,7 +30,7 @@ export interface IPostItems {
   publisherName: string;
   date: string;
   caption: string;
-  image: string;
+  image: string | null;
   likes: number[];
   category: string;
   isPublished: boolean;

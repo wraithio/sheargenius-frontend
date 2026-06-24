@@ -56,10 +56,10 @@ const ForgotPassword = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("password change initiated");
+    // console.log("password change initiated");
     if (accountData.securityAnswer == answer.toLowerCase()) {
       // RESET PASSWORD LOGIC AND PUSH THE USER PAGE
-      console.log("answers matches");
+      // console.log("answers matches");
       const payload: IUserInfo = { username: username, password: newPassword };
       if (await changePassword(payload, getToken())) {
         setError(false);

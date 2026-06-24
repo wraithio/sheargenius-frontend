@@ -31,7 +31,7 @@ const Header = ({
   }, [searchActive]);
 
   const handleSearch = async () => {
-    console.log("Search..", query); 
+    // console.log("Search..", query); 
     const result = await fetchHaircut(query);
     if (result !== undefined) {
       const queryParams = new URLSearchParams({
@@ -62,7 +62,7 @@ const Header = ({
   };
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden bg-black">
       <img
         className="w-full h-[450px] sm:h-[550px] md:h-[650px] lg:h-[724px] object-cover"
         src="./webpsheargenius-bannerDARK.webp"
@@ -93,6 +93,7 @@ const Header = ({
                 onChange={(e) => setQuery(e.target.value.toLowerCase())}
                 onKeyDown={handleKeyDown}
                 className="bg-white font-[NeueMontreal-Medium] flex-grow w-full px-3 py-2 sm:px-4 sm:py-3 rounded-md outline-none text-sm sm:text-base"
+                title="Search Query"
               />
               <button
                 onClick={handleSearch}
@@ -103,7 +104,7 @@ const Header = ({
                 className={`flex-shrink-0 p-2 sm:p-3 rounded-md transition-colors duration-100 ${
                   searchHovered ? "bg-white" : "bg-black"
                 }`}
-              >
+                aria-label={`Search for ${query}`}>
                 <img
                   className="w-[20px] sm:w-[25px]"
                   src={
@@ -111,12 +112,13 @@ const Header = ({
                       ? "./icons/search.png"
                       : "./icons/search-white.png"
                   }
-                  alt="Search Icon"
+                  alt="Search"
                 />
               </button>
               <button
                 onClick={() => setSearchActive(false)}
                 className="bg-transparent flex-shrink-0 p-2 sm:p-3 rounded-md"
+                aria-label="Close Search"
               >
                 <X color="white"/>
               </button>

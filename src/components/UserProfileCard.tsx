@@ -74,7 +74,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
     const uploadedUrl = await blobUpload(formData);
 
     if (uploadedUrl) {
-      console.log("File uploaded at:", uploadedUrl);
+      // console.log("File uploaded at:", uploadedUrl);
       return uploadedUrl;
     }
     return data.pfp;
@@ -229,7 +229,7 @@ const UserProfileCard = (info: IUserProfileInfo) => {
   return (
     <section className="font-[NeueMontreal-Medium]">
       {edit ? (
-        <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl bg-white/50">
+        <div className="bg-white rounded-2xl overflow-hidden border border-gray-100/20 backdrop-blur-xl">
           <div className="flex flex-col gap-6 p-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-[NeueMontreal-Medium] bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
@@ -246,13 +246,13 @@ const UserProfileCard = (info: IUserProfileInfo) => {
             <div className="flex flex-col items-center gap-6">
               <div className="relative group">
                 <div className="relative">
-                  <Image
+                    <Image
                     width={300}
                     height={300}
                     src={pfpPreview.startsWith('data:') ? pfpPreview : (pfp || "/default-pfp.jpeg")}
                     alt={`${data.username} profile pic`}
                     className="w-32 h-32 rounded-full object-cover ring-4 ring-black/5"
-                  />
+                    />
                   <label
                     htmlFor="pictureSelect"
                     className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"

@@ -12,7 +12,7 @@ const Login = () => {
   const router = useRouter();
 
   const handleSubmit = async () => {
-    console.log("login attempted");
+    // console.log("login attempted");
     const userData = {
       username: username,
       password: password,
@@ -37,7 +37,7 @@ const Login = () => {
           if (accountInfo && accountInfo.isDeleted === false) {
             router.push("/");
           } else {
-            console.log("Account is deleted or info missing.");
+            // console.log("Account is deleted or info missing.");
             setError(true);
             localStorage.removeItem("Token");
             sessionStorage.removeItem("AccountInfo");
@@ -51,7 +51,7 @@ const Login = () => {
       }
     } else {
       setError(true);
-      console.log("Login was unsuccessful, invalid username or password");
+      // console.log("Login was unsuccessful, invalid username or password");
     }
   };
 

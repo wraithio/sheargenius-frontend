@@ -12,6 +12,7 @@ import {
 } from "@/utils/DataServices";
 import { useRouter } from "next/navigation";
 import { Heart, MessageSquare, X } from "lucide-react";
+import { FaSpinner } from "react-icons/fa";
 
 const PostCard = (data: IPostItems) => {
   const router = useRouter();
@@ -52,7 +53,7 @@ const PostCard = (data: IPostItems) => {
 
   const handleFocusLike = (updatedPost: IPostItems) => {
     setdata(updatedPost);
-    console.log(newdata);
+    // console.log(newdata);
   };
 
   return (
@@ -63,7 +64,7 @@ const PostCard = (data: IPostItems) => {
             <button
               className="absolute top-3 right-3 z-20 p-2 rounded-full bg-gray-100 text-gray-500 hover:text-black hover:bg-gray-200 transition-colors cursor-pointer"
               onClick={() => {setFocus(false);window.location.reload()}}
-            >
+              aria-label="Close Window">
               <X size={20} className="cursor-pointer" />
             </button>
             <div className="max-h-[90vh] overflow-y-auto">
@@ -77,14 +78,18 @@ const PostCard = (data: IPostItems) => {
         className="w-full aspect-square sm:rounded-lg relative cursor-pointer overflow-hidden group transition-all duration-300 hover:shadow-lg"
       >
         <div className="bg-gray-300 text-white w-full aspect-square flex justify-center">
-          <Image
-            width={500}
-            height={500}
-            src={data.image != null ? data.image : "/nofileselected.png"}
-            alt={`${data.publisherName}'s post #${data.id}`}
-            className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105"
-            priority
-          />
+          {
+            data.image == null ? (<div className="flex justify-center items-center"><FaSpinner size={100} className="animate-spin"/></div>) : (
+              <Image
+              width={500}
+              height={500}
+              src={data.image}
+              alt={`${data.publisherName}'s post #${data.id}`}
+              className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105"
+              priority
+              />
+            )
+          }
         </div>
         <div className="bg-gradient-to-t from-black/70 to-transparent w-full h-20 px-4 py-2 sm:flex hidden items-center absolute bottom-0">
           <div className="w-full text-white">
@@ -107,6 +112,7 @@ const PostCard = (data: IPostItems) => {
                   <button
                     onClick={handleLike}
                     className="hover:scale-110 transition-transform cursor-pointer"
+                    aria-label={`Like Post from' ${data.publisherName}`}
                   >
                     <Heart
                       size={24}

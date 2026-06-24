@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 const Explore = () => {
   const [searchActive, setSearchActive] = useState(false);
-  console.log(searchActive);
+  // console.log(searchActive);
   return (
     <div className="min-h-screen">
       <Navbar setSearchActive={setSearchActive} hasHeader={false} />

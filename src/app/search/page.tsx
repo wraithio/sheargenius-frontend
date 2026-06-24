@@ -126,11 +126,12 @@ const SearchResults = () => {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               className="w-full bg-gray-50 pl-5 pr-12 py-4 rounded-xl outline-none focus:ring-2 focus:ring-black/5 transition-shadow text-base"
+              title="Search Query"
             />
             <button
               onClick={() => loadResults(query)}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-200 rounded-full transition-colors"
-            >
+              aria-label={`Search for ${query}`}>
               <Search className="w-5 h-5 text-gray-500" />
             </button>
           </div>

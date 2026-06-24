@@ -19,7 +19,7 @@ export default function Home() {
       publisherName: "",
       date: "",
       caption: "",
-      image: "/nofileselected.png",
+      image: null,
       likes: [],
       category: "",
       isPublished: true,
@@ -32,7 +32,7 @@ export default function Home() {
       publisherName: "",
       date: "",
       caption: "",
-      image: "/nofileselected.png",
+      image: null,
       likes: [],
       category: "",
       isPublished: true,
@@ -45,7 +45,7 @@ export default function Home() {
       publisherName: "",
       date: "",
       caption: "",
-      image: "/nofileselected.png",
+      image: null,
       likes: [],
       category: "",
       isPublished: true,
@@ -73,7 +73,6 @@ export default function Home() {
     const setBarberPreviews = async () => {
       const allBarbers = await getAllBarbers();
       if (Array.isArray(allBarbers)) {
-        console.log(1);
         setBarbers(allBarbers.sort((a, b) => b.rating - a.rating).slice(0, 3));
       } else {
         console.error("getAllBarbers did not return an array:", allBarbers);
@@ -167,7 +166,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-5">
           <div
             id="barber-essentials"
-            className="relative col-span-1 lg:col-span-2 rounded-lg overflow-hidden"
+            className="relative col-span-1 lg:col-span-2 rounded-lg overflow-hidden bg-black"
           >
             <img
               className="w-full h-[400px] sm:h-[500px] lg:h-[600px] object-cover"
@@ -201,7 +200,7 @@ export default function Home() {
 
           <div
             id="barber-etiquette"
-            className="relative col-span-1 rounded-lg overflow-hidden"
+            className="relative col-span-1 rounded-lg overflow-hidden bg-black"
           >
             <img
               className="w-full h-[400px] sm:h-[500px] lg:h-[600px] object-cover"
@@ -233,7 +232,7 @@ export default function Home() {
 
           <div
             id="clippers-crash-course"
-            className="relative col-span-1 rounded-lg overflow-hidden"
+            className="relative col-span-1 rounded-lg overflow-hidden bg-black"
           >
             <img
               className="w-full h-[400px] sm:h-[500px] lg:h-[600px] object-cover"

@@ -62,7 +62,7 @@ const AddPostComponent = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(file);
+    // console.log(file);
     if (!file) {
       alert("Please select an image to upload.");
       return;
@@ -93,9 +93,9 @@ const AddPostComponent = () => {
         isDeleted: false,
         comments: [],
       };
-      console.log(newPost);
+      // console.log(newPost);
       await addPostItem(newPost, getToken());
-      console.log("Post added successfully!");
+      // console.log("Post added successfully!");
       const queryParams = new URLSearchParams({
         u: newPost.publisherName,
       }).toString();

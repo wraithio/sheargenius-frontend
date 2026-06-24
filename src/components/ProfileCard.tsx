@@ -19,7 +19,7 @@ const ProfileCard = (data: IUserProfileInfo) => {
         const posts = await getPostItemsByUserId(data.id);
         const srcs: string[] = [];
         posts.forEach((post: IPostItems) => {
-          srcs.push(post.image);
+          if (post.image) srcs.push(post.image);
         });
         setPicSRCs(srcs.slice(0, 3));
       }
@@ -102,8 +102,8 @@ const ProfileCard = (data: IUserProfileInfo) => {
             <p className="font-[NeueMontreal-Medium] text-xl">
               {data.username || 'Username'}
             </p>
-            <p className="font-[NeueMontreal-Medium] text-sm text-[#949DA4]">
-              {(data.city && data.state) ? `${data.city}, ${data.state}` : 'Location not set'}
+            <p className="font-[NeueMontreal-Medium] text-sm text-gray-500">
+              {(data.city && data.state) ? `${data.city}, ${data.state}` : ''}
             </p>
           </div>
         </div>
@@ -126,7 +126,7 @@ const ProfileCard = (data: IUserProfileInfo) => {
       {picSRCs.length > 0 ?
         picSRCs.map((pic: string, idx: number) => (
           (
-            <div key={idx} className="bg-white rounded-sm w-[32%] h-[130px]">
+            <div key={idx} className="bg-white rounded-sm w-[32%] h-[175px]">
               <Image
                 src={pic || '/placeholder-image.png'}
                 alt={`Preview ${idx + 1}`}

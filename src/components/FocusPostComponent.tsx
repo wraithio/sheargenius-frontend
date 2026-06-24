@@ -13,6 +13,7 @@ import Image from "next/image";
 import { redirect, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Clock, Heart, MessageSquare, Send, Tag, User } from "lucide-react";
+import { FaSpinner } from "react-icons/fa";
 
 interface FocusPostComponentProps extends IPostItems {
   onLikeToggle?: (updatedPost: IPostItems) => void;
@@ -253,19 +254,22 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
             </div>
             
             <div className="w-full">
-              <Image
+              {
+                postData.image == null ? (<div className="flex justify-center items-center"><FaSpinner size={100} className="animate-spin"/></div>) : (
+                <Image
                 width={800}
                 height={800}
                 src={postData.image}
                 className="w-full aspect-square object-cover"
                 alt={`${postData.publisherName}'s post`}
                 priority
-              />
+                />
+              )}
             </div>
             
             <div className="flex flex-col px-3 py-3 w-full gap-2">
               <div className="flex items-center gap-4">
-                <button onClick={addLike} className="flex items-center gap-1.5 group cursor-pointer">
+                <button onClick={addLike} className="flex items-center gap-1.5 group cursor-pointer" aria-label="Like Post">
                   <Heart 
                     size={26} 
                     fill={postData.likes.includes(fetchInfo().username) ? "#ff3040" : "none"} 
@@ -321,11 +325,12 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
                   type="text"
                   ref={inputRef}
                   placeholder="Add a comment..."
+                  title="Comment"
                   className="bg-transparent text-sm w-full focus:outline-none cursor-text"
                   value={commentText}
                   maxLength={70}
                   onChange={(e) => setCommentText(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && commentText.trim() !== '' && addComment()}
+                  onKeyDown={(e) => e.key === 'Enter' && commentText.trim() !== '' && addComment()}
                 />
                 <button 
                   className={`p-1.5 rounded-full flex justify-center items-center ${
@@ -335,7 +340,7 @@ const FocusPostComponent = (props: FocusPostComponentProps) => {
                   } transition-colors`}
                   onClick={commentText.trim() !== '' ? addComment : () => setError(true)}
                   disabled={commentText.trim() === ''}
-                >
+                  aria-label="Post Comment">
                   <Send size={14} className={commentText.trim() !== '' ? 'cursor-pointer' : 'cursor-not-allowed'} />
                 </button>
               </div>

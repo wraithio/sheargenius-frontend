@@ -115,7 +115,7 @@ const Register = () => {
       return;
     }
 
-    console.log(getFormattedDate());
+    // console.log(getFormattedDate());
     const newEditedUser: INewUser = {
       id: 0,
       username: username.toLowerCase().trim(),
@@ -141,7 +141,7 @@ const Register = () => {
       isDeleted: false,
     };
 
-    console.log(newEditedUser);
+    // console.log(newEditedUser);
     let accountCreated = false;
     try {
       accountCreated = await createAccount(newEditedUser);
@@ -151,7 +151,7 @@ const Register = () => {
     }
 
     if (accountCreated) {
-      console.log("Account Created");
+      // console.log("Account Created");
       const userData = { username: username, password: password };
       let token: IToken | null = null;
       try {
@@ -167,7 +167,7 @@ const Register = () => {
       if (token) {
         if (typeof window !== "undefined") {
           localStorage.setItem("Token", token.token);
-          console.log(token.token);
+          // console.log(token.token);
           try {
             await getLoggedInUserData(username);
             const accountInfo = loggedInData();
@@ -175,9 +175,7 @@ const Register = () => {
             if (accountInfo && accountInfo.isDeleted === false) {
               router.push("/");
             } else {
-              console.log(
-                "Account is deleted or info missing post-registration."
-              );
+              // console.log("Account is deleted or info missing post-registration.");
               localStorage.removeItem("Token");
               sessionStorage.removeItem("AccountInfo");
               redirect("/login");
@@ -193,13 +191,13 @@ const Register = () => {
           }
         }
       } else {
-        console.log("Automatic login was unsuccessful after registration.");
+        // console.log("Automatic login was unsuccessful after registration.");
         alert("Account created successfully! Please log in.");
         redirect("/login");
       }
     } else {
       alert("Username already exists or another error occurred.");
-      console.log("Account creation failed.");
+      // console.log("Account creation failed.");
     }
   };
 

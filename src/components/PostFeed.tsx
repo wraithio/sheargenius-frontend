@@ -97,7 +97,7 @@ const PostFeed = (data: IUserProfileInfo) => {
   }, [data.id]);
 
   useEffect(() => {
-    console.log("showLikes: ", showLikes);
+    // console.log("showLikes: ", showLikes);
     showLikes ? setPosts(likedPosts) : setPosts(feedPosts);
     // window.location.reload();
     // console.log("Likes: ", likedPosts);
@@ -116,7 +116,7 @@ const PostFeed = (data: IUserProfileInfo) => {
   }, [showLikes]);
 
   // useEffect(() => {
-  //   console.log("posts feed: ", posts);
+  //   // console.log("posts feed: ", posts);
   // }, [posts]);
 
   useEffect(() => {
@@ -142,14 +142,14 @@ const PostFeed = (data: IUserProfileInfo) => {
   }, [selectedFilter]);
 
   // const toggleLikes = (likes: boolean) => {
-  //   console.log("Likes: ", likedPosts);
-  //   console.log("Posts: ", posts);
+  //   // console.log("Likes: ", likedPosts);
+  //   // console.log("Posts: ", posts);
   //   if (!likes) {
   //     setShowLikes(false);
-  //     console.log("Showing posts");
+  //     // console.log("Showing posts");
   //   } else {
   //     setShowLikes(true);
-  //     console.log("Showing likes");
+  //     // console.log("Showing likes");
   //   }
   // };
 
